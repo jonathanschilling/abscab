@@ -11,3 +11,6 @@
 # ignore screenshot from other article (placeholder for now)
 wire_segment_Hanson_Hirshman_2002_Fig_1.png
 
+# editor leftovers
+*.kate-swp
+
