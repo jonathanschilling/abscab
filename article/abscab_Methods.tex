@@ -7,7 +7,8 @@ of a straight wire segment and a circular wire loop are established.
 The straight wire segment is handled first.
 
 \subsubsection{Magnetic Vector Potential}
-Generally, the magnetic vector potential of a straight wire segment is given by:
+The magnetic vector potential of a straight wire segment
+only has component~$A_z$ parallel to the wire that is given by:
 \begin{equation}
   A_z(\rho, z) = \frac{\mu_0 I}{4 \pi} \ln \left( \frac{1+\epsilon}{1 - \epsilon} \right)
 \end{equation}
@@ -161,6 +162,24 @@ The overall switching between the methods introduced above is done as follows:
 \end{equation}
 
 \subsubsection{Magnetic Field}
+The magnetic field of a straight wire segment
+only has a tangential component~$B_\varphi$ around the wire that is given by:
+\begin{equation}
+  B_\varphi(\rho, z) = \frac{\mu_0 I}{2 \pi} \frac{L(R_i + R_f)}{R_f} \frac{1}{\left(R_i + R_f\right)^2 - L^2}
+\end{equation}
+with~$L$, $R_i$ and $R_f$ as in the previous section.
+Again a normalization factor is split off:
+\begin{equation}
+  B_\varphi(\rho, z) = \frac{\mu_0 I}{2 \pi L} \tilde{B}_\varphi(\rho', z')
+\end{equation}
+with
+\begin{align}
+  \tilde{B}_\varphi(\rho', z')
+  =&\, \frac{L^2(R_i + R_f)}{R_f} \frac{1}{\left(R_i + R_f\right)^2 - L^2} \nonumber \\
+  =&\, \left(\frac{r_i}{r_f} + 1\right) \frac{1}{\left(r_i + r_f\right)^2 - 1} \, .
+\end{align}
+
+
 
 
 
