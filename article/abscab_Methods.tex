@@ -39,14 +39,14 @@ The rest of this section can thus focus on accurate computation of $\tilde{A}_z 
 
 The near field is handled by one of the following three formulations.
 Close to the wire segment, the parameter~$\epsilon$ gets close to 1.
-Thus, the denominator in \eqn{eqn:A_z_tilde} vanishes, leading to a logarithmic singularity in~$\tilde{A}_z$
+Thus, the denominator in \eqn{A_z_tilde} vanishes, leading to a logarithmic singularity in~$\tilde{A}_z$
 as the evaluation point~$(\rho', z')$ approaches the wire segment.
-It is therefore favourable to formulate the method in terms of $1-\epsilon$:
+It is therefore favourable to formulate the near-field method in terms of $1-\epsilon$:
 \begin{align}
   1-\epsilon =&\, 1 - \frac{1}{r_i + r_f} = \frac{r_i + r_f - 1}{r_i + r_f} = \frac{r_i + r_f - 1}{(r_i + r_f - 1) + 1} = \frac{n}{n + 1}
 \end{align}
 with~$n \equiv r_i + r_f - 1$ approaching~$0$ as the evaluation point approaches the wire segment.
-Inserting this formulation for~$1-\epsilon$ into \eqn{eqn:A_z_tilde} leads to:
+Inserting this formulation for~$1-\epsilon$ into \eqn{A_z_tilde} leads to:
 \begin{align}
   \tilde{A}_z (\rho', z')
   =&\, \frac{1}{2}  \left[ \ln\left(2 - (1-\epsilon)        \right) - \ln \left(1 - \epsilon    \right) \right] \nonumber \\
@@ -65,7 +65,7 @@ The first contribution to~$n$ is then computed as follows:
   r_i - z' = 2 z' \sin^2(\alpha/2) / \cos(\alpha) \label{eqn:ri_zp}
 \end{equation}
 with $\alpha = \texttt{atan2}(\rho', z')$.
-Additionally, $r_f$ is computed via \eqn{eqn:r_f_default} and $(z'-1)$ is computed directly.
+Additionally, $r_f$ is computed via \eqn{r_f_default} and $(z'-1)$ is computed directly.
 % A_6a end
 % A_6b start
 The second special case is based on the first one and introduces another angle~$\beta$
@@ -78,7 +78,7 @@ Then, $n$ is computed as:
 \begin{equation}
   n_{6b} = (r_i - z') + (r_f + z'-1) \, .
 \end{equation}
-with $(r_i - z')$ from \eqn{eqn:ri_zp} and $(r_f + z' - 1)$ from \eqn{eqn:rf_zp_1}.
+with $(r_i - z')$ from \eqn{ri_zp} and $(r_f + z' - 1)$ from \eqn{rf_zp_1}.
 % A_6b end
 % A_6c start
 The third special case is formulated slightly differently.
@@ -87,13 +87,57 @@ Here, $(r_f-1)$ is formulated as:
   r_f - 1 = 2 r_f \sin^2(\beta/2) - z' \label{eqn:rf_1}
 \end{equation}
 with $\beta$ as in the second special case
-and $r_i$ and $r_f$ from \eqn{eqn:r_i_default} and \eqn{eqn:r_f_default}, respectively.
+and $r_i$ and $r_f$ from \eqn{r_i_default} and \eqn{r_f_default}, respectively.
 This leads to:
 \begin{equation}
   n_{6c} = r_i + (r_f - 1)
 \end{equation}
-with $(r_f - 1)$ from \eqn{eqn:rf_1}.
+with $(r_f - 1)$ from \eqn{rf_1}.
 % A_6c end
+This concludes the methods for the near-field evaluation.
+
+Two further special cases are considered next: $\rho' = 0$ and the combined case ($z'=0$, $z'=1$).
+For the case of $\rho'=0$, the following formulation should be used:
+\begin{equation}
+  \tilde{A}_z (\rho'=0, z')
+  = \begin{cases}
+      \tilde{A}_2(z')  &:\, z' < 1 \textrm{ or } z' > 2 \\
+      \tilde{A}_2b(z') &:\, \textrm{ else, except } z' \in [0, 1]
+    \end{cases}
+\end{equation}
+with
+\begin{equation}
+  \tilde{A}_2(z') = \textrm{atanh}\left( \frac{1}{|z'| + |1 - z'|} \right)
+\end{equation}
+and
+\begin{equation}
+  \tilde{A}_2b(z') = \frac{1}{2} \textrm{sgn}(z') \ln \left(\left| \frac{z'}{1-z'} \right| \right) \, .
+\end{equation}
+The following formulation should be used for the cases $z'=0$ or $z'=1$:
+\begin{equation}
+  \tilde{A}_z (\rho', z' \in \{0, 1\})
+  = \begin{cases}
+      \tilde{A}_3(\rho')  &:\, \rho' > 1 \\
+      \tilde{A}_bb(\rho') &:\, \textrm{ else}
+    \end{cases}
+\end{equation}
+with
+\begin{equation}
+  \tilde{A}_3(z') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right)
+\end{equation}
+and
+\begin{align}
+  \tilde{A}_3b(z') =&\, \frac{1}{2} \ln \left(\frac{\rho' c + 1 + c}{\rho' c + 2 s^2 }\right) \\
+  c =&\, \cos(\alpha) = 1 / \sqrt{{\rho'}^2 + 1} \\
+  s =&\, \sin(\alpha/2)  \\
+ \alpha =&\, \arctan(\rho') \, .
+\end{align}
+If none of above special cases applies,
+the following general formulation is used:
+\begin{equation}
+  \tilde{A}_z (\rho', z') = \textrm{atanh}\left( \frac{1}{r_i + r_f} \right)
+\end{equation}
+with $r_i$ and $r_f$ from \eqn{r_i_default} and \eqn{r_f_default}, respectively.
 
 \subsubsection{Magnetic Field}
 

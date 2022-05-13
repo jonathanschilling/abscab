@@ -70,12 +70,12 @@ For $X = a x^2 + b x + c$ with $a>0$ the following relation holds~\cite{bronstei
  \int \frac{\mathrm{d}x}{\sqrt{X}} = \frac{1}{\sqrt{a}} \log \left( 2 \sqrt{a X} + 2 a x + b \right) \quad .
 \end{equation}
 Here, $x = \lambda$, $a = L^2$, $b=-2 L R_{i ||}$ and $c=R_i^2$.
-The corresponding antiderivative of the integrand in \eqn{eqn:A_integral} is:
+The corresponding antiderivative of the integrand in \eqn{A_integral} is:
 \begin{equation}
    \int\frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}}
  = \frac{1}{L} \log \left( 2 \sqrt{L^2\left( L^2 \lambda^2 - 2 L R_{i ||} \lambda + R_i^2 \right)} + 2 L^2 \lambda - 2 L R_{i ||} \right) \quad .
 \end{equation}
-The definite integral in \eqn{eqn:A_integral} is therefore solved by the following expression:
+The definite integral in \eqn{A_integral} is therefore solved by the following expression:
 \begin{align}
  ~ & \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \\
  = & \frac{1}{L} \left[ \log \left( 2 \sqrt{L^2\left( L^2 - 2 L R_{i ||} + R_i^2 \right)} + 2 L^2 - 2 L R_{i ||} \right) - \log \left( 2 \sqrt{L^2 R_i^2 } - 2 L R_{i ||} \right) \right] \\
@@ -95,7 +95,7 @@ Therefore:
  \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}}
  = \frac{1}{L} \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i  \,\mathrm{d}\varphi||} } \right) \quad .
 \end{equation}
-Inserting this into \eqn{eqn:A_integral} leads to the first intermediate result:
+Inserting this into \eqn{A_integral} leads to the first intermediate result:
 \begin{equation}
    \mathbf{A}(\mathbf{x})
  = \frac{\mu_0 I}{4 \pi} \bcancel{L} \bcancel{\frac{1}{L}} \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i ||} } \right) \hat{\mathbf{e}}
@@ -104,7 +104,7 @@ Inserting this into \eqn{eqn:A_integral} leads to the first intermediate result:
 However, if the point $\mathbf{x}$ is located on the line extension of the wire segment, $R_i = R_{i ||}$ and $R_f = R_{f ||}$,
 which leads to a $0/0$ division if this formula is directly evaluated.
 The solution is to cancel the singular term $(L + R_f - R_i)$, which is also zero for points on the line extension of the wire segment,
-in the numerator and the denominator of \eqn{eqn:A_first}.
+in the numerator and the denominator of \eqn{A_first}.
 A second look resolves this:
 \begin{align}
 \frac{ R_f - R_{f ||} }{ R_i - R_{i ||} }
@@ -141,7 +141,7 @@ leading to
 \end{equation}
 
 \subsubsection{Magnetic Field}
-The magnetic field $\mathbf{B}(\mathbf{x})$ is computed from $\mathbf{B} = \nabla \times \mathbf{A}$, applied to \eqn{eqn:A_log_eps}.
+The magnetic field $\mathbf{B}(\mathbf{x})$ is computed from $\mathbf{B} = \nabla \times \mathbf{A}$, applied to \eqn{A_log_eps}.
 Define
 \begin{equation}
  f(\epsilon) \equiv \log\left(\frac{1 + \epsilon}{1 - \epsilon} \right)
@@ -182,7 +182,7 @@ and therefore:
  = \frac{R_f+R_i}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \quad ,
 \end{equation}
 since $\hat{\mathbf{e}} \times \hat{\mathbf{e}} = 0$.
-Inserting this into \eqn{eqn:B_intermediate} leads to:
+Inserting this into \eqn{B_intermediate} leads to:
 \begin{equation}
    \frac{4 \pi}{\mu_0 I} \mathbf{B}
  = f'(\epsilon) \frac{\epsilon^{\bcancel{2}}}{\bcancel{L}} \, \frac{\bcancel{R_f+R_i}}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i
@@ -195,7 +195,7 @@ Next, look at $f'(\epsilon)$:
  = \frac{1 - \epsilon + 1 + \epsilon}{(1 + \epsilon)(1 - \epsilon)}
  = \frac{2}{1 - \epsilon^2}
 \end{equation}
-and insert this into \eqn{eqn:B_intermediate_2}:
+and insert this into \eqn{B_intermediate_2}:
 \begin{align}
    \frac{4 \pi}{\mu_0 I} \mathbf{B}
  = & \frac{2 \epsilon}{1 - \epsilon^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \\
@@ -253,7 +253,7 @@ The distance $|\mathbf{x} - \mathbf{x}'|$ is then:
               ~              &= \sqrt{ \rho^2 + \rho'^2 (\cos(\varphi'))^2 + \sin^2(\varphi')) - 2 \rho \rho' \cos(\varphi') + (z - z')^2} \nonumber \\
               ~              &= \sqrt{ \rho^2 + \rho'^2 + (z - z')^2 - 2 \rho \rho' \cos(\varphi')} \, .
 \end{align}
-Inserting this into \eqn{eqn:vecpot_loop_general} leads to:
+Inserting this into \eqn{vecpot_loop_general} leads to:
 \begin{equation}
   \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \int\limits_{-\infty}^{\infty} \int\limits_{0}^{2 \pi} \int\limits_{0}^{\infty}
                                                              \frac{\delta(\rho' - a) \delta(z')}{\sqrt{ \rho^2 + \rho'^2 + (z - z')^2 - 2 \rho \rho' \cos(\varphi')}}
@@ -300,9 +300,9 @@ The dot products of the cylindrical unit vectors are:
                                                                   \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
                                                                 = 0 \, . \label{eqn:e_phiprime_dot_ez}
 \end{align}
-The expression from \eqn{eqn:vecpot_loop_phiprime} is inserted into above expressions.
+The expression from \eqn{vecpot_loop_phiprime} is inserted into above expressions.
 The vertical component~$A_z$ vanishes trivially since the unit vectors are orthogonal,
-as can be seen from \eqn{eqn:e_phiprime_dot_ez}.
+as can be seen from \eqn{e_phiprime_dot_ez}.
 For the radial component $A_\rho$ it follows:
 \begin{equation}
   A_\rho = \frac{\mu_0 I a}{4 \pi}
@@ -321,7 +321,7 @@ leading to
 \begin{equation}
   \mathbf{A}(\mathbf{x}) = A_\varphi(\rho, z) \,\hat{\mathbf{e}}_\varphi \, . \label{eqn:a_cwl_components}
 \end{equation}
-A change of variables from $\varphi'$ to $\beta$ is performed in order to solve \eqn{eqn:a_phi_general}:
+A change of variables from $\varphi'$ to $\beta$ is performed in order to solve \eqn{a_phi_general}:
 \begin{equation}
  \varphi' = 2 \beta + \pi
 \end{equation}
@@ -331,7 +331,7 @@ which implies
                                  \varphi'_0 = 0     &\Rightarrow           \beta_0 = - \frac{\pi}{2}   \\
                                  \varphi'_1 = 2 \pi &\Rightarrow           \beta_1 =   \frac{\pi}{2}   \, .
 \end{align}
-It follows for \eqn{eqn:a_phi_general}:
+It follows for \eqn{a_phi_general}:
 \begin{equation}
  A_\varphi(\rho, z) = \frac{\mu_0 I a}{4 \pi}
                        \int\limits_{-\pi/2}^{\pi/2}
@@ -366,7 +366,7 @@ with
 \begin{equation}
  k^2 = \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \, . \label{eqn:my_k_sq}
 \end{equation}
-Inserting this into \eqn{eqn:a_phi_progress} leads to:
+Inserting this into \eqn{a_phi_progress} leads to:
 \begin{equation}
  A_\varphi(\rho', z') = \frac{\mu_0 I}
                            {2 \pi}
@@ -445,7 +445,7 @@ with
 \end{equation}
 Here, $K(k)$ and $E(k)$ are the complete elliptic integrals of the first and second kind, respectively.
 Spherical coordinates are used with $r \sin(\theta) = \rho$ and $r^2 = \rho^2 + z^2$.
-In order to bring this to the form in \eqn{eqn:A_phi_final},
+In order to bring this to the form in \eqn{A_phi_final},
 an expression for the linear combination of $K(k)$ and $E(k)$ from Ref.~\cite{bulirsch_3} is used:
 \begin{equation}
   \lambda K(k) + \mu E(k) = \,\mathrm{cel}(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2)
@@ -464,8 +464,8 @@ The argument of the elliptic integrals is considered first:
        = 4 \rho' \left( 1 + \rho'^{2} + z'^{2} + 2 \rho' \right)^{-1} \nonumber \\
   ~   &= \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \, .
 \end{align}
-Thus, $k^2$ from Ref.~\cite{jackson} is equivalent to $k^2$ in \eqn{eqn:my_k_sq}.
-Inserting this into \eqn{eqn:aphi_initial} leads to:
+Thus, $k^2$ from Ref.~\cite{jackson} is equivalent to $k^2$ in \eqn{my_k_sq}.
+Inserting this into \eqn{aphi_initial} leads to:
 \begin{align}
   A_\varphi(r, \theta) &= \frac{\mu_0 I}{\bcancel{2} \pi}
                           \frac{\bcancel{2}}{\sqrt{z'^2 + (1 + \rho')^2}}
@@ -494,14 +494,14 @@ Putting above results together, we arrive at the following expression for $A_\va
  \boxed{A_\varphi(r, \theta) = \frac{\mu_0 I}{\pi}
                             \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1)}
 \end{equation}
-with $\rho' = r/a \sin(\theta)$, $z' = \sqrt{r^2 - \rho^2}/a$ and $k_c$ given by \eqn{eqn:k_c_final}).
-It is favourable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{eqn:A_phi_final}
+with $\rho' = r/a \sin(\theta)$, $z' = \sqrt{r^2 - \rho^2}/a$ and $k_c$ given by \eqn{k_c_final}).
+It is favourable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{A_phi_final}
 where the linear combination of the complete elliptic integrals is embedded in the parameters of $\mathrm{cel}(k_c, p, a, b)$
-and no precautions need to be taken to deal with cancellations in \eqn{eqn:aphi_initial}.
+and no precautions need to be taken to deal with cancellations in \eqn{aphi_initial}.
 
 \subsubsection{Magnetic Field}
 The magnetic field is computed using $\mathbf{B} = \nabla \times \mathbf{A}$.
-In cylindrical coordinates with the form of the magnetic vector potential from \eqn{eqn:a_cwl_components}
+In cylindrical coordinates with the form of the magnetic vector potential from \eqn{a_cwl_components}
 the curl is given as follows:
 \begin{equation}
   \mathbf{B}(\mathbf{x})
@@ -513,7 +513,7 @@ with
   B_z    &=   \frac{1}{\rho} \frac{\partial (\rho A_\varphi)}{\partial \rho}
           = \frac{A_\varphi}{\rho} + \frac{\partial A_\varphi}{\partial \rho} \label{eqn:b_z_start} \, .
 \end{align}
-Starting from \eqn{eqn:a_phi_general} it is noted that the partial derivatives only act on the denominator of the integrand.
+Starting from \eqn{a_phi_general} it is noted that the partial derivatives only act on the denominator of the integrand.
 Therefore, consider first:
 \begin{align}
   \frac{\partial}{\partial z} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}}
@@ -523,9 +523,9 @@ Therefore, consider first:
   ~ &= - \bcancel{\frac{1}{2}} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{3}{2}} \left( \bcancel{2} \rho - \bcancel{2} a \cos(\varphi) \right) \nonumber \\
   ~ &= \frac{-(\rho - a \cos(\varphi))}{\left[ a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right]^{\frac{3}{2}}} \, .
 \end{align}
-These expressions are used to formulate \eqn{eqn:b_rho_start} and
-a change of variables from $\varphi$ to $\beta$ analogously to the step from \eqn{eqn:a_phi_general} to \eqn{eqn:a_phi_progress} is performed.
-Finally, normalized coordinates are introduced in the integrand similar to the steps from \eqn{eqn:a_phi_denom_refactor_start} to \eqn{eqn:a_phi_denom_refactor_done}:
+These expressions are used to formulate \eqn{b_rho_start} and
+a change of variables from $\varphi$ to $\beta$ analogously to the step from \eqn{a_phi_general} to \eqn{a_phi_progress} is performed.
+Finally, normalized coordinates are introduced in the integrand similar to the steps from \eqn{a_phi_denom_refactor_start} to \eqn{a_phi_denom_refactor_done}:
 \begin{align}
   B_\rho &= \frac{\partial}{\partial z} \left(
              \frac{\mu_0 I a}{4 \pi}
@@ -546,14 +546,14 @@ Finally, normalized coordinates are introduced in the integrand similar to the s
                      { \left[\cos^2(\beta) + k_c^2 \sin^2(\beta) \right]^{\frac{3}{2}} }
                 \,\mathrm{d}\beta \label{eqn:B_rho_almost}
 \end{align}
-This integrand is also symmetric about $0$, which can be used to express \eqn{eqn:B_rho_almost} in terms of the general complete elliptic integral:
+This integrand is also symmetric about $0$, which can be used to express \eqn{B_rho_almost} in terms of the general complete elliptic integral:
 \begin{equation}
   \boxed{B_\rho(\rho', z') =
     \frac{\mu_0 I}{\pi a}
     \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}}
     \,\mathrm{cel}(k_c, k_c^2, -1, 1) } \, . \label{eqn:B_rho_final}
 \end{equation}
-Regarding $B_z$ the first term in \eqn{eqn:b_z_start} can already be written down using $\rho = a \rho'$ and $A_\varphi$ from \eqn{eqn:A_phi_final}:
+Regarding $B_z$ the first term in \eqn{b_z_start} can already be written down using $\rho = a \rho'$ and $A_\varphi$ from \eqn{A_phi_final}:
 \begin{equation}
   B_z = \frac{\mu_0 I}{\pi a}
         \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
@@ -601,7 +601,7 @@ as well as:
  =&\, -\frac{1}{2} \int\limits_0^{\pi/2} \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
                                               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \, .
 \end{align}
-These terms are now inserted into \eqn{eqn:dAphiDrho}:
+These terms are now inserted into \eqn{dAphiDrho}:
 \begin{align}
       \frac{\partial A_\varphi}{\partial \rho}
  =&\, \frac{\mu_0 I}{\pi a} \Biggl\{ \phantom{+}
@@ -624,7 +624,7 @@ These terms are now inserted into \eqn{eqn:dAphiDrho}:
           \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
                {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \, .
 \end{align}
-This form of $\partial A_\varphi / \partial \rho$ is now inserted into \eqn{eqn:B_z_intermediate}.
+This form of $\partial A_\varphi / \partial \rho$ is now inserted into \eqn{B_z_intermediate}.
 $\partial A_\varphi / \partial \rho$ has to be multiplied by a factor of $\rho'$ in order to factor out a common prefactor $1/\rho'$.
 This leads to:
 \begin{align}
@@ -697,7 +697,7 @@ as well as:
  ~&\, + \rho' \sin^2(\varphi)                           \cancel{+ \rho' k_c^2 \sin^2(\varphi)} - \rho'^2 \sin^2(\varphi) \bcancel{+ \rho'^2 k_c^2 \sin^2(\varphi)} \nonumber \\
  =&\, - \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] - \rho'^2 \underbrace{\left[ \cos^2(\varphi) + \sin^2(\varphi) \right]}_{=1}
 \end{align}
-Combining them to form \eqn{eqn:starStar} leads to:
+Combining them to form \eqn{starStar} leads to:
 \begin{align}
   (*) + (**)
  =&\, z'^2 + 1 \bcancel{+ \rho'^2} + \cancel{2} \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \cancel{- \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]} \bcancel{- \rho'^2} \nonumber \\
@@ -739,7 +739,7 @@ and
  =&\, \frac{1}{4} \rho' \left[ z'^2 + 1 - 2 \rho' + \rho'^2 - \left( z'^2 + 1 + 2 \rho' + \rho'^2 \right) \right] \nonumber \\
  =&\, \frac{1}{4} \rho' \left[ z'^2 + ( 1 - \rho')^2 \right] - \frac{1}{4} \rho' \left[ z'^2 + (1 + \rho')^2 \right] \, .
 \end{align}
-These expressions are now inserted into \eqn{eqn:bZCore}, leading to:
+These expressions are now inserted into \eqn{bZCore}, leading to:
 \begin{align}
  ~&\, \phantom{+}~
         \frac{1}{2} \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \frac{1}{2} \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
@@ -754,7 +754,7 @@ These expressions are now inserted into \eqn{eqn:bZCore}, leading to:
           \frac{1}{2} \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]
         + \frac{1}{4} \left[ 1 + k_c^2 - \left( 1 - k_c^2 \right) \rho' \right] \right\} \, .
 \end{align}
-This is now inserted back into \eqn{eqn:B_z_core}:
+This is now inserted back into \eqn{B_z_core}:
 \begin{align}
   B_z
  =&\, \frac{\mu_0 I}{\pi a}
