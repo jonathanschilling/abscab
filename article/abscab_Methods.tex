@@ -7,9 +7,93 @@ of a straight wire segment and a circular wire loop are established.
 The straight wire segment is handled first.
 
 \subsubsection{Magnetic Vector Potential}
+Generally, the magnetic vector potential of a straight wire segment is given by:
+\begin{equation}
+  A_z(\rho, z) = \frac{\mu_0 I}{4 \pi} \ln \left( \frac{1+\epsilon}{1 - \epsilon} \right)
+\end{equation}
+with
+\begin{align}
+  \epsilon =&\, \frac{L}{R_i + R_f} \\
+       R_i =&\, \sqrt{\rho^2 + z^2} \\
+       R_f =&\, \sqrt{\rho^2 + (1-z)^2} \, .
+\end{align}
+Here, we use normalized coordiantes~$\rho' = \rho/L$ and~$z' = z/L$.
+This leads to the following expressions for~$r_i = R_i/L$ and~$r_f = R_f/L$:
+\begin{align}
+  r_i =&\, \sqrt{{\rho'}^2 +      {z'}^2 } \label{eqn:r_i_default} \\
+  r_f =&\, \sqrt{{\rho'}^2 + (1 - {z'})^2} \label{eqn:r_f_default} \\
+  \epsilon =&\, \frac{1}{r_i + r_f} \, .
+\end{align}
+A common prefactor depending on the current~$I$ and~$\mu_0$ is split off:
+\begin{equation}
+  A_z(\rho, z) = \frac{\mu_0 I}{2 \pi} \tilde{A}_z (\rho', z')
+\end{equation}
+with
+\begin{equation}
+  \tilde{A}_z (\rho', z')
+  = \frac{1}{2} \ln \left( \frac{1+\epsilon}{1 - \epsilon} \right)
+  = \textrm{atanh} (\epsilon) \, .
+  \label{eqn:A_z_tilde}
+\end{equation}
+The rest of this section can thus focus on accurate computation of $\tilde{A}_z (\rho', z')$.
 
-
-
+The near field is handled by one of the following three formulations.
+Close to the wire segment, the parameter~$\epsilon$ gets close to 1.
+Thus, the denominator in \eqn{eqn:A_z_tilde} vanishes, leading to a logarithmic singularity in~$\tilde{A}_z$
+as the evaluation point~$(\rho', z')$ approaches the wire segment.
+It is therefore favourable to formulate the method in terms of $1-\epsilon$:
+\begin{align}
+  1-\epsilon =&\, 1 - \frac{1}{r_i + r_f} = \frac{r_i + r_f - 1}{r_i + r_f} = \frac{r_i + r_f - 1}{(r_i + r_f - 1) + 1} = \frac{n}{n + 1}
+\end{align}
+with~$n \equiv r_i + r_f - 1$ approaching~$0$ as the evaluation point approaches the wire segment.
+Inserting this formulation for~$1-\epsilon$ into \eqn{eqn:A_z_tilde} leads to:
+\begin{align}
+  \tilde{A}_z (\rho', z')
+  =&\, \frac{1}{2}  \left[ \ln\left(2 - (1-\epsilon)        \right) - \ln \left(1 - \epsilon    \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(2 - \frac{n}{n + 1}     \right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(\frac{2(n+1) - n}{n + 1}\right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) \cancel{- \ln\left(n + 1 \right)} - \ln \left( n \right) \cancel{+ \ln \left( n + 1 \right)} \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) - \ln \left( n \right) \right] \, .
+\end{align}
+% A_6a start
+The first special case introduces a nutritious zero~($-z' + z'$) into~$n$:
+\begin{equation}
+  n_{6a} = (r_i - z') + r_f + (z'-1) \, .
+\end{equation}
+The first contribution to~$n$ is then computed as follows:
+\begin{equation}
+  r_i - z' = 2 z' \sin^2(\alpha/2) / \cos(\alpha) \label{eqn:ri_zp}
+\end{equation}
+with $\alpha = \texttt{atan2}(\rho', z')$.
+Additionally, $r_f$ is computed via \eqn{eqn:r_f_default} and $(z'-1)$ is computed directly.
+% A_6a end
+% A_6b start
+The second special case is based on the first one and introduces another angle~$\beta$
+used to compute~$r_f + (z'-1)$ directly:
+\begin{equation}
+  (r_f + z' - 1) = 2 (1 - z') \sin^2(\beta/2) / \cos(\beta) \label{eqn:rf_zp_1}
+\end{equation}
+with~$\beta = \texttt{atan2}(\rho', 1-z')$.
+Then, $n$ is computed as:
+\begin{equation}
+  n_{6b} = (r_i - z') + (r_f + z'-1) \, .
+\end{equation}
+with $(r_i - z')$ from \eqn{eqn:ri_zp} and $(r_f + z' - 1)$ from \eqn{eqn:rf_zp_1}.
+% A_6b end
+% A_6c start
+The third special case is formulated slightly differently.
+Here, $(r_f-1)$ is formulated as:
+\begin{equation}
+  r_f - 1 = 2 r_f \sin^2(\beta/2) - z' \label{eqn:rf_1}
+\end{equation}
+with $\beta$ as in the second special case
+and $r_i$ and $r_f$ from \eqn{eqn:r_i_default} and \eqn{eqn:r_f_default}, respectively.
+This leads to:
+\begin{equation}
+  n_{6c} = r_i + (r_f - 1)
+\end{equation}
+with $(r_f - 1)$ from \eqn{eqn:rf_1}.
+% A_6c end
 
 \subsubsection{Magnetic Field}
 
