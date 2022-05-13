@@ -27,7 +27,7 @@
 %% use the graphics package for simple commands
 %% \usepackage{graphics}
 %% or use the graphicx package for more complicated commands
-%% \usepackage{graphicx}
+\usepackage{graphicx}
 %% or use the epsfig package if you prefer to use the old commands
 %% \usepackage{epsfig}
 
@@ -40,6 +40,34 @@
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
 %% for the whole article with \linenumbers after \end{frontmatter}.
 %% \usepackage{lineno}
+
+% jons ::: my own packages ::: jons
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{cancel}
+% \usepackage{hyperref}
+
+\def\eqn#1{Eqn.~(\ref{#1})}
+
+% \intercal for transpose, \mathbb{R} reals, \mathbb{C} complex numbers
+% \usepackage{amssymb} (already provided by template)
+% \def\realnumbers{\rm I\!R} % does not generalize to complex numbers...
+\def\naturals{\mathbb{N}}
+\def\naturalsWithZero{\mathbb{N}_0}
+\def\integers{\mathbb{Z}}
+\def\realnumbers{\mathbb{R}}
+\def\complexnumbers{\mathbb{C}}
+
+% \mathfrak{Re}, \mathfrak{Im}
+% \usepackage[frak=esstix]{mathalpha} % on some other systems...
+\usepackage[frak=esstix]{mathalfa}
+\def\realpart{\mathfrak{Re}}
+\def\imagpart{\mathfrak{Im}}
+
+% end ::: my own packages ::: end
+
+
+
 
 %% natbib.sty is loaded by default. However, natbib options can be
 %% provided with \biboptions{...} command. Following options are
@@ -178,15 +206,15 @@ magnetostatics; Biot-Savart; straight wire segment; circular wire loop; magnetic
 \bibitem{1}Reference 1         % This list should only contain those items referenced in the
 \bibitem{2}Reference 2         % Program Summary section.
 \bibitem{3}Reference 3         % Type references in text as [1], [2], etc.
-                               % This list is different from the bibliography at the end of
-                               % the Long Write-Up.
+                               % This list is different from the bibliography at the end of the Long Write-Up.
 \end{thebibliography}
 \end{small}
 
 
 %% main text
-\section{}
-\label{}
+\include{abscab_Introduction.tex}
+\include{abscab_Methods.tex}
+\include{abscab_Results.tex}
 
 
 
@@ -196,10 +224,13 @@ magnetostatics; Biot-Savart; straight wire segment; circular wire loop; magnetic
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
-%% \appendix
+\appendix
 
 %% \section{}
 %% \label{}
+
+\include{abscab_appendix_DerivationOfMethods.tex}
+
 
 %% References
 %%
