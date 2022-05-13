@@ -5,6 +5,13 @@ of a straight wire segment and a circular wire loop are established.
 
 \subsection{Straight Wire Segment}
 The straight wire segment is handled first.
+The basic geometry of a single wire segment is shown in Fig.~\ref{fig:wire_segment_Hanson_Hirshman_2002_Fig_1}.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{img/wire_segment_Hanson_Hirshman_2002_Fig_1.png}
+ \caption{Geometry of a single wire segment. After Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.}
+ \label{fig:wire_segment_Hanson_Hirshman_2002_Fig_1}
+\end{figure}
 
 \subsubsection{Magnetic Vector Potential}
 The magnetic vector potential of a straight wire segment
@@ -217,14 +224,17 @@ The overall switching between the methods introduced above is done as follows:
     \end{cases} \, .
 \end{equation}
 
-
-
-
-
-
-
 \subsection{Circular Wire Loop}
 The circular wire loop is handled next.
+The basic geometry of a circular wire loop under consideration here is shown in Fig.~\ref{fig:circularWireLoop}.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{img/circularWireLoop.eps}
+ \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.
+          The radius of the loop is denoted $a$ and a current $I$ flows in the indicated direction.
+          The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.}
+ \label{fig:circularWireLoop}
+\end{figure}
 
 \subsubsection{Magnetic Vector Potential}
 
@@ -233,8 +243,19 @@ The circular wire loop is handled next.
 
 
 \subsection{Transformation to Cartesian Coordinates}
-Evaluation of the magnetostatic quantities~$A_\varphi$, $B_\rho$ and $B_z$ happens in cylindrical coordinates~$\rho$ and~$z$.
+Evaluation of the magnetic vector potential~$A$ and magnetic field~$B$
+produced by the current carriers considered in this work
+happens in cylindrical coordinates~$\rho$ and~$z$.
 It is often more convenient to be able to work in Cartesian coordinates.
+The methods given in this section show how to transform the evaluation location
+into cylindrical coordinates in the frame of reference of the current carrier
+and subsequently transform back the magnetostatic quantities into the global Cartesian coordinate system.
+
+\subsubsection{Straight Wire Segment}
+
+
+
+\subsubsection{Circular Wire Loop}
 Figure~\ref{fig:mappingToCartesian} illustrates the setup of a circular wire loop.
 \begin{figure}[htbp]
  \centering
@@ -305,3 +326,24 @@ are given in Ref.~\cite{hanson_hirshman_2002}.
 The detailed derivation of these expressions is given below.
 
 % multi-winding circular coil
+
+
+
+\subsection{Verification Method}
+The asymptotic behavior of an implementation of above formulas for the magnetic vector potential
+and magnetic field needs to be tested before using that implementation in daily routine work.
+A set of critical test points used to check this is shown in Fig.~\ref{fig:circularLoop_criticalPoints}
+for the case of the circular wire loop.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/circularLoop_criticalPoints.eps}
+ \caption{Test points in the $R$-$Z$-plane for a circular wire loop (black dot).
+          The axes are labeled in normalized cylindrical coordinates ($\rho' = \rho / a$, $z' = z / a$; $a$ is the radius of the wire loop).
+          Green dashed lines indicate values of $\rho'$ and $z'$ which are well handled by a naive implementation.
+          Green dots denote points at which a naive implementation yields satisfactory results.
+          Red dashed lines indicate values of $\rho'$ and $z'$ which induce the requirement for robust asymptotic behavior.
+          Red dots denote points at which a naive implementation usually fails.
+          The grey shaded area in the background indicates the region in which the reference implementation yields accurate results.
+          Note that the problem is symmetric in $z$ direction, even though only the positive-$z$ quadrant is considered here.}
+ \label{fig:circularLoop_criticalPoints}
+\end{figure}
