@@ -38,20 +38,20 @@ The $z$ component of the evaluation location is thus obtained as follows:
 \end{equation}
 The normalized $z$-coordinate $z'$ is then obtained as:
 \begin{equation}
-  z' = \frac{1}{a} z = \frac{1}{a} (\mathbf{r} - \mathbf{r}_0) \cdot \hat{\mathbf{e}}_z \, .
+  z' = \frac{z}{a} = \frac{1}{a} (\mathbf{r} - \mathbf{r}_0) \cdot \hat{\mathbf{e}}_z \, .
 \end{equation}
 For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
 \begin{equation}
   \Delta \mathbf{r} = (\mathbf{r} - \mathbf{r}_0) - z \, \hat{\mathbf{e}}_z
 \end{equation}
-and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|_2$.
+and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
 A unit vector in radial direction is formed as follows:
 \begin{equation}
   \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
 \end{equation}
 The normalized radial coordinate~$\rho'$ is then obtained as:
 \begin{equation}
-  \rho' = \frac{1}{a} \rho = \frac{|(\mathbf{r} - \mathbf{r}_0) - z \, \hat{\mathbf{e}}_z|_2}{a} \, .
+  \rho' = \frac{\rho}{a} = \frac{1}{a} |(\mathbf{r} - \mathbf{r}_0) - z \, \hat{\mathbf{e}}_z| \, .
 \end{equation}
 The magnetic field of the circular wire loop consists of two cylindrical components, namely $B_\rho$ and $B_z$.
 The cartesian magnetic field components are then computed as follows:
@@ -59,10 +59,8 @@ The cartesian magnetic field components are then computed as follows:
   \mathbf{B}(\mathbf{r}) = B_\rho \hat{\mathbf{e}}_\rho + B_z \hat{\mathbf{e}}_z \, .
 \end{equation}
 The magnetic vector potential only has a component in angular direction in the coordinate system of the wire loop.
-The corresponding unit vector is $\hat{\mathbf{e}}_\varphi$ with:
-\begin{equation}
-  \hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_\rho \times \hat{\mathbf{e}}_z \, .
-\end{equation}
+The corresponding unit vector~$\hat{\mathbf{e}}_\varphi$ is then given by
+$\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_\rho \times \hat{\mathbf{e}}_z$.
 The vector potential of the circular wire loop in thus in cartesian coordinates:
 \begin{equation}
   \mathbf{A}(\mathbf{r}) = A_\varphi \hat{\mathbf{e}}_\varphi \, .
