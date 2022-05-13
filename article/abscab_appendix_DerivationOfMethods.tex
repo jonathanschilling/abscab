@@ -37,7 +37,7 @@ The law of Biot and Savart for the magnetic vector potential of a current densit
 \begin{equation}
  \mathbf{A}(\mathbf{x}) = \frac{\mu_0}{4 \pi} \int \frac{\mathbf{j}(\mathbf{x}')}{|\mathbf{x} - \mathbf{x}'|} \mathrm{d}\mathbf{x}' \quad .
 \end{equation}
-The parameterization of points on the line segment $\mathbf{c}(\lambda)$ can be used to apply this to the given geometry of a wire segment:
+The parametrization of points on the line segment $\mathbf{c}(\lambda)$ can be used to apply this to the given geometry of a wire segment:
 \begin{align}
  \mathbf{A}(\mathbf{x}) & = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{|\mathbf{x} - \mathbf{c}(\lambda)|} \\
         ~               & = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{|\mathbf{x} - \mathbf{x}_i - \lambda L \hat{\mathbf{e}}|} \quad .
@@ -237,12 +237,12 @@ The Biot-Savart law for the magnetic vector potential reads:
                               \frac{\delta(\rho' - a) \delta(z')}{|\mathbf{x} - \mathbf{x}'|} \,\hat{\mathbf{e}}_{\varphi'}
                               \rho' \,\mathrm{d} \rho' \,\mathrm{d} \varphi'  \,\mathrm{d} z' \label{eqn:vecpot_loop_general}
 \end{align}
-where a change of variables from cartesian coordinates to cylindrical coordinates was performed in the integral.
+where a change of variables from Cartesian coordinates to cylindrical coordinates was performed in the integral.
 The differential volume element was adjusted according to
 $\,\mathrm{d}^3\mathbf{x}' = \rho' \,\mathrm{d} \rho' \,\mathrm{d} \varphi'  \,\mathrm{d} z'$.
 The coordinate system is rotated around the $z$ axis to yield $\varphi=0$ for the evaluation location $\mathbf{x}$
 which is generally acceptable due to the rotational symmetry of the circular wire loop.
-Then, $\mathbf{x} = (x, y, z)$ in cartesian coordinates with
+Then, $\mathbf{x} = (x, y, z)$ in Cartesian coordinates with
 \begin{align}
   x &= \rho \cos(\varphi) = \rho \\
   y &= \rho \sin(\varphi) = 0    \, .
@@ -495,7 +495,7 @@ Putting above results together, we arrive at the following expression for $A_\va
                             \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1)}
 \end{equation}
 with $\rho' = r/a \sin(\theta)$, $z' = \sqrt{r^2 - \rho^2}/a$ and $k_c$ given by \eqn{k_c_final}).
-It is favourable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{A_phi_final}
+It is favorable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{A_phi_final}
 where the linear combination of the complete elliptic integrals is embedded in the parameters of $\mathrm{cel}(k_c, p, a, b)$
 and no precautions need to be taken to deal with cancellations in \eqn{aphi_initial}.
 

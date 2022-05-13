@@ -1,9 +1,9 @@
 \section{Results}
 \label{sec:results}
 
-\subsection{Testing the Asymptotic Behaviour}
+\subsection{Testing the Asymptotic Behavior}
 
-The asymptotic behaviour of an implementation of above formulas for the magnetic vector potential
+The asymptotic behavior of an implementation of above formulas for the magnetic vector potential
 and magnetic field needs to be tested before using that implementation in daily routine work.
 A set of critical test points used to check this is shown in Fig.~\ref{fig:circularLoop_criticalPoints}
 for the case of the circular wire loop.
@@ -11,10 +11,10 @@ for the case of the circular wire loop.
  \centering
  \includegraphics{img/circularLoop_criticalPoints.eps}
  \caption{Test points in the $R$-$Z$-plane for a circular wire loop (black dot).
-          The axes are labelled in normalized cylindrical coordinates ($\rho' = \rho / a$, $z' = z / a$; $a$ is the radius of the wire loop).
+          The axes are labeled in normalized cylindrical coordinates ($\rho' = \rho / a$, $z' = z / a$; $a$ is the radius of the wire loop).
           Green dashed lines indicate values of $\rho'$ and $z'$ which are well handled by a naive implementation.
           Green dots denote points at which a naive implementation yields satisfactory results.
-          Red dashed lines indicate values of $\rho'$ and $z'$ which induce the requirement for robust asymptotic behaviour.
+          Red dashed lines indicate values of $\rho'$ and $z'$ which induce the requirement for robust asymptotic behavior.
           Red dots denote points at which a naive implementation usually fails.
           The grey shaded area in the background indicates the region in which the reference implementation yields accurate results.
           Note that the problem is symmetric in $z$ direction, even though only the positive-$z$ quadrant is considered here.}
@@ -52,7 +52,7 @@ The results are listed in Table~\ref{tab:ref_cylWireLoop}.
     20 & $2$        & $10^{15}$  & \texttt{7.0999993971129330e-50} \\
     21 & $10^{15}$  & $10^{15}$  & \texttt{1.2551144300297385e-35}
   \end{tabular}
-  \caption{Reference outputs for testing an implementation of \eqn{A_phi_final}, computed using arbirary-precision arithmetic.
+  \caption{Reference outputs for testing an implementation of \eqn{A_phi_final}, computed using arbitrary-precision arithmetic.
            The displayed values for $A_\varphi$ are rounded to the nearest 64-bit \texttt{double} precision value (IEEE~754).
            The loop current was chosen as $I = \SI{113}{\ampere}$.}
   \label{tab:ref_cylWireLoop}
