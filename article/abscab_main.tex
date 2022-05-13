@@ -5,7 +5,7 @@
 %% completed and which will give the correct layout in the
 %% preprint and the journal.
 %% The `elsarticle' style is used and more information on this style
-%% can be found at 
+%% can be found at
 %% http://www.elsevier.com/wps/find/authorsview.authors/elsarticle.
 %%
 %%
@@ -107,20 +107,22 @@
 %% \address{Address\fnref{label3}}
 %% \fntext[label3]{}
 
-\title{A \LaTeX{} template for CPC Computer Programs in Physics (CPiP) articles}
+\title{Accurate Biot-Savart Routines with Correct Asymptotic Behaviour}
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
 %% \address[label1]{<address>}
 %% \address[label2]{<address>}
 
-\author[a]{First Author\corref{author}}
-\author[a,b]{Second Author}
-\author[b]{Third Author}
+\author[a]{Jonathan Schilling\corref{author}}
+\author[b]{Jakob Svensson}
+\author[b]{Joachim Geiger}
+% \author[a,b]{Second Author}
+% \author[b]{Third Author}
 
-\cortext[author] {Corresponding author.\\\textit{E-mail address:} firstAuthor@somewhere.edu}
-\address[a]{First Address}
-\address[b]{Second Address}
+\cortext[author] {Corresponding author.\\\textit{E-mail address:} jonathan.schilling@ipp.mpg.de}
+\address[a]{Max Planck Institute for Plasma Physics, Wendelsteinstrasse 1, 17489 Greifswald, Germany}
+% \address[b]{Second Address}
 
 \begin{abstract}
 %% Text of abstract
@@ -153,26 +155,19 @@ keyword1; keyword2; keyword3; etc.
 % All CPiP articles must contain the following
 % PROGRAM SUMMARY.
 
-{\bf PROGRAM SUMMARY/NEW VERSION PROGRAM SUMMARY}
-  %Delete as appropriate.
+{\bf PROGRAM SUMMARY}
 
 \begin{small}
 \noindent
-{\em Program Title:}                                          \\
+{\em Program Title:} Accurate Biot-Savart Routines with Correct Asymptotic Behaviour \\
 {\em CPC Library link to program files:} (to be added by Technical Editor) \\
 {\em Developer's repository link:} (if available) \\
 {\em Code Ocean capsule:} (to be added by Technical Editor)\\
-{\em Licensing provisions(please choose one):} CC0 1.0/CC By 4.0/MIT/Apache-2.0/BSD 3-clause/BSD 2-clause/GPLv3/GPLv2/LGPL/CC BY NC 3.0/MPL-2.0  \\
-{\em Programming language:}                                   \\
+{\em Licensing provisions(please choose one):} Apache-2.0 \\
+{\em Programming language:} C                                  \\
 {\em Supplementary material:}                                 \\
   % Fill in if necessary, otherwise leave out.
 {\em Journal reference of previous version:}*                  \\
-  %Only required for a New Version summary, otherwise leave out.
-{\em Does the new version supersede the previous version?:}*   \\
-  %Only required for a New Version summary, otherwise leave out.
-{\em Reasons for the new version:*}\\
-  %Only required for a New Version summary, otherwise leave out.
-{\em Summary of revisions:}*\\
   %Only required for a New Version summary, otherwise leave out.
 {\em Nature of problem(approx. 50-250 words):}\\
   %Describe the nature of the problem here. \\
@@ -183,10 +178,10 @@ keyword1; keyword2; keyword3; etc.
    \\
 
 \begin{thebibliography}{0}
-\bibitem{1}Reference 1         % This list should only contain those items referenced in the                 
-\bibitem{2}Reference 2         % Program Summary section.   
+\bibitem{1}Reference 1         % This list should only contain those items referenced in the
+\bibitem{2}Reference 2         % Program Summary section.
 \bibitem{3}Reference 3         % Type references in text as [1], [2], etc.
-                               % This list is different from the bibliography at the end of 
+                               % This list is different from the bibliography at the end of
                                % the Long Write-Up.
 \end{thebibliography}
 * Items marked with an asterisk are only required for new versions
@@ -197,6 +192,12 @@ of programs previously published in the CPC Program Library.\\
 %% main text
 \section{}
 \label{}
+
+
+
+
+
+
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
@@ -216,7 +217,7 @@ of programs previously published in the CPC Program Library.\\
 %% References with bibTeX database:
 
 \bibliographystyle{elsarticle-num}
-\bibliography{<your-bib-database>}
+\bibliography{bibliography.bib}
 
 %% Authors are advised to submit their bibtex database files. They are
 %% requested to list a bibtex style file in the manuscript if they do
@@ -238,4 +239,4 @@ of programs previously published in the CPC Program Library.\\
 \end{document}
 
 %%
-%% End of file 
+%% End of file

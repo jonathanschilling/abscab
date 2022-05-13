@@ -1,0 +1,8 @@
+
+# LaTeX debris
+*.aux
+*.bbl
+*.log
+*.spl
+*.synctex.gz
+
