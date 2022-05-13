@@ -1,7 +1,10 @@
 \section{Methods}
 \label{sec:methods}
-In this section, the methods used to compute the magnetic vector potential and the magnetic field
-of a straight wire segment and a circular wire loop are established.
+In this section, accurate methods used to compute the magnetic vector potential and the magnetic field
+of a straight wire segment and a circular wire loop are presented.
+Furthermore, methods to evaluate the magnetostatic quantities in Cartesian coordinates are provided.
+The section is concluded by a description of the verification procedure
+employed to benchmark these methods.
 
 \subsection{Straight Wire Segment}
 The straight wire segment is handled first.
@@ -236,8 +239,86 @@ The basic geometry of a circular wire loop under consideration here is shown in 
  \label{fig:circularWireLoop}
 \end{figure}
 
-\subsubsection{Magnetic Vector Potential}
+Similar to the case of the straight wire segment,
+the magnetic vector potential and the magnetic field of the circular wire loop
+are assembled from various formulations for special cases of the far-field and the near-field.
 
+\subsubsection{Magnetic Vector Potential}
+The magnetic vector potential of a circular wire loop
+only has a tangential component~$A_\varphi$
+which is given by the following formula:
+\begin{equation}
+  A_\varphi(\rho, z)
+  = \frac{\mu_0 I}{\pi} \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+    \,\mathrm{cel}(k_c, 1, -1, 1) \, .
+\end{equation}
+Normalized coordinates are used ($\rho' = \rho/a$ and $z' = z/a$ where $a$ is the radius of the loop)
+and $k_c$ is given by:
+\begin{equation}
+  k_c^2 = \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \, .
+\end{equation}
+A physics-oriented prefactor is split off to be able to focus on geometry in the following:
+\begin{equation}
+  A_\varphi(\rho, z) = \frac{\mu_0 I}{\pi} \tilde{A}_\varphi(\rho',z') \, ,
+\end{equation}
+leading to:
+\begin{equation}
+  \tilde{A}_\varphi(\rho',z')
+  = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1) \, .
+\end{equation}
+At~$\rho'=0$ the magnetic vector potential of a circular wire loop vanishes exactly:~$\tilde{A}_\varphi(\rho'=0,z') = 0$.
+The following method works for evaluation locations not too close to the wire loop:
+\begin{equation}
+  \tilde{A}_{\varphi,1} (\rho',z')
+  = \frac{k^2}{\sqrt{{z'}^2 + 1 + {\rho'}^2 + 2 \rho'}} \,\mathcal{C}(k_c)
+\end{equation}
+with
+\begin{equation}
+  k^2 = 1 - k_c^2 = \frac{4 \rho'}{{z'}^2 + 1 + {\rho'}^2 + 2 \rho'}
+\end{equation}
+and
+\begin{equation}
+  \mathcal{C}(k_c) = \,\mathrm{cel} \left( \frac{2 \sqrt{k_c}}{1 + k_c}, 1, 0, \frac{2}{(1 + k_c)^3} \right) \, .
+\end{equation}
+Close to the wire loop, the following formulation is used:
+\begin{equation}
+  \tilde{A}_{\varphi,6} (\rho',z')
+  = \frac{1}{|\rho' - 1| \sqrt{\left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 }}
+    \,\mathrm{cel}(\sqrt{k_c^2}, 1, -1, 1)
+\end{equation}
+with $k_c^2$ computed as follows:
+\begin{equation}
+  k_c^2 = \frac{\left( \frac{z'}{\rho'-1} \right)^2 + 1}{\left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2} \, .
+\end{equation}
+At~$\rho' = 1$, some further simplification can be carried out.
+This leads to the following formulation for~$\rho' = 1$ and~$\sqrt{\epsilon} <= z' < 1$ (where $\epsilon$ is the machine precision):
+\begin{equation}
+  \tilde{A}_{\varphi,5} (\rho'=1, z') = \frac{1}{z'} \,\mathrm{cel}(k_c, 1, 1, -1)
+\end{equation}
+with $k_c$ computed as follows:
+\begin{equation}
+  k_c = \frac{1}{z'} \sqrt{4 + {z'}^2} \, .
+\end{equation}
+Finally, one more expression can be introduced
+to obtain even slightly more accurate results for points at $\rho' = 1$ very close to the wire loop.
+This expression is an expansion in~$z'$ and only valid at $\rho' = 1$ for $z' < \sqrt{\epsilon}$:
+\begin{equation}
+  \tilde{A}_{\varphi,4} (\rho'=1, z') = -1 + \ln(2) + \frac{1}{4} \ln(4) - \frac{1}{2} \ln(z') \, .
+\end{equation}
+%
+% total assembly of A_phi for circular wire loop
+%
+The overall switching between the methods introduced above is done as follows:
+\begin{equation}
+  \tilde{A}_\varphi (\rho', z')
+  = \begin{cases}
+      0                                 &:\, \rho' = 0            \\
+      \tilde{A}_{\varphi,1} (\rho', z') &:\, z' \geq 1 \textrm{ or } \rho' \notin [1/2, 2] \\
+      \tilde{A}_{\varphi,6} (\rho', z') &:\, \rho' \neq 1         \\
+      \tilde{A}_{\varphi,5} (\rho', z') &:\, z' > \sqrt{\epsilon} \\
+      \tilde{A}_{\varphi,4} (\rho', z') &:\, \textrm{else}
+    \end{cases} \, .
+\end{equation}
 
 \subsubsection{Magnetic Field}
 
