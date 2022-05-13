@@ -125,24 +125,23 @@
 % \address[b]{Second Address}
 
 \begin{abstract}
-%% Text of abstract
-A submitted program is expected to satisfy the following criteria: it must be of benefit to other physicists, or be an exemplar of good programming practice, or illustrate new or novel programming techniques which are of importance to computational physics community; it should be implemented in a language and executable on hardware that is widely available and well documented; it should meet accepted standards for scientific programming; it should be adequately documented and, where appropriate, supplied with a separate User Manual, which together with the manuscript should make clear the structure, functionality, installation, and operation of the program.
-
-Your manuscript and figure sources should be submitted through Editorial Manager (EM) by using the online submission tool at \\
-https://www.editorialmanager.com/comphy/.
-
-In addition to the manuscript you must supply: the program source code; a README file giving the names and a brief description of the files/directory structure that make up the package and clear instructions on the installation and execution of the program; sample input and output data for at least one comprehensive test run; and, where appropriate, a user manual.
-
-A compressed archive program file or files, containing these items, should be uploaded at the "Attach Files" stage of the EM submission.
-
-For files larger than 1Gb, if difficulties are encountered during upload the author should contact the Technical Editor at cpc.mendeley@gmail.com.
-
+A set of routines to compute the magnetic vector potential and magnetic field of two types of current carriers is presented.
+The (infinitely thin) current carrier types are a straight wire segment and a circular wire loop.
+The routines are highly accurate and exhibit the correct asymptotic behaviour far away from and close to the current carrier.
+A suitable global set of test points is introduced and the methods presented in this work
+are tested against results obtained using arbitrary-precision arithmetic on all test points.
+The results are accurate to approximately 16 decimal digits of precision when computed using 64 bit floating point arithmetic,
+with few exceptions where accuracy drops to 12 digits.
+These primitive types can be used to make up more complex current carrier arrangements,
+such as a current along a polygon (by means of defining straight wire segments from point to point of the polygon)
+and a multi-winding coil with circular cross-section (by positioning circular wire loops at appropriate positions in the coils cross-section).
+Reference data is provided along with the code to compute it
+for testing the reader's routines against this work.
 \end{abstract}
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-keyword1; keyword2; keyword3; etc.
-
+magnetostatics; Biot-Savart; straight wire segment; circular wire loop; magnetic vector potential; magnetic field
 \end{keyword}
 
 \end{frontmatter}
