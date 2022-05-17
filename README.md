@@ -11,4 +11,4 @@ will be tested against the arbitrary-precision reference will be tested.
 These points are computed in Java, since it is a strictly-typed language
 and binaries are expected to given platform-independent results.
 Nevertheless they are still of finite (64-bit) precision.
-The code to generate the test points is [`src/test/java/GenerateTestKnots.java`](https://github.com/jonathanschilling/abscab/blob/master/src/test/java/GenerateTestKnots.java).
+The code to generate the test points is [`src/test/java/GenerateTestKnots.java`](https://github.com/jonathanschilling/abscab/blob/master/src/test/java/de/labathome/GenerateTestKnots.java).
