@@ -32,8 +32,8 @@ The test points are saved into text files in [`src/test/resources`](https://gith
 Those above files are only provided to have a human-readable equivalent
 of the set of test points.
 The actual test point data read by the arbitrary-precision software
-is in [`testPointsStraightWireSegment.dat`]() for the straight wire segment
-and in [`testPointsCircularWireLoop.dat`]() for the circular wire loop.
+is in [`testPointsStraightWireSegment.dat`](https://github.com/jonathanschilling/abscab/blob/master/src/test/resources/testPointsStraightWireSegment.dat) for the straight wire segment
+and in [`testPointsCircularWireLoop.dat`](https://github.com/jonathanschilling/abscab/blob/master/src/test/resources/testPointsCircularWireLoop.dat) for the circular wire loop.
 
 ### Reference Data
 The reference data (`A_z` and `B_phi` for a straight wire segment;
