@@ -129,6 +129,8 @@ public class GenerateTestKnots {
 
 		dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
 		dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
+
+		dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
 	}
 
 	/**
@@ -234,6 +236,8 @@ public class GenerateTestKnots {
 
 		dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
 		dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
+
+		dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
 	}
 
 	/**
@@ -247,6 +251,55 @@ public class GenerateTestKnots {
 		try (PrintWriter pw = new PrintWriter(outFile)) {
 			for (int i = 0; i < arr.length; ++i) {
 				pw.printf(Locale.ENGLISH, "%+.20e\n", arr[i]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Write the given set of test points, such that the implied values can be
+	 * represented exactly in arbitrary-precision software.
+	 *
+	 * @param testPointsRp [numCases] set of rp test point coordinates
+	 * @param testPointsZp [numCases] set of zp test point coordinates
+	 * @param filename     file into which to write the given test points
+	 */
+	private static void dumpTestPoints(double[] testPointsRp, double[] testPointsZp, String filename) {
+		int numCases = testPointsRp.length;
+
+		//                          64   60   56   52   48   44   40   36   32   28   24   20   16   12   8    4
+		final long signMask     = 0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
+		final long exponentMask = 0b0111_1111_1111_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
+		final long mantissaMask = 0b0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111L;
+
+		File outFile = new File(filename);
+		try (PrintWriter pw = new PrintWriter(outFile)) {
+			pw.println("# rp: sign bit, exponent E, mantiassa M; zp: sign bit, exponent E, mantiassa M");
+
+			for (int i = 0; i < numCases; ++i) {
+
+				// format of an IEEE754 double precision number F:
+				// F = (-1)^s * 2^{E - 1023} * (1 + M/2^{52})
+				// where:
+				// s = 0, 1            ( 1 bit )
+				// E = 0, 1, ..., 2047 (11 bits)
+				// M = 0, 1, ...       (52 bits)
+
+				long rpBits = Double.doubleToRawLongBits(testPointsRp[i]);
+				long zpBits = Double.doubleToRawLongBits(testPointsZp[i]);
+
+				long signRp     = (rpBits &     signMask) >>> 63;
+				long exponentRp = (rpBits & exponentMask) >>> 52;
+				long mantissaRp = (rpBits & mantissaMask);
+
+				long signZp     = (zpBits &     signMask) >>> 63;
+				long exponentZp = (zpBits & exponentMask) >>> 52;
+				long mantissaZp = (zpBits & mantissaMask);
+
+				pw.printf(Locale.ENGLISH, "%1d %4d %16d %1d %4d %16d\n",
+						signRp, exponentRp, mantissaRp,
+						signZp, exponentZp, mantissaZp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,6 +5,12 @@ The main article on this software can be found here: [abscab_main.pdf](https://g
 
 ## Verification Procedure
 
+### `mpmath` vs. Mathematica
+
+First, the reference implementation using `mpmath` is verified against
+an implementation in Mathematica.
+For brevity, this is done on a reduced set of test points.
+
 ### Test Points
 A set of test points is defined at which the implementations
 will be tested against the arbitrary-precision reference will be tested.
@@ -22,6 +28,12 @@ The test points are saved into text files in [`src/test/resources`](https://gith
   the circular wire loop methods are tested.
 * [`testPointsZpCircularWireLoop.dat`](https://github.com/jonathanschilling/abscab/blob/master/src/test/resources/testPointsZpCircularWireLoop.dat) contains the value of `z'` at which
   the circular wire loop methods are tested.
+
+Those above files are only provided to have a human-readable equivalent
+of the set of test points.
+The actual test point data read by the arbitrary-precision software
+is in [`testPointsStraightWireSegment.dat`]() for the straight wire segment
+and in [`testPointsCircularWireLoop.dat`]() for the circular wire loop.
 
 ### Reference Data
 The reference data (`A_z` and `B_phi` for a straight wire segment;
