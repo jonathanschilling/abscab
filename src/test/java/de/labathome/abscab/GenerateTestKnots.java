@@ -1,4 +1,4 @@
-package de.labathome;
+package de.labathome.abscab;
 
 import java.io.File;
 import java.io.PrintWriter;
