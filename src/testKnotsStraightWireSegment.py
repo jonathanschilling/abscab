@@ -5,6 +5,8 @@ import numpy as np
 # machine precision: ca. 2.22e-16 for 64-bit double precision
 eps = np.finfo(np.float64).eps
 
+print("machine precision: ", eps)
+
 ###################################################
 # assemble list of test knots in radial direction #
 ###################################################
