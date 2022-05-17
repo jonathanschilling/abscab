@@ -43,7 +43,7 @@ testKnotsZp.append(0.5)
 
 # 1 - 1e-1 ... 1 - 1e-15
 for exponent in range(-1, -15-1, -1):
-  testKnotsZp.append(1 - np.power(10.0, exponent))
+  testKnotsZp.append(1.0 - np.power(10.0, exponent))
 
 # 1 -  eps/2 (next lower double precision number from 1)
 testKnotsZp.append(1.0 - eps/2.0)
@@ -56,7 +56,7 @@ testKnotsZp.append(1.0 + eps)
 
 # 1 + 1e-15 ... 1 + 1e-1
 for exponent in range(-15, -1+1):
-  testKnotsZp.append(1 + np.power(10.0, exponent))
+  testKnotsZp.append(1.0 + np.power(10.0, exponent))
 
 # 2
 testKnotsZp.append(2.0)
