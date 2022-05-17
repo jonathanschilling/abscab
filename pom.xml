@@ -25,4 +25,17 @@
 		<url>${jonathanschilling.git.url}${project.name}/issues</url>
 		<system>GitLab Issues</system>
 	</issueManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>de.labathome</groupId>
+			<artifactId>CompleteEllipticIntegral</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+	</dependencies>
 </project>
