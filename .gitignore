@@ -14,3 +14,4 @@ wire_segment_Hanson_Hirshman_2002_Fig_1.png
 # editor leftovers
 *.kate-swp
 
+/target/
