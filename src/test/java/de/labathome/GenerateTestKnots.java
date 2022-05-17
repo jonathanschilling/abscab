@@ -260,6 +260,20 @@ public class GenerateTestKnots {
 	/**
 	 * Write the given set of test points, such that the implied values can be
 	 * represented exactly in arbitrary-precision software.
+	 * The format of an IEEE754 double precision number F is:
+	 * <pre>
+	 * F = (-1)^s * 2^{E - 1023} * (1 + M/2^{52})
+	 * </pre>
+	 * where:
+	 * <pre>
+	 * s = 0, 1            ( 1 bit )
+	 * E = 0, 1, ..., 2047 (11 bits)
+	 * M = 0, 1, ...       (52 bits)
+	 * </pre>
+	 * The test point coordinates (rp, zp) are stored in six columns in the output file:
+	 * (s, E, M) for rp and then (s, E, M) for zp.
+	 * This allows to re-construct the number that is actually implied
+	 * by a given double precision variable within arbitrary precision software.
 	 *
 	 * @param testPointsRp [numCases] set of rp test point coordinates
 	 * @param testPointsZp [numCases] set of zp test point coordinates
@@ -278,13 +292,6 @@ public class GenerateTestKnots {
 			pw.println("# rp: sign bit, exponent E, mantiassa M; zp: sign bit, exponent E, mantiassa M");
 
 			for (int i = 0; i < numCases; ++i) {
-
-				// format of an IEEE754 double precision number F:
-				// F = (-1)^s * 2^{E - 1023} * (1 + M/2^{52})
-				// where:
-				// s = 0, 1            ( 1 bit )
-				// E = 0, 1, ..., 2047 (11 bits)
-				// M = 0, 1, ...       (52 bits)
 
 				long rpBits = Double.doubleToRawLongBits(testPointsRp[i]);
 				long zpBits = Double.doubleToRawLongBits(testPointsZp[i]);
