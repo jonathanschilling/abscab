@@ -15,20 +15,20 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_A_z(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return A_along_rhoP_0(rhoP, zP);
+			return A_z_along_rhoP_0(rhoP, zP);
 		} else if (zP == 0.0 || zP == 1.0) {
-			return A_along_zP_0_or_1(rhoP, zP);
+			return A_z_along_zP_0_or_1(rhoP, zP);
 		} else if (-1 < zP && zP <= 2.0 && rhoP < 1.0) {
 			// near-field
 			if (zP >= 1.0 || rhoP/(1-zP) >= 1.0) {
-				return A_6a(rhoP, zP);
+				return A_z_6a(rhoP, zP);
 			} else if (zP >= 0.0 && rhoP/zP <= 1.0) {
-				return A_6b(rhoP, zP);
+				return A_z_6b(rhoP, zP);
 			} else {
-				return A_6c(rhoP, zP);
+				return A_z_6c(rhoP, zP);
 			}
 		} else {
-			return A_1(rhoP, zP);
+			return A_z_1(rhoP, zP);
 		}
 	}
 
@@ -40,14 +40,14 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_B_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return B_2(rhoP, zP);
+			return B_phi_2(rhoP, zP);
 		} else if (zP == 0.0 || zP == 1.0) {
-			return B_3(rhoP, zP);
+			return B_phi_3(rhoP, zP);
 		} else if (zP >= 1.0 || zP <= 0.0 || rhoP >= 1.0 ||
 				rhoP/(1-zP) >= 1.0 || rhoP/zP >= 1.0) {
-			return B_4(rhoP, zP);
+			return B_phi_4(rhoP, zP);
 		} else {
-			return B_5(rhoP, zP);
+			return B_phi_5(rhoP, zP);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class ABSCAB {
 
 
 
-	public static double A_1(double rhoP, double zP) {
+	public static double A_z_1(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1.0 - zP);
@@ -156,12 +156,12 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_along_rhoP_0(double rhoP, double zP) {
+	public static double A_z_along_rhoP_0(double rhoP, double zP) {
 
 		if (zP < -1 || zP > 2) {
-			return A_2(rhoP, zP);
+			return A_z_2(rhoP, zP);
 		} else {
-			return A_2b(rhoP, zP);
+			return A_z_2b(rhoP, zP);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_2(double rhoP, double zP) {
+	public static double A_z_2(double rhoP, double zP) {
 		Atanh atanh = new Atanh();
 		return atanh.value(1.0 / (Math.abs(zP) + Math.abs(1-zP)));
 	}
@@ -182,7 +182,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_2b(double rhoP, double zP) {
+	public static double A_z_2b(double rhoP, double zP) {
 		return Math.signum(zP) * Math.log(Math.abs(zP/(1-zP)))/2;
 	}
 
@@ -196,13 +196,13 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_along_zP_0_or_1(double rhoP, double zP) {
+	public static double A_z_along_zP_0_or_1(double rhoP, double zP) {
 
 		if (rhoP > 1.0) {
-			return A_3(rhoP, 0.0);
+			return A_z_3(rhoP, 0.0);
 		} else {
 			// rhoP <= 1
-			return A_3b(rhoP, 0.0);
+			return A_z_3b(rhoP, 0.0);
 		}
 	}
 
@@ -212,7 +212,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_3(double rhoP, double zP) {
+	public static double A_z_3(double rhoP, double zP) {
 		Atanh atanh = new Atanh();
 		return atanh.value(1.0 / (rhoP + Math.sqrt(rhoP*rhoP + 1)));
 	}
@@ -223,7 +223,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_3b(double rhoP, double zP) {
+	public static double A_z_3b(double rhoP, double zP) {
 		// a little bit more robust --> around rho'=1 +/- one test point we have 15 digits
 		double cat = 1/Math.sqrt(rhoP*rhoP + 1);
 		double sat = Math.sin(Math.atan(rhoP)/2);
@@ -240,7 +240,7 @@ public class ABSCAB {
 
 
 	// (1): rho' < 1e-15, |z'|>=1
-	public static double A_6a(double rhoP, double zP) {
+	public static double A_z_6a(double rhoP, double zP) {
 
 		double ang = Math.atan2(rhoP, zP);
 		double s = Math.sin(ang/2);
@@ -258,7 +258,7 @@ public class ABSCAB {
 	}
 
 
-	public static double A_6b(double rhoP, double zP) {
+	public static double A_z_6b(double rhoP, double zP) {
 
 		double alpha = Math.atan2(rhoP, zP);
 		double sinAlphaHalf = Math.sin(alpha/2);
@@ -279,7 +279,7 @@ public class ABSCAB {
 		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
 
-	public static double A_6c(double rhoP, double zP) {
+	public static double A_z_6c(double rhoP, double zP) {
 
 		double alpha = Math.atan2(rhoP, 1-zP);
 		double sinAlphaHalf = Math.sin(alpha/2);
@@ -301,7 +301,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double B_2(double rhoP, double zP) {
+	public static double B_phi_2(double rhoP, double zP) {
 		// works everywhere, although only derived for zP < 0 ???
 		double zPM1 = 1 - zP;
 		return (1 / (zPM1 * zPM1) - 1 / (zP * zPM1)) / 4;
@@ -314,9 +314,9 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double B_3(double rhoP, double zP) {
-		double zPM1 = 1.0 - zP;
-		return 0.5 / (rhoP * Math.hypot(rhoP, zPM1));
+	public static double B_phi_3(double rhoP, double zP) {
+		double zPM1 = 1 - zP;
+		return 1 / (2 * rhoP * Math.hypot(rhoP, zPM1));
 	}
 
 
@@ -324,7 +324,7 @@ public class ABSCAB {
 	// zp>=1 or zp<0, all rhoP
 	// zP from 0 to 1/2, rhoP from 1e-30 at zp=0 to rhoP=1 at zP=1/2
 	// zP from 1/2 to 1, rhoP from 1e-15 at zp=1 to rhoP=1 at zP=1/2
-	public static double B_4(double rhoP, double zP) {
+	public static double B_phi_4(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
@@ -337,7 +337,7 @@ public class ABSCAB {
 	}
 
 	// near-field: zP approx 1
-	public static double B_5(double rhoP, double zP) {
+	public static double B_phi_5(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
