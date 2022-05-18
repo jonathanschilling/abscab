@@ -3,53 +3,59 @@
 # Plot a comparison between demo outputs of a given ABSCAB implementation
 # and the reference data provided in this repository.
 
-import os
-
 import numpy as np
 import matplotlib.pyplot as plt
-from  matplotlib.colors import LinearSegmentedColormap
-from matplotlib.ticker import FixedLocator, MultipleLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LogNorm
 
-from MinervaSettings import MinervaSettings
-
-runFolder = os.path.join(MinervaSettings.getAppsResultPath(),
-                         "StraightWireSegmentAsymptotics")
-print("run folder:", runFolder)
-
-knotsRp = np.loadtxt(os.path.join(runFolder, "knotsRp.dat"))
-knotsZp = np.loadtxt(os.path.join(runFolder, "knotsZp.dat"))
-
-data = np.loadtxt(os.path.join(runFolder, "correctDigits_A_method6.dat"))
-
-# replace uninitialized points at location of wire segment with np.nan
-for i,rp in enumerate(knotsRp):
-    for j,zp in enumerate(knotsZp):
-        if rp == 0.0 and 0.0 <= zp and zp <= 1.0:
-            data[j,i] = np.nan
-
+# machine precision (ca. 2.22e-16 for 64-bit double)
 eps = np.finfo(np.float64).eps
 
+testKnotsRp = np.loadtxt("../resources/testKnotsRpStraightWireSegment.dat")
+testKnotsZp = np.loadtxt("../resources/testKnotsZpStraightWireSegment.dat")
+
+numR = len(testKnotsRp)
+numZ = len(testKnotsZp)
+
+idxRp = np.loadtxt("../resources/idxRpStraightWireSegment.dat", dtype=int)
+idxZp = np.loadtxt("../resources/idxZpStraightWireSegment.dat", dtype=int)
+
+numCases = len(idxRp)
+
+# A_z
+##ref1d = np.loadtxt("../resources/refDataStraightWireSegment.dat")[:,0]
+##act1d = np.loadtxt("../../../data/straightWireSegmentAz.dat")
+
+# B_phi
+ref1d = np.loadtxt("../resources/refDataStraightWireSegment.dat")[:,1]
+act1d = np.loadtxt("../../../data/straightWireSegmentBphi.dat")
+
+ref = np.zeros([numZ, numR])
+act = np.zeros([numZ, numR])
+
+for i in range(numCases):
+    ref[idxZp[i], idxRp[i]] = ref1d[i]
+    act[idxZp[i], idxRp[i]] = act1d[i]
+
+# compute rel. error between ref and act
+data = np.zeros([numZ, numR])
+for i,rp in enumerate(testKnotsRp):
+    for j,zp in enumerate(testKnotsZp):
+        if rp == 0.0 and 0.0 <= zp and zp <= 1.0:
+            # replace uninitialized points at location of wire segment with np.nan
+            data[j,i] = np.nan
+        else:
+            data[j,i] = min(1, abs((act[j,i] - ref[j,i])/ref[j,i]))
+            
 nClusters = 18
 cmap = plt.get_cmap("viridis", nClusters)
 
 fig=plt.figure(figsize=(4.5, 6.5))
 ax = plt.gca()
 
-im = plt.imshow(data, origin="lower", interpolation=None, cmap=cmap, vmin=0, vmax=nClusters)
+im = plt.imshow(data, origin="lower", interpolation=None, cmap=cmap)
 
-cbar = plt.colorbar(im, drawedges = True, fraction=0.0755, pad=0.0, anchor=(0,0.55))
-cbar.set_label("number of correct digits")
-
-# https://stackoverflow.com/a/50314773
-# set ticks locations (not very elegant, but it works):
-# * shift by 0.5
-# * scale so that the last value is at the center of the last color
-tick_locs = np.arange(nClusters) + 0.5
-cbar.set_ticks(tick_locs)
-# set tick labels (as before)
-cbar.set_ticklabels(np.arange(nClusters))
-
+cbar = plt.colorbar(im, drawedges = True, fraction=0.0755, pad=0.0, anchor=(0,0.55), extend="min", norm=LogNorm())
+cbar.set_label("relative deviation from reference")
 
 plt.axis("off")
 
@@ -124,7 +130,7 @@ yAddTL = 3 # length of tick at end of displaced tick
 fac2 = 0.8 # shrinking factor for yAddLR at 2 off
 
 # major ticks where wanted and minor ticks everywhere else
-for i,k in enumerate(knotsRp):
+for i,k in enumerate(testKnotsRp):
     found = False
     for tl in xTicksAndLabels:
         if k == tl[0]:
@@ -170,7 +176,7 @@ for i,k in enumerate(knotsRp):
         # draw minor x tick
         ax.plot([i, i], [y0, -minorTickLength], "k-", lw=0.5)
 
-for i,k in enumerate(knotsZp):
+for i,k in enumerate(testKnotsZp):
     found = False
     for tl in yTicksAndLabels:
         if k == tl[0]:
@@ -263,5 +269,6 @@ plt.subplots_adjust(left=0.1,
                     top=0.98)
 
 #plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.eps"), dpi=300) # EPS has no transparency
-plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.pdf"), dpi=300)
+##plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.pdf"), dpi=300)
+
 plt.show()
