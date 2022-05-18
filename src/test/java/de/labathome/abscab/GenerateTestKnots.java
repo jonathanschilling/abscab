@@ -1,7 +1,5 @@
 package de.labathome.abscab;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -101,6 +99,9 @@ public class GenerateTestKnots {
 //			System.out.printf("% .17e\n", testKnotsZp[i]);
 //		}
 
+		Util.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpStraightWireSegment.dat");
+		Util.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpStraightWireSegment.dat");
+
 		/** assemble test points from knots; exclude locations on wire segment */
 		List<Double> testPointsRpLst = new LinkedList<>();
 		List<Double> testPointsZpLst = new LinkedList<>();
@@ -127,10 +128,10 @@ public class GenerateTestKnots {
 		double[] testPointsRp = testPointsRpLst.stream().mapToDouble(d -> d).toArray();
 		double[] testPointsZp = testPointsZpLst.stream().mapToDouble(d -> d).toArray();
 
-		dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
-		dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
+		Util.dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
+		Util.dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
 
-		dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
+		Util.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
 	}
 
 	/**
@@ -208,6 +209,9 @@ public class GenerateTestKnots {
 //			System.out.printf("% .17e\n", testKnotsZp[i]);
 //		}
 
+		Util.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpCircularWireLoop.dat");
+		Util.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpCircularWireLoop.dat");
+
 		/** assemble test points from knots; exclude locations on wire segment */
 		List<Double> testPointsRpLst = new LinkedList<>();
 		List<Double> testPointsZpLst = new LinkedList<>();
@@ -234,82 +238,9 @@ public class GenerateTestKnots {
 		double[] testPointsRp = testPointsRpLst.stream().mapToDouble(d -> d).toArray();
 		double[] testPointsZp = testPointsZpLst.stream().mapToDouble(d -> d).toArray();
 
-		dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
-		dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
+		Util.dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
+		Util.dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
 
-		dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
-	}
-
-	/**
-	 * Write a given vector to a text file; one line per element.
-	 *
-	 * @param arr      array to write to a file
-	 * @param filename file into which to write the given array
-	 */
-	private static void dumpToFile(double[] arr, String filename) {
-		File outFile = new File(filename);
-		try (PrintWriter pw = new PrintWriter(outFile)) {
-			for (int i = 0; i < arr.length; ++i) {
-				pw.printf(Locale.ENGLISH, "%+.20e\n", arr[i]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Write the given set of test points, such that the implied values can be
-	 * represented exactly in arbitrary-precision software.
-	 * The format of an IEEE754 double precision number F is:
-	 * <pre>
-	 * F = (-1)^s * 2^{E - 1023} * (1 + M/2^{52})
-	 * </pre>
-	 * where:
-	 * <pre>
-	 * s = 0, 1            ( 1 bit )
-	 * E = 0, 1, ..., 2047 (11 bits)
-	 * M = 0, 1, ...       (52 bits)
-	 * </pre>
-	 * The test point coordinates (rp, zp) are stored in six columns in the output file:
-	 * (s, E, M) for rp and then (s, E, M) for zp.
-	 * This allows to re-construct the number that is actually implied
-	 * by a given double precision variable within arbitrary precision software.
-	 *
-	 * @param testPointsRp [numCases] set of rp test point coordinates
-	 * @param testPointsZp [numCases] set of zp test point coordinates
-	 * @param filename     file into which to write the given test points
-	 */
-	private static void dumpTestPoints(double[] testPointsRp, double[] testPointsZp, String filename) {
-		int numCases = testPointsRp.length;
-
-		//                          64   60   56   52   48   44   40   36   32   28   24   20   16   12   8    4
-		final long signMask     = 0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
-		final long exponentMask = 0b0111_1111_1111_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
-		final long mantissaMask = 0b0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111L;
-
-		File outFile = new File(filename);
-		try (PrintWriter pw = new PrintWriter(outFile)) {
-			pw.println("# rp: sign bit, exponent E, mantiassa M; zp: sign bit, exponent E, mantiassa M");
-
-			for (int i = 0; i < numCases; ++i) {
-
-				long rpBits = Double.doubleToRawLongBits(testPointsRp[i]);
-				long zpBits = Double.doubleToRawLongBits(testPointsZp[i]);
-
-				long signRp     = (rpBits &     signMask) >>> 63;
-				long exponentRp = (rpBits & exponentMask) >>> 52;
-				long mantissaRp = (rpBits & mantissaMask);
-
-				long signZp     = (zpBits &     signMask) >>> 63;
-				long exponentZp = (zpBits & exponentMask) >>> 52;
-				long mantissaZp = (zpBits & mantissaMask);
-
-				pw.printf(Locale.ENGLISH, "%1d %4d %16d %1d %4d %16d\n",
-						signRp, exponentRp, mantissaRp,
-						signZp, exponentZp, mantissaZp);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Util.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
 	}
 }
