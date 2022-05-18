@@ -3,33 +3,66 @@
 # Plot a comparison between demo outputs of a given ABSCAB implementation
 # and the reference data provided in this repository.
 
-import os
-
 import numpy as np
 import matplotlib.pyplot as plt
-from  matplotlib.colors import LinearSegmentedColormap
-from matplotlib.ticker import FixedLocator, MultipleLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import LogNorm
+from matplotlib.ticker import MultipleLocator
 
-from MinervaSettings import MinervaSettings
+# machine precision (ca. 2.22e-16 for 64-bit double)
+eps = np.finfo(np.float64).eps
 
-runFolder = os.path.join(MinervaSettings.getAppsResultPath(),
-                         "CircularWireLoopAsymptotics")
-print("run folder:", runFolder)
+testKnotsRp = np.loadtxt("../resources/testKnotsRpCircularWireLoop.dat")
+testKnotsZp = np.loadtxt("../resources/testKnotsZpCircularWireLoop.dat")
 
-knotsRp = np.loadtxt(os.path.join(runFolder, "knotsRp.dat"))
-knotsZp = np.loadtxt(os.path.join(runFolder, "knotsZp.dat"))
+numR = len(testKnotsRp)
+numZ = len(testKnotsZp)
 
-data = np.loadtxt(os.path.join(runFolder, "correctDigits_A_phi_method1.dat"))
+idxRp = np.loadtxt("../resources/idxRpCircularWireLoop.dat", dtype=int)
+idxZp = np.loadtxt("../resources/idxZpCircularWireLoop.dat", dtype=int)
+
+numCases = len(idxRp)
+
+# A_phi
+ref1d = np.loadtxt("../resources/refDataCircularWireLoop.dat")[:,0]
+act1d = np.loadtxt("../../../data/circularWireLoopAphi.dat")
+
+# B_rho
+##ref1d = np.loadtxt("../resources/refDataCircularWireLoop.dat")[:,1]
+##act1d = np.loadtxt("../../../data/circularWireLoopBrho.dat")
+
+# B_z
+##ref1d = np.loadtxt("../resources/refDataCircularWireLoop.dat")[:,2]
+##act1d = np.loadtxt("../../../data/circularWireLoopBz.dat")
+
+ref = np.zeros([numZ, numR])
+act = np.zeros([numZ, numR])
+
+for i in range(numCases):
+    ref[idxZp[i], idxRp[i]] = ref1d[i]
+    act[idxZp[i], idxRp[i]] = act1d[i]
+
+# compute rel. error between ref and act
+good = -16
+
+data = np.zeros([numZ, numR])
+for i,rp in enumerate(testKnotsRp):
+    for j,zp in enumerate(testKnotsZp):
+        if rp == 1.0 and zp == 0.0: # circular wire loop
+            # replace uninitialized points at location of wire segment with np.nan
+            data[j,i] = np.nan
+        elif abs(ref[j,i]) > 0:
+            if act[j,i] != ref[j,i]:
+                data[j,i] = np.log10(min(1, abs((act[j,i] - ref[j,i])/ref[j,i])))
+            else:
+                data[j,i] = good
+        else:
+            data[j,i] = 1.0 if abs(act[j,i]) > 0.0 else good
 
 # replace uninitialized points at location of wire segment with np.nan
-for i,rp in enumerate(knotsRp):
-    for j,zp in enumerate(knotsZp):
-        #if rp == 0.0 and 0.0 <= zp and zp <= 1.0: # straight wire segment
+for i,rp in enumerate(testKnotsRp):
+    for j,zp in enumerate(testKnotsZp):
         if rp == 1.0 and zp == 0.0: # circular wire loop
             data[j,i] = np.nan
-
-eps = np.finfo(np.float64).eps
 
 nClusters = 18
 cmap = plt.get_cmap("viridis", nClusters)
@@ -37,20 +70,11 @@ cmap = plt.get_cmap("viridis", nClusters)
 fig=plt.figure(figsize=(6.5, 4.5))
 ax = plt.gca()
 
-im = plt.imshow(data, origin="lower", interpolation=None, cmap=cmap, vmin=0, vmax=nClusters)
+im = plt.imshow(data, origin="lower", interpolation=None, cmap=cmap)
 
-cbar = plt.colorbar(im, drawedges = True, fraction=0.025, pad=0.0, anchor=(0, 0.53))
-cbar.set_label("number of correct digits")
-
-# https://stackoverflow.com/a/50314773
-# set ticks locations (not very elegant, but it works):
-# * shift by 0.5
-# * scale so that the last value is at the center of the last color
-tick_locs = np.arange(nClusters) + 0.5
-cbar.set_ticks(tick_locs)
-# set tick labels (as before)
-cbar.set_ticklabels(np.arange(nClusters))
-
+cbar = plt.colorbar(im, drawedges = True, fraction=0.025, pad=-0.02,
+                    anchor=(0, 0.53), extend="min")
+cbar.set_label(r"$\log_{10}(\mathrm{relative~deviation~from~reference})$")
 
 plt.axis("off")
 
@@ -121,7 +145,7 @@ yAddLR = 2 # displacement in left/right direction
 yAddTL = 2 # length of tick at end of displaced tick
 
 # major ticks where wanted and minor ticks everywhere else
-for i,k in enumerate(knotsRp):
+for i,k in enumerate(testKnotsRp):
     found = False
     for tl in xTicksAndLabels:
         if k == tl[0]:
@@ -209,7 +233,7 @@ for i,k in enumerate(knotsRp):
         # draw minor x tick
         ax.plot([i, i], [y0, -minorTickLength], "k-", lw=0.5)
 
-for i,k in enumerate(knotsZp):
+for i,k in enumerate(testKnotsZp):
     found = False
     for tl in yTicksAndLabels:
         if k == tl[0]:
@@ -258,10 +282,13 @@ for i,k in enumerate(knotsZp):
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.05,
-                    right=0.9,
+                    right=0.86,
                     bottom=0.17,
                     top=0.98)
 
-#plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.eps"), dpi=300) # EPS has no transparency
-plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.pdf"), dpi=300)
+# EPS has no transparency
+#plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.eps"), dpi=300)
+
+#plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.pdf"), dpi=300)
+
 plt.show()

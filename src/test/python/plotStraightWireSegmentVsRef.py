@@ -6,6 +6,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from matplotlib.ticker import MultipleLocator, MaxNLocator
 
 # machine precision (ca. 2.22e-16 for 64-bit double)
 eps = np.finfo(np.float64).eps
@@ -37,14 +38,21 @@ for i in range(numCases):
     act[idxZp[i], idxRp[i]] = act1d[i]
 
 # compute rel. error between ref and act
+good = -16
+
 data = np.zeros([numZ, numR])
 for i,rp in enumerate(testKnotsRp):
     for j,zp in enumerate(testKnotsZp):
         if rp == 0.0 and 0.0 <= zp and zp <= 1.0:
             # replace uninitialized points at location of wire segment with np.nan
             data[j,i] = np.nan
+        elif abs(ref[j,i]) > 0:
+            if act[j,i] != ref[j,i]:
+                data[j,i] = np.log10(min(1, abs((act[j,i] - ref[j,i])/ref[j,i])))
+            else:
+                data[j,i] = good
         else:
-            data[j,i] = min(1, abs((act[j,i] - ref[j,i])/ref[j,i]))
+            data[j,i] = 1.0 if abs(act[j,i]) > 0.0 else good
             
 nClusters = 18
 cmap = plt.get_cmap("viridis", nClusters)
@@ -54,8 +62,9 @@ ax = plt.gca()
 
 im = plt.imshow(data, origin="lower", interpolation=None, cmap=cmap)
 
-cbar = plt.colorbar(im, drawedges = True, fraction=0.0755, pad=0.0, anchor=(0,0.55), extend="min", norm=LogNorm())
-cbar.set_label("relative deviation from reference")
+cbar = plt.colorbar(im, drawedges = True, fraction=0.0755, pad=-0.02,
+                    anchor=(0,0.55), extend="min")
+cbar.set_label(r"$\log_{10}(\mathrm{relative~deviation~from~reference})$")
 
 plt.axis("off")
 
@@ -105,11 +114,13 @@ headLength = 3
 fc = "k" # black-filled arrow heads
 
 # x axis arrow and label
-ax.arrow(x0, y0, dx + arrowHead, 0.0, fc=fc, head_width=headWidth, head_length = headLength)
+ax.arrow(x0, y0, dx + arrowHead, 0.0, fc=fc,
+         head_width=headWidth, head_length = headLength)
 ax.text(dx+arrowHead+2, -5, r"$\rho'$")
 
 # y axis arrow
-ax.arrow(x0, y0, 0.0, dy + arrowHead, fc=fc, head_width=headWidth, head_length = headLength)
+ax.arrow(x0, y0, 0.0, dy + arrowHead, fc=fc,
+         head_width=headWidth, head_length = headLength)
 ax.text(-5, dy + arrowHead, r"$z'$")
 
 majorTickLength = 3.5
@@ -264,11 +275,13 @@ for i,k in enumerate(testKnotsZp):
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.1,
-                    right=0.86,
+                    right=0.8,
                     bottom=0.02,
                     top=0.98)
 
-#plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.eps"), dpi=300) # EPS has no transparency
+# EPS has no transparency
+#plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.eps"), dpi=300)
+
 ##plt.savefig(os.path.join(runFolder, "numCorrectDigits_newA.pdf"), dpi=300)
 
 plt.show()
