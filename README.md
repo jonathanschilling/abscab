@@ -11,7 +11,7 @@ Here is an overview:
 | Language |            main `abscab` file               |
 | -------- | ------------------------------------------- |
 | C        | [`abscab.h`](src/main/c/abscab.h)           |
-| Java     | [`ABSCAB.java`](src/main/java/ABSCAB.java)  |
+| Java     | [`ABSCAB.java`](src/main/java/de/labathome/ABSCAB.java)  |
 | Python   | [`abscab.py`](abscab/abscab.py)             |
 | Fortran  | [`abscab.f90`](src/main/fortran/abscab.f90) |
 
