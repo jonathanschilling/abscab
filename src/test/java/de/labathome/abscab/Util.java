@@ -22,6 +22,16 @@ public class Util {
 	/**
 	 * Write a given array to a text file; one line per row.
 	 *
+	 * @param arr      [numRows] array to write to a file
+	 * @param filename file into which to write the given array
+	 */
+	public static void dumpToFile(int[] arr, String filename) {
+		dumpToFile(new int[][] {arr}, filename);
+	}
+
+	/**
+	 * Write a given array to a text file; one line per row.
+	 *
 	 * @param arr      [numColumns][numRows] array to write to a file
 	 * @param filename file into which to write the given array
 	 */
@@ -32,6 +42,27 @@ public class Util {
 				String line = "";
 				for (int idxCol=0; idxCol<arr.length; ++idxCol) {
 					line += String.format(Locale.ENGLISH, "%+.20e ", arr[idxCol][idxRow]);
+				}
+				pw.println(line.strip());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Write a given array to a text file; one line per row.
+	 *
+	 * @param arr      [numColumns][numRows] array to write to a file
+	 * @param filename file into which to write the given array
+	 */
+	public static void dumpToFile(int[][] arr, String filename) {
+		File outFile = new File(filename);
+		try (PrintWriter pw = new PrintWriter(outFile)) {
+			for (int idxRow = 0; idxRow < arr[0].length; ++idxRow) {
+				String line = "";
+				for (int idxCol=0; idxCol<arr.length; ++idxCol) {
+					line += String.format("%d ", arr[idxCol][idxRow]);
 				}
 				pw.println(line.strip());
 			}

@@ -106,6 +106,9 @@ public class GenerateTestKnots {
 		List<Double> testPointsRpLst = new LinkedList<>();
 		List<Double> testPointsZpLst = new LinkedList<>();
 
+		List<Integer> idxRpLst = new LinkedList<>();
+		List<Integer> idxZpLst = new LinkedList<>();
+
 		int numCases = 0;
 		for (int idxZ = 0; idxZ < testKnotsZp.length; ++idxZ) {
 			double zp = testKnotsZp[idxZ];
@@ -118,6 +121,9 @@ public class GenerateTestKnots {
 					testPointsRpLst.add(rp);
 					testPointsZpLst.add(zp);
 
+					idxRpLst.add(idxR);
+					idxZpLst.add(idxZ);
+
 					numCases++;
 				}
 			}
@@ -128,8 +134,14 @@ public class GenerateTestKnots {
 		double[] testPointsRp = testPointsRpLst.stream().mapToDouble(d -> d).toArray();
 		double[] testPointsZp = testPointsZpLst.stream().mapToDouble(d -> d).toArray();
 
+		int[] idxRp = idxRpLst.stream().mapToInt(i -> i).toArray();
+		int[] idxZp = idxZpLst.stream().mapToInt(i -> i).toArray();
+
 		Util.dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
 		Util.dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
+
+		Util.dumpToFile(idxRp, "src/test/resources/idxRpStraightWireSegment.dat");
+		Util.dumpToFile(idxZp, "src/test/resources/idxZpStraightWireSegment.dat");
 
 		Util.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
 	}
@@ -216,6 +228,9 @@ public class GenerateTestKnots {
 		List<Double> testPointsRpLst = new LinkedList<>();
 		List<Double> testPointsZpLst = new LinkedList<>();
 
+		List<Integer> idxRpLst = new LinkedList<>();
+		List<Integer> idxZpLst = new LinkedList<>();
+
 		int numCases = 0;
 		for (int idxZ = 0; idxZ < testKnotsZp.length; ++idxZ) {
 			double zp = testKnotsZp[idxZ];
@@ -228,6 +243,9 @@ public class GenerateTestKnots {
 					testPointsRpLst.add(rp);
 					testPointsZpLst.add(zp);
 
+					idxRpLst.add(idxR);
+					idxZpLst.add(idxZ);
+
 					numCases++;
 				}
 			}
@@ -238,8 +256,14 @@ public class GenerateTestKnots {
 		double[] testPointsRp = testPointsRpLst.stream().mapToDouble(d -> d).toArray();
 		double[] testPointsZp = testPointsZpLst.stream().mapToDouble(d -> d).toArray();
 
+		int[] idxRp = idxRpLst.stream().mapToInt(i -> i).toArray();
+		int[] idxZp = idxZpLst.stream().mapToInt(i -> i).toArray();
+
 		Util.dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
 		Util.dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
+
+		Util.dumpToFile(idxRp, "src/test/resources/idxRpCircularWireLoop.dat");
+		Util.dumpToFile(idxZp, "src/test/resources/idxZpCircularWireLoop.dat");
 
 		Util.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
 	}
