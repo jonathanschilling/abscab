@@ -1,6 +1,6 @@
 package de.labathome.abscab;
 
-import org.apache.commons.math3.analysis.function.Atanh;
+import org.apache.commons.math3.util.FastMath;
 
 import de.labathome.CompleteEllipticIntegral;
 
@@ -140,9 +140,7 @@ public class ABSCAB {
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1.0 - zP);
 
-		Atanh atanh = new Atanh();
-
-		return atanh.value(1.0 / (Ri + Rf));
+		return FastMath.atanh(1.0 / (Ri + Rf));
 	}
 
 
@@ -172,8 +170,7 @@ public class ABSCAB {
 	 * @return
 	 */
 	public static double A_z_2(double rhoP, double zP) {
-		Atanh atanh = new Atanh();
-		return atanh.value(1.0 / (Math.abs(zP) + Math.abs(1-zP)));
+		return FastMath.atanh(1.0 / (Math.abs(zP) + Math.abs(1-zP)));
 	}
 
 	/**
@@ -213,8 +210,7 @@ public class ABSCAB {
 	 * @return
 	 */
 	public static double A_z_3(double rhoP, double zP) {
-		Atanh atanh = new Atanh();
-		return atanh.value(1.0 / (rhoP + Math.sqrt(rhoP*rhoP + 1)));
+		return FastMath.atanh(1.0 / (rhoP + Math.sqrt(rhoP*rhoP + 1)));
 	}
 
 	/**
