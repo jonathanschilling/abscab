@@ -8,7 +8,6 @@ public class DemoABSCAB {
 
 		dumpInternalResultsStraightWireSegment();
 		dumpInternalResultsCircularWireLoop();
-
 	}
 
 	public static void demoStraightWireSegment() {
