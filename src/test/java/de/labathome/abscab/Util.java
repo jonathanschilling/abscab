@@ -1,9 +1,13 @@
 package de.labathome.abscab;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -136,44 +140,86 @@ public class Util {
 	public static double[][] loadColumnsFromFile(String filename) {
 		try {
 			List<String> lines = Files.readAllLines(Paths.get(filename));
-
-			int numRows = 0;
-			int numColumns = 0;
-			for (String line : lines) {
-				// ignore comment lines
-				if (!line.startsWith("#")) {
-
-					if (numRows == 0) {
-						// first non-comment line defines how many columns there are
-						String[] parts = line.strip().split("\\s+");
-						numColumns = parts.length;
-					}
-
-					// count how many non-comment lines there are
-					// --> number of data rows
-					numRows++;
-				}
-			}
-
-			double[][] data = new double[numColumns][numRows];
-
-			int idxRow = 0;
-			for (String line : lines) {
-				// ignore comment lines
-				if (!line.startsWith("#")) {
-					String[] parts = line.strip().split("\\s+");
-
-					for (int idxCol = 0; idxCol < numColumns; ++idxCol) {
-						data[idxCol][idxRow] = Double.valueOf(parts[idxCol]);
-					}
-
-					idxRow++;
-				}
-			}
-
-			return data;
+			return parseColumnsFromLines(lines);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Load columns of data from a resource.
+	 *
+	 * @param clazz class to load resource from
+	 * @param resourceName name of resource to load data from
+	 * @return [numColumns][numRows] data loaded from file
+	 */
+	public static double[][] loadColumnsFromResource(Class<?> clazz, String resourceName) {
+		InputStream is = clazz.getResourceAsStream(resourceName);
+		if (is == null) {
+			throw new RuntimeException("resource '"+resourceName+"' not found");
+		}
+
+		InputStreamReader isr = new InputStreamReader(is);
+		try(BufferedReader br = new BufferedReader(isr)) {
+
+			List<String> lines = new LinkedList<>();
+			String line = br.readLine();
+			while (line != null) {
+				lines.add(line);
+				line = br.readLine();
+			}
+
+			return parseColumnsFromLines(lines);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Parse columns of data from a given list of lines.
+	 * Lines starting with '#' are ignored
+	 *
+	 * @param lines [numLines] lines of text to parse data from; whitespace-separated items per line
+	 * @return [numColumns][numRows] data parsed from given lines
+	 */
+	private static double[][] parseColumnsFromLines(List<String> lines) {
+
+		// pass 1: count available data lines
+		int numRows = 0;
+		int numColumns = 0;
+		for (String line : lines) {
+			// ignore comment lines
+			if (!line.startsWith("#")) {
+
+				if (numRows == 0) {
+					// first non-comment line defines how many columns there are
+					String[] parts = line.strip().split("\\s+");
+					numColumns = parts.length;
+				}
+
+				// count how many non-comment lines there are
+				// --> number of data rows
+				numRows++;
+			}
+		}
+
+		double[][] data = new double[numColumns][numRows];
+
+		// pass 2: actually parse data, line by line
+		int idxRow = 0;
+		for (String line : lines) {
+			// ignore comment lines
+			if (!line.startsWith("#")) {
+				String[] parts = line.strip().split("\\s+");
+
+				for (int idxCol = 0; idxCol < numColumns; ++idxCol) {
+					data[idxCol][idxRow] = Double.valueOf(parts[idxCol]);
+				}
+
+				idxRow++;
+			}
+		}
+
+		return data;
 	}
 }

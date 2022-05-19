@@ -6,14 +6,14 @@ public class DemoABSCAB {
 		demoStraightWireSegment();
 		demoCircularWireLoop();
 
-		dumpInternalResultsStraightWireSegment();
-		dumpInternalResultsCircularWireLoop();
+//		dumpInternalResultsStraightWireSegment();
+//		dumpInternalResultsCircularWireLoop();
 	}
 
 	public static void demoStraightWireSegment() {
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromFile("src/test/resources/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromFile("src/test/resources/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -36,8 +36,8 @@ public class DemoABSCAB {
 
 	public static void demoCircularWireLoop() {
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromFile("src/test/resources/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromFile("src/test/resources/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -63,8 +63,8 @@ public class DemoABSCAB {
 
 	public static void dumpInternalResultsStraightWireSegment() {
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromFile("src/test/resources/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromFile("src/test/resources/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -115,8 +115,8 @@ public class DemoABSCAB {
 
 	public static void dumpInternalResultsCircularWireLoop() {
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromFile("src/test/resources/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromFile("src/test/resources/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
