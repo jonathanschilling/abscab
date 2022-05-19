@@ -15,6 +15,14 @@ Here is an overview:
 | Python   | [`abscab.py`](abscab/abscab.py)             |
 | Fortran  | [`abscab.f90`](src/main/fortran/abscab.f90) |
 
+## Reference Outputs
+
+<img src="article/img/StraightWireSegment_A_z_Java.png" alt="A_z of Straight Wire Segment: Java vs. reference" height="500"/>      <img src="article/img/StraightWireSegment_B_phi_Java.png" alt="B_phi of Straight Wire Segment: Java vs. reference" height="500"/>
+
+<img src="article/img/CircularWireLoop_A_phi_Java.png" alt="A_phi of Circular Wire Loop: Java vs. reference" width="500"/>
+<img src="article/img/CircularWireLoop_B_rho_Java.png" alt="B_rho of Circular Wire Loop: Java vs. reference" width="500"/>
+<img src="article/img/CircularWireLoop_B_z_Java.png" alt="B_z of Circular Wire Loop: Java vs. reference" width="500"/>
+
 ## Verification Procedure
 
 ### `mpmath` vs. Mathematica
