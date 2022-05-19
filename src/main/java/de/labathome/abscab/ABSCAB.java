@@ -135,7 +135,7 @@ public class ABSCAB {
 
 
 
-	public static double A_z_1(double rhoP, double zP) {
+	static double A_z_1(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1.0 - zP);
@@ -154,7 +154,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_along_rhoP_0(double rhoP, double zP) {
+	static double A_z_along_rhoP_0(double rhoP, double zP) {
 
 		if (zP < -1 || zP > 2) {
 			return A_z_2(rhoP, zP);
@@ -169,7 +169,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_2(double rhoP, double zP) {
+	static double A_z_2(double rhoP, double zP) {
 		return FastMath.atanh(1.0 / (Math.abs(zP) + Math.abs(1-zP)));
 	}
 
@@ -179,7 +179,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_2b(double rhoP, double zP) {
+	static double A_z_2b(double rhoP, double zP) {
 		return Math.signum(zP) * Math.log(Math.abs(zP/(1-zP)))/2;
 	}
 
@@ -193,7 +193,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_along_zP_0_or_1(double rhoP, double zP) {
+	static double A_z_along_zP_0_or_1(double rhoP, double zP) {
 
 		if (rhoP > 1.0) {
 			return A_z_3(rhoP, 0.0);
@@ -209,7 +209,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_3(double rhoP, double zP) {
+	static double A_z_3(double rhoP, double zP) {
 		return FastMath.atanh(1.0 / (rhoP + Math.sqrt(rhoP*rhoP + 1)));
 	}
 
@@ -219,7 +219,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_z_3b(double rhoP, double zP) {
+	static double A_z_3b(double rhoP, double zP) {
 		// a little bit more robust --> around rho'=1 +/- one test point we have 15 digits
 		double cat = 1/Math.sqrt(rhoP*rhoP + 1);
 		double sat = Math.sin(Math.atan(rhoP)/2);
@@ -236,7 +236,7 @@ public class ABSCAB {
 
 
 	// (1): rho' < 1e-15, |z'|>=1
-	public static double A_z_6a(double rhoP, double zP) {
+	static double A_z_6a(double rhoP, double zP) {
 
 		double ang = Math.atan2(rhoP, zP);
 		double s = Math.sin(ang/2);
@@ -254,7 +254,7 @@ public class ABSCAB {
 	}
 
 
-	public static double A_z_6b(double rhoP, double zP) {
+	static double A_z_6b(double rhoP, double zP) {
 
 		double alpha = Math.atan2(rhoP, zP);
 		double sinAlphaHalf = Math.sin(alpha/2);
@@ -275,7 +275,7 @@ public class ABSCAB {
 		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
 
-	public static double A_z_6c(double rhoP, double zP) {
+	static double A_z_6c(double rhoP, double zP) {
 
 		double alpha = Math.atan2(rhoP, 1-zP);
 		double sinAlphaHalf = Math.sin(alpha/2);
@@ -297,7 +297,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double B_phi_2(double rhoP, double zP) {
+	static double B_phi_2(double rhoP, double zP) {
 		// works everywhere, although only derived for zP < 0 ???
 		double zPM1 = 1 - zP;
 		return (1 / (zPM1 * zPM1) - 1 / (zP * zPM1)) / 4;
@@ -310,7 +310,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double B_phi_3(double rhoP, double zP) {
+	static double B_phi_3(double rhoP, double zP) {
 		double zPM1 = 1 - zP;
 		return 1 / (2 * rhoP * Math.hypot(rhoP, zPM1));
 	}
@@ -320,7 +320,7 @@ public class ABSCAB {
 	// zp>=1 or zp<0, all rhoP
 	// zP from 0 to 1/2, rhoP from 1e-30 at zp=0 to rhoP=1 at zP=1/2
 	// zP from 1/2 to 1, rhoP from 1e-15 at zp=1 to rhoP=1 at zP=1/2
-	public static double B_phi_4(double rhoP, double zP) {
+	static double B_phi_4(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
@@ -333,7 +333,7 @@ public class ABSCAB {
 	}
 
 	// near-field: zP approx 1
-	public static double B_phi_5(double rhoP, double zP) {
+	static double B_phi_5(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
@@ -357,7 +357,7 @@ public class ABSCAB {
 		return t1 / den;
 	}
 
-	public static double A_phi_1(double rhoP, double zP) {
+	static double A_phi_1(double rhoP, double zP) {
 		// complementary modulus k_c
 		double kCSqNum = zP*zP + 1 + rhoP * rhoP - 2.0 * rhoP;
 		double kCSqDen = zP*zP + 1 + rhoP * rhoP + 2.0 * rhoP;
@@ -386,7 +386,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_phi_5(double rhoP, double zP) {
+	static double A_phi_5(double rhoP, double zP) {
 		double kc = Math.sqrt(4.0 + zP * zP) / zP;
 		return 1.0 / zP * CompleteEllipticIntegral.cel(kc, 1, 1, -1);
 	}
@@ -398,7 +398,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	public static double A_phi_6(double rhoP, double zP) {
+	static double A_phi_6(double rhoP, double zP) {
 		double n = zP/(rhoP-1);
 		double m = 1+2/(rhoP-1);
 		double den = n*n + m*m;
@@ -411,7 +411,7 @@ public class ABSCAB {
 	}
 
 
-	public static double B_rho_1(double rhoP, double zP) {
+	static double B_rho_1(double rhoP, double zP) {
 		double n = zP/(rhoP-1);
 		double m = 1 + 2/(rhoP-1);
 		double den = n*n + m*m;
@@ -436,7 +436,7 @@ public class ABSCAB {
 	}
 
 
-	public static double B_rho_3(double rhoP, double zP) {
+	static double B_rho_3(double rhoP, double zP) {
 
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
@@ -459,7 +459,7 @@ public class ABSCAB {
 	}
 
 	/** special case for rhoP=1, zP --> 0 */
-	public static double B_rho_4(double rhoP, double zP) {
+	static double B_rho_4(double rhoP, double zP) {
 
 		double zPSq = zP*zP;
 		double pfd = 1 + 4/zPSq;
@@ -472,7 +472,7 @@ public class ABSCAB {
 		return 1/(2 * Math.sqrt(pfd)) * (E/pfd * (1 + (6 + 8/zPSq)/zPSq) - K );
 	}
 
-	public static double B_z_1(double rhoP, double zP) {
+	static double B_z_1(double rhoP, double zP) {
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
@@ -495,7 +495,7 @@ public class ABSCAB {
 		return prefac * ( E + rhoP * comb );
 	}
 
-	public static double B_z_2(double rhoP, double zP) {
+	static double B_z_2(double rhoP, double zP) {
 		// large rho'
 
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
@@ -527,7 +527,7 @@ public class ABSCAB {
 		return 1.0 /(Math.sqrt(r0) * rhoP*rhoP*rhoP) * (E + 4*(C-D)/cdScale);
 	}
 
-	public static double B_z_4(double rhoP, double zP) {
+	static double B_z_4(double rhoP, double zP) {
 		// special case for rhoP=1, zp->0
 
 		double kCSq = zP*zP/(4 + zP*zP);
@@ -539,7 +539,7 @@ public class ABSCAB {
 		return prefac * CompleteEllipticIntegral.cel(kC, kCSq, 2, 0);
 	}
 
-	public static double B_z_5(double rhoP, double zP) {
+	static double B_z_5(double rhoP, double zP) {
 		// special case for near-field: rhoP->1, zP->0; but not rhoP=1 or zP=0
 
 		double rp1 = rhoP - 1;
@@ -559,7 +559,7 @@ public class ABSCAB {
 		return prefac*cp;
 	}
 
-	public static double B_z_6(double rhoP, double zP) {
+	static double B_z_6(double rhoP, double zP) {
 
 		double rp = rhoP + 1;
 
