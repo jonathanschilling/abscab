@@ -323,6 +323,6 @@ if __name__ == "__main__":
     
     if savefigFilename is not None:
         plt.savefig(savefigFilename, dpi=300)
-    
-    plt.show()
+    else:    
+        plt.show()
     
