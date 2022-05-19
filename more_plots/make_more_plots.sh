@@ -77,4 +77,4 @@ do
     "${i} of Circular Wire Loop (Java)"
 done
 
-popd # ./test/python
+popd # back from ../src/test/python

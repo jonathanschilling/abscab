@@ -43,4 +43,4 @@ pushd ./test/python
     ../../../article/img/CircularWireLoop_B_z_Java.pdf \
     "\$B_z\$ of Circular Wire Loop (Java)"
 
-popd # ./test/python
+popd # back from ./test/python
