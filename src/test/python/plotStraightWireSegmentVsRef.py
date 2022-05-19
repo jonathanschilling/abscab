@@ -28,18 +28,6 @@ if __name__ == "__main__":
         savefigFilename = sys.argv[3]
         print("will save plot to '%s'"%(savefigFilename,))
 
-    # A_z
-    # ref1d = np.loadtxt("../resources/StraightWireSegment_A_z_ref.dat")
-    # act1d = np.loadtxt("../../../data/StraightWireSegment_A_z_Java.dat")
-    
-    # B_phi
-    # ref1d = np.loadtxt("../resources/StraightWireSegment_B_phi_ref.dat")
-    # act1d = np.loadtxt("../../../data/StraightWireSegment_B_phi_Java.dat")
-    
-    ref1d = np.loadtxt(refFilename)
-    act1d = np.loadtxt(actFilename)
-    
-    
     # here we go...
     
     # lazy loading
@@ -56,9 +44,20 @@ if __name__ == "__main__":
     
     idxRp = np.loadtxt("../resources/idxRpStraightWireSegment.dat", dtype=int)
     idxZp = np.loadtxt("../resources/idxZpStraightWireSegment.dat", dtype=int)
-    
+
     numCases = len(idxRp)
 
+    # A_z
+    # ref1d = np.loadtxt("../resources/StraightWireSegment_A_z_ref.dat")
+    # act1d = np.loadtxt("../../../data/StraightWireSegment_A_z_Java.dat")
+    
+    # B_phi
+    # ref1d = np.loadtxt("../resources/StraightWireSegment_B_phi_ref.dat")
+    # act1d = np.loadtxt("../../../data/StraightWireSegment_B_phi_Java.dat")
+    
+    ref1d = np.loadtxt(refFilename)
+    act1d = np.loadtxt(actFilename)
+    
     ref = np.zeros([numZ, numR])
     act = np.zeros([numZ, numR])
     
@@ -83,14 +82,14 @@ if __name__ == "__main__":
             else:
                 data[j,i] = 1.0 if abs(act[j,i]) > 0.0 else good
                 
-    nClusters = 18
-    cmap = plt.get_cmap("viridis", nClusters)
-    
     # lazy loading
     import matplotlib.pyplot as plt
     from matplotlib.colors import LogNorm
     from matplotlib.ticker import MultipleLocator, MaxNLocator
     from matplotlib.pyplot import savefig
+    
+    nClusters = 18
+    cmap = plt.get_cmap("viridis", nClusters)
     
     fig=plt.figure(figsize=(4.5, 6.5))
     ax = plt.gca()
@@ -314,7 +313,8 @@ if __name__ == "__main__":
                         bottom=0.02,
                         top=0.98)
     
-    plt.show()
-    
     if savefigFilename is not None:
         plt.savefig(savefigFilename, dpi=300)
+    
+    plt.show()
+    
