@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from _ftdi1 import NONE
 
 # Plot a comparison between demo outputs of a given ABSCAB implementation
 # and the reference data provided in this repository.
@@ -8,10 +9,11 @@ if __name__ == "__main__":
 
     numArgs = len(sys.argv)
     if numArgs < 3:
-        print("usage: " + sys.argv[0] + " <ref> <act> [savefig filename]")
+        print("usage: " + sys.argv[0] + " <ref> <act> [savefig filename] [plot title]")
         print(" where <ref> is the reference data (probably '../resources/CircularWireLoop_*_*_ref.dat')\n" +
               " and   <act> is the output to test (probably '../../../data/CircularWireLoop_*_*_*.dat')\n" +
-              " Optionally, the generated plot is saved to the given filename (3rd parameter).");
+              " Optionally, the generated plot is saved to the given filename (3rd parameter).\n" +
+              " Optionally, the generated plot can be given a custom title (4th parameter).")
         sys.exit(1)
 
     # filename of reference data
@@ -27,6 +29,11 @@ if __name__ == "__main__":
     if numArgs > 3:
         savefigFilename = sys.argv[3]
         print("will save plot to '%s'"%(savefigFilename,))
+        
+    pltTitle = None
+    if numArgs > 4:
+        pltTitle = sys.argv[4]
+        print("set title of plot to '%s'"%(pltTitle,))
 
     # here we go...
     
@@ -306,12 +313,14 @@ if __name__ == "__main__":
             # draw minor y tick
             ax.plot([x0, -minorTickLength], [i, i], "k-", lw=0.5)
     
+    if pltTitle is not None:
+        plt.title(pltTitle)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05,
                         right=0.86,
                         bottom=0.17,
-                        top=0.98)
+                        top=0.94)
     
     if savefigFilename is not None:
         plt.savefig(savefigFilename, dpi=300)

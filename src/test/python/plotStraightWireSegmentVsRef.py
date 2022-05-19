@@ -11,7 +11,8 @@ if __name__ == "__main__":
         print("usage: " + sys.argv[0] + " <ref> <act> [savefig filename]")
         print(" where <ref> is the reference data (probably '../resources/StraightWireSegment_*_*_ref.dat')\n" +
               " and   <act> is the output to test (probably '../../../data/StraightWireSegment_*_*_*.dat')\n" +
-              " Optionally, the generated plot is saved to the given filename (3rd parameter).");
+              " Optionally, the generated plot is saved to the given filename (3rd parameter).\n" +
+              " Optionally, the generated plot can be given a custom title (4th parameter).")
         sys.exit(1)
 
     # filename of reference data
@@ -27,6 +28,11 @@ if __name__ == "__main__":
     if numArgs > 3:
         savefigFilename = sys.argv[3]
         print("will save plot to '%s'"%(savefigFilename,))
+
+    pltTitle = None
+    if numArgs > 4:
+        pltTitle = sys.argv[4]
+        print("set title of plot to '%s'"%(pltTitle,))
 
     # here we go...
     
@@ -306,11 +312,14 @@ if __name__ == "__main__":
             # draw minor y tick
             ax.plot([x0, -minorTickLength], [i, i], "k-", lw=0.5)
     
+    if pltTitle is not None:
+        plt.title(pltTitle)
+    
     plt.tight_layout()
     plt.subplots_adjust(left=0.1,
                         right=0.8,
                         bottom=0.02,
-                        top=0.98)
+                        top=0.95)
     
     if savefigFilename is not None:
         plt.savefig(savefigFilename, dpi=300)
