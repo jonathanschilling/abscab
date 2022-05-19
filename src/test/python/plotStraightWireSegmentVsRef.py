@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Plot a comparison between demo outputs of a given ABSCAB implementation
 # and the reference data provided in this repository.
@@ -90,8 +90,6 @@ if __name__ == "__main__":
                 
     # lazy loading
     import matplotlib.pyplot as plt
-    from matplotlib.colors import LogNorm
-    from matplotlib.ticker import MultipleLocator, MaxNLocator
     
     nClusters = 18
     cmap = plt.get_cmap("viridis", nClusters)
