@@ -89,46 +89,59 @@ def ieee754_to_arb(s, E, M):
 if __name__ == "__main__":
 
     testPointsFile = "../resources/testPointsCircularWireLoop.dat"
-    outFilename    = "../resources/refDataCircularWireLoop.dat"
+    outFilenameAPhi = "../resources/CircularWireLoop_A_phi_ref.dat"
+    outFilenameBRho = "../resources/CircularWireLoop_B_rho_ref.dat"
+    outFilenameBZ   = "../resources/CircularWireLoop_B_z_ref.dat"
 
     with open(testPointsFile, "r") as f:
         lines = f.readlines()
 
-        with open(outFilename, "w") as outFile:
+        # clear previous contents of output files
+        with open(outFilenameAPhi, "w") as outFile:
+            outFile.write("")
+        with open(outFilenameBRho, "w") as outFile:
+            outFile.write("")
+        with open(outFilenameBZ, "w") as outFile:
+            outFile.write("")
 
-            outFile.write("# A_phi B_rho B_z of circular wire loop\n")
+        numLines = len(lines)
+        
+        for i,line in enumerate(lines):
 
-            numLines = len(lines)
+            # skip comment lines
+            if line[0] == "#":
+                continue
+
+            print("line %d / %d"%(i+1, numLines))
             
-            for i,line in enumerate(lines):
+            parts = line.strip().split()
 
-                # skip comment lines
-                if line[0] == "#":
-                    continue
+            # construct rp from sign, exponent and mantissa
+            signRp     = int(parts[0].strip())
+            exponentRp = int(parts[1].strip())
+            mantissaRp = int(parts[2].strip())
+            rp = ieee754_to_arb(signRp, exponentRp, mantissaRp)
 
-                print("line %d / %d"%(i+1, numLines))
-                
-                parts = line.strip().split()
+            # construct zp from sign, exponent and mantissa
+            signZp     = int(parts[3].strip())
+            exponentZp = int(parts[4].strip())
+            mantissaZp = int(parts[5].strip())
+            zp = ieee754_to_arb(signZp, exponentZp, mantissaZp)        
 
-                # construct rp from sign, exponent and mantissa
-                signRp     = int(parts[0].strip())
-                exponentRp = int(parts[1].strip())
-                mantissaRp = int(parts[2].strip())
-                rp = ieee754_to_arb(signRp, exponentRp, mantissaRp)
+            # compute magnetostatic quantities: A_phi, B_rho and B_z
+            aPhi = A_phi(rp, zp)
+            bRho = B_rho(rp, zp)
+            bZ   = B_z(rp, zp)
 
-                # construct zp from sign, exponent and mantissa
-                signZp     = int(parts[3].strip())
-                exponentZp = int(parts[4].strip())
-                mantissaZp = int(parts[5].strip())
-                zp = ieee754_to_arb(signZp, exponentZp, mantissaZp)        
-
-                # compute magnetostatic quantities: A_phi, B_rho and B_z
-                aPhi = A_phi(rp, zp)
-                bRho = B_rho(rp, zp)
-                bZ   = B_z(rp, zp)
-
-                with mp.workdps(20):
-                    outFile.write(str(aPhi) + " " + str(bRho) + " " + str(bZ) + "\n")
+            with mp.workdps(20):
+                with open(outFilenameAPhi, "a") as outFile:
+                    outFile.write(str(aPhi) + "\n")
+                    outFile.flush()
+                with open(outFilenameBRho, "a") as outFile:
+                    outFile.write(str(bRho) + "\n")
+                    outFile.flush()
+                with open(outFilenameBZ, "a") as outFile:
+                    outFile.write(str(bZ) + "\n")
                     outFile.flush()
 
     sys.exit(0)
