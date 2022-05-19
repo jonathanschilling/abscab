@@ -27,8 +27,8 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		Util.dumpToFile(A_z, "data/straightWireSegmentAz.dat");
-		Util.dumpToFile(B_phi, "data/straightWireSegmentBphi.dat");
+		Util.dumpToFile(A_z,   "data/StraightWireSegment_A_z_Java.dat");
+		Util.dumpToFile(B_phi, "data/StraightWireSegment_B_phi_Java.dat");
 	}
 
 	public static void demoCircularWireLoop() {
@@ -53,8 +53,8 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		Util.dumpToFile(A_phi, "data/circularWireLoopAphi.dat");
-		Util.dumpToFile(B_rho, "data/circularWireLoopBrho.dat");
-		Util.dumpToFile(B_z, "data/circularWireLoopBz.dat");
+		Util.dumpToFile(A_phi, "data/CircularWireLoop_A_phi_Java.dat");
+		Util.dumpToFile(B_rho, "data/CircularWireLoop_B_rho_Java.dat");
+		Util.dumpToFile(B_z,   "data/CircularWireLoop_B_z_Java.dat");
 	}
 }
