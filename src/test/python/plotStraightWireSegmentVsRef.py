@@ -86,7 +86,6 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from matplotlib.colors import LogNorm
     from matplotlib.ticker import MultipleLocator, MaxNLocator
-    from matplotlib.pyplot import savefig
     
     nClusters = 18
     cmap = plt.get_cmap("viridis", nClusters)
