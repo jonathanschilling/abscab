@@ -12,11 +12,14 @@ public class ABSCAB {
 	/** vacuum magnetic permeability in Vs/Am (CODATA-2018) */
 	public static final double MU_0 = 1.256_637_062_12e-6;
 
+	/** vacuum magnetic permeability, divided by pi */
+	private static final double MU_0_BY_PI = MU_0 / Math.PI;
+
 	/** vacuum magnetic permeability, divided by 2 pi */
-	private static final double MU_0_BY_2_PI = ABSCAB.MU_0 / (2.0 * Math.PI);
+	private static final double MU_0_BY_2_PI = MU_0 / (2.0 * Math.PI);
 
 	/** vacuum magnetic permeability, divided by 4 pi */
-	private static final double MU_0_BY_4_PI = ABSCAB.MU_0 / (4.0 * Math.PI);
+	private static final double MU_0_BY_4_PI = MU_0 / (4.0 * Math.PI);
 
 	/**
 	 * Compute the magnetic vector potential of a polygon filament.
@@ -186,7 +189,7 @@ public class ABSCAB {
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				final double rhoP = alignedR / l;
 
-				// compute parallel component of magnetic vector potential, including current and mu_0
+				// compute tangential component of magnetic vector potential, including current and mu_0
 				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP);
 
 				// compute cross product between e_z and e_rho to get e_phi
@@ -219,9 +222,90 @@ public class ABSCAB {
 	public static double[][] vectorPotentialCircularFilament(double[] center, double[] normal, double radius,
 			double current, double[][] evalPos) {
 
+		Objects.requireNonNull(center);
+		if (center.length != 3) {
+			throw new RuntimeException("center needs to have 3 elements, but has " + center.length);
+		}
+
+		Objects.requireNonNull(normal);
+		if (normal.length != 3) {
+			throw new RuntimeException("normal needs to have 3 elements, but has " + normal.length);
+		}
+
+		if (!Double.isFinite(radius) || radius <= 0.0) {
+			throw new RuntimeException("radius must be finite and positive, but is " + radius);
+		}
+
 		int nEvalPos = validateCartesianVectorInput(evalPos);
 
-		return null;
+		final double aPrefactor = MU_0_BY_PI * current;
+
+		// squared length of normal vector
+		double nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2];
+
+		if (nLen2 == 0.0) {
+			throw new RuntimeException("length of normal vector must not be zero");
+		}
+
+		// length of normal vector
+		double nLen = Math.sqrt(nLen2);
+
+		// unit normal vector of wire loop
+		double eX = normal[0] / nLen;
+		double eY = normal[1] / nLen;
+		double eZ = normal[2] / nLen;
+
+		final double[][] ret = new double[3][nEvalPos];
+
+		for (int idxEval=0; idxEval<nEvalPos; ++idxEval) {
+
+			// vector from center of wire loop to eval pos
+			final double r0x = evalPos[0][idxEval] - center[0];
+			final double r0y = evalPos[1][idxEval] - center[1];
+			final double r0z = evalPos[2][idxEval] - center[2];
+
+			// z position along normal of wire loop
+			final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire loop
+			final double zP = alignedZ / radius;
+
+			// r0 projected onto axis of wire loop
+			final double rParallelX = alignedZ * eX;
+			final double rParallelY = alignedZ * eY;
+			final double rParallelZ = alignedZ * eZ;
+
+			// vector perpendicular to axis of wire loop, pointing at evaluation pos
+			final double rPerpX = r0x - rParallelX;
+			final double rPerpY = r0y - rParallelY;
+			final double rPerpZ = r0z - rParallelZ;
+
+			// perpendicular distance between evalPos and axis of wire loop
+			final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+			// unit vector in radial direction
+			final double eRX = rPerpX / alignedR;
+			final double eRY = rPerpY / alignedR;
+			final double eRZ = rPerpZ / alignedR;
+
+			// normalized rho component of evaluation location in coordinate system of wire loop
+			final double rhoP = alignedR / radius;
+
+			// compute tangential component of magnetic vector potential, including current and mu_0
+			final double aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP);
+
+			// compute cross product between e_z and e_rho to get e_phi
+			final double ePhiX = eRY * eZ - eRZ * eY;
+			final double ePhiY = eRZ * eX - eRX * eZ;
+			final double ePhiZ = eRX * eY - eRY * eX;
+
+			// add contribution from wire loop to result
+			ret[0][idxEval] += aPhi * ePhiX;
+			ret[1][idxEval] += aPhi * ePhiY;
+			ret[2][idxEval] += aPhi * ePhiZ;
+		}
+
+		return ret;
 	}
 
 	/**
@@ -239,11 +323,87 @@ public class ABSCAB {
 	public static double[][] magneticFieldCircularFilament(double[] center, double[] normal, double radius,
 			double current, double[][] evalPos) {
 
+		Objects.requireNonNull(center);
+		if (center.length != 3) {
+			throw new RuntimeException("center needs to have 3 elements, but has " + center.length);
+		}
+
+		Objects.requireNonNull(normal);
+		if (normal.length != 3) {
+			throw new RuntimeException("normal needs to have 3 elements, but has " + normal.length);
+		}
+
+		if (!Double.isFinite(radius) || radius <= 0.0) {
+			throw new RuntimeException("radius must be finite and positive, but is " + radius);
+		}
+
 		int nEvalPos = validateCartesianVectorInput(evalPos);
 
-		return null;
-	}
+		final double bPrefactor = MU_0_BY_PI * current / radius;
 
+		// squared length of normal vector
+		double nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2];
+
+		if (nLen2 == 0.0) {
+			throw new RuntimeException("length of normal vector must not be zero");
+		}
+
+		// length of normal vector
+		double nLen = Math.sqrt(nLen2);
+
+		// unit normal vector of wire loop
+		double eX = normal[0] / nLen;
+		double eY = normal[1] / nLen;
+		double eZ = normal[2] / nLen;
+
+		final double[][] ret = new double[3][nEvalPos];
+
+		for (int idxEval=0; idxEval<nEvalPos; ++idxEval) {
+
+			// vector from center of wire loop to eval pos
+			final double r0x = evalPos[0][idxEval] - center[0];
+			final double r0y = evalPos[1][idxEval] - center[1];
+			final double r0z = evalPos[2][idxEval] - center[2];
+
+			// z position along normal of wire loop
+			final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire loop
+			final double zP = alignedZ / radius;
+
+			// r0 projected onto axis of wire loop
+			final double rParallelX = alignedZ * eX;
+			final double rParallelY = alignedZ * eY;
+			final double rParallelZ = alignedZ * eZ;
+
+			// vector perpendicular to axis of wire loop, pointing at evaluation pos
+			final double rPerpX = r0x - rParallelX;
+			final double rPerpY = r0y - rParallelY;
+			final double rPerpZ = r0z - rParallelZ;
+
+			// perpendicular distance between evalPos and axis of wire loop
+			final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+			// unit vector in radial direction
+			final double eRX = rPerpX / alignedR;
+			final double eRY = rPerpY / alignedR;
+			final double eRZ = rPerpZ / alignedR;
+
+			// normalized rho component of evaluation location in coordinate system of wire loop
+			final double rhoP = alignedR / radius;
+
+			// compute radial and vertical components of normalized magnetic field
+			final double bRho = circularWireLoop_B_rho(rhoP, zP);
+			final double bZ = circularWireLoop_B_z(rhoP, zP);
+
+			// add contribution from wire loop to result and scale by current and mu_0
+			ret[0][idxEval] += (bRho * eRX + bZ * eX) * bPrefactor;
+			ret[1][idxEval] += (bRho * eRY + bZ * eY) * bPrefactor;
+			ret[2][idxEval] += (bRho * eRZ + bZ * eZ) * bPrefactor;
+		}
+
+		return ret;
+	}
 
 	/**
 	 * Validate a given vector of Cartesian coordinates and compute the number of
