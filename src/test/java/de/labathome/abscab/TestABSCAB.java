@@ -77,7 +77,7 @@ public class TestABSCAB {
 
 	@Test
 	public void testCircularWireLoop_A_phi() {
-		final double tolerance = 1.0e-11;
+		final double tolerance = 1.0e-15;
 
 		// load set of test points
 		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
@@ -111,7 +111,7 @@ public class TestABSCAB {
 
 	@Test
 	public void testCircularWireLoop_B_rho() {
-		final double tolerance = 1.0e-12;
+		final double tolerance = 1.0e-13;
 
 		// load set of test points
 		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
