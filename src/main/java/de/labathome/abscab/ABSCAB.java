@@ -107,9 +107,9 @@ public class ABSCAB {
 	 * @return B_z: vertical component of magnetic field: geometric part (no mu0*I/(pi*a) factor included)
 	 */
 	public static double circularWireLoop_B_z(double rhoP, double zP) {
-		if (rhoP < 0.5 || (rhoP < 2 && zP >= 1)) {
+		if (rhoP < 0.5 || (rhoP <= 2 && zP > 1)) {
 			return B_z_1(rhoP, zP);
-		} else if (rhoP >= 2) {
+		} else if (rhoP > 2) {
 			return B_z_2(rhoP, zP);
 		} else if (rhoP == 1.0) {
 			return B_z_4(rhoP, zP);
