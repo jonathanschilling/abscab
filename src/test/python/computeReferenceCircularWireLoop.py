@@ -5,7 +5,9 @@ import sys
 import mpmath as mp
 
 # default number of digits of precision for calculations
-mp.mp.dps = 100
+# This has been adjusted to yield enough correct digits on all test points
+# to fully verify the 64-bit double precision implementations.
+mp.mp.dps = 200
 
 # frequently-used constants with arbitrary precision
 zero      = mp.mpf("0")
