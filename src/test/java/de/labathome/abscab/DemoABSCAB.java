@@ -5,7 +5,8 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		demoFiniteCoil();
+		demoMcGreivy();
+//		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
@@ -15,6 +16,90 @@ public class DemoABSCAB {
 //
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+	
+	public static void demoMcGreivy() {
+		
+		double radius = 1.23; // m
+		double current = 17.0; // A
+		
+		double[] center = { 0.0, 0.0, 0.0 };
+		double[] normal = { 0.0, 0.0, 1.0 };
+		
+		double[][] evalPos = {
+				{0.0},
+				{0.0},
+				{0.0}
+		};
+		
+		double bZRef = ABSCAB.magneticFieldCircularFilament(center, normal, radius, current, evalPos)[2][0];
+		System.out.printf("ref B_z = %.3e\n", bZRef);
+		
+		// mimic circular wire loop as:
+		// a) Polygon with points on the circule to be mimiced
+		// b) Polygon with points slightly offset radially outward (McGreivy correction)
+		// a) should have 2nd-order convergence; b) should have 4th-order convergence wrt. number of Polygon points
+		
+		int[] allNumPhi = {10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000};
+		int numCases = allNumPhi.length;
+		
+		double[] allBzStdErr = new double[numCases];
+		double[] allBzMcGErr = new double[numCases];
+		
+		for (int i=0; i<numCases; ++i) {
+		
+	//		int numPhi = 100;
+			int numPhi = allNumPhi[i];
+			System.out.printf("work on numPhi = %d\n", numPhi);
+			
+			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
+			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos)[2][0];
+//			System.out.printf("std B_z = %.3e\n", bZStd);
+			
+			allBzStdErr[i] = Math.abs((bZStd - bZRef)/bZRef);
+					
+			// McGreivy radius correction
+			//double dPhi = 2.0 * Math.PI / (numPhi - 1);
+			double dPhi = 2.0 * Math.PI / (numPhi - 1); // spacing between points
+			
+			// TODO: This still needs some work... what exactly is alpha for the circular wire loop?
+			// |dr/ds| = 2*pi
+			// --> alpha = 1/R * (dr)^2 / 12
+			// == 4 pi^2 / (12 R)
+			double rCorr = radius * (1.0 + 4 * Math.PI * Math.PI * dPhi/ 12);
+			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
+			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos)[2][0];
+//			System.out.printf("McG B_z = %.3e\n", bZMcG);
+			
+			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
+		}
+		
+		JyPlot plt = new JyPlot();
+		
+		plt.figure();
+		plt.loglog(allNumPhi, allBzStdErr, ".-", "label='standard'");
+		plt.loglog(allNumPhi, allBzMcGErr, ".-", "label='McGreivy'");
+		plt.grid(true);
+		plt.xlabel("numPhi");
+		plt.ylabel("rel. err");
+		plt.legend("loc='upper right'");
+		plt.title("McGreivy method for circular loop");
+		plt.tight_layout();
+		
+		plt.show();
+		plt.exec();
+	}
+	
+	private static double[][] polygonCircleAround0(double radius, int n) {
+		double[][] ret = new double[3][n];
+		double omega = 2.0*Math.PI / (n-1);
+		for (int i=0; i<n; ++i) {
+			double phi = omega * i;
+			ret[0][i] = radius * Math.cos(phi);
+			ret[1][i] = radius * Math.sin(phi);
+		}
+		
+		return ret;
 	}
 	
 	public static void demoFiniteCoil() {

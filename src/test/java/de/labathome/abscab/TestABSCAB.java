@@ -75,7 +75,7 @@ public class TestABSCAB {
 			
 			// compute magnetic field
 			//double prefac = ABSCAB.MU_0 * current / (2.0*Math.PI * radius);
-			double prefac = ABSCAB.MU_0 * current / (Math.PI * radius);
+			double prefac = ABSCAB.MU_0 * current / (Math.PI * radius); // TODO: factor of 2 ???
 			double bZContrib = prefac * ABSCAB.circularWireLoop_B_z(0.0, z0);
 			
 //			System.out.printf("coil %d at z0 = % .3e => contrib = %.3e\n", i, z0, bZContrib);

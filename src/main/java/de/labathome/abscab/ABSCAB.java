@@ -191,7 +191,7 @@ public class ABSCAB {
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
 				// alignedR in here: include cylindrical Jacobian!
-				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP) * alignedR;
+				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP); // alignedR;
 
 				// compute cross product between e_z and e_rho to get e_phi
 				final double ePhiX = eY * eRZ - eZ * eRY;
