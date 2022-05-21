@@ -5,7 +5,8 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		demoAntiHelmholtzCoilField();
+		demoFiniteCoil();
+//		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 		
@@ -14,6 +15,99 @@ public class DemoABSCAB {
 //
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+	
+	public static void demoFiniteCoil() {
+		// Demtroeder 2, Sec. 3.2.6d ("Magnetic field of a cylindrical coil")
+		
+		double radius = 1.23; // m
+		double current = 17.0; // A
+		int N = 1000; // windings of coil
+		
+		int n = 100;
+		double[] zP = new double[n];
+		
+		// coil with aspect ratio L = 6 R
+		double[] bZRef6 = new double[n];
+		double[] bZ6 = new double[n];
+		
+		// coil with aspect ratio L = 12 R
+		double[] bZRef12 = new double[n];
+		double[] bZ12 = new double[n];
+		
+		for (int i=0; i<n; ++i) {
+			
+			// axial evaluation position
+			zP[i] = -10.0 + i * 20.0/(n-1);
+			
+			// reference from Demtroeder
+			double coilLength6 = 6.0 * radius;
+			double windingDensity6 = N/coilLength6;
+			double prefac6 = ABSCAB.MU_0 * windingDensity6 * current / 2.0;
+			double t1_6 = zP[i]*radius + coilLength6/2.0;
+			double t2_6 = zP[i]*radius - coilLength6/2.0;
+			bZRef6[i] = prefac6 * (t1_6/Math.sqrt(radius*radius + t1_6*t1_6)
+					- t2_6/Math.sqrt(radius*radius + t2_6*t2_6));
+			
+			double coilLength12 = 12.0 * radius;
+			double windingDensity12 = N/coilLength12;
+			double prefac12 = ABSCAB.MU_0 * windingDensity12 * current / 2.0;
+			double t1_12 = zP[i]*radius + coilLength12/2.0;
+			double t2_12 = zP[i]*radius - coilLength12/2.0;
+			bZRef12[i] = prefac12 * (t1_12/Math.sqrt(radius*radius + t1_12*t1_12)
+					- t2_12/Math.sqrt(radius*radius + t2_12*t2_12));
+			
+			// eval using ABSCAB
+			bZ6[i]  = B_z_coil(zP[i], 6.0, radius, N, current);
+			bZ12[i] = B_z_coil(zP[i], 12.0, radius, N, current);
+		}
+		
+		JyPlot plt = new JyPlot();
+		
+		plt.figure();
+		plt.plot(zP, bZRef6, "o-", "label='ref 6'");
+		plt.plot(zP, bZ6,    "x--", "label='ABSCAB 6'");
+		plt.plot(zP, bZRef12, "o-", "label='ref 12'");
+		plt.plot(zP, bZ12,    "x--", "label='ABSCAB 12'");
+		plt.grid(true);
+		plt.legend("loc='upper right'");
+		plt.xlabel("z / R");
+		plt.ylabel("B_z / T");
+		plt.ticklabel_format("axis='y', style='sci', scilimits=(-2,2)");
+		plt.title("B_z along the axis of a cylindrical coil");
+		plt.tight_layout();
+		
+		plt.show();
+		plt.exec();
+	}
+	
+	/**
+	 * 
+	 * @param zP z/R eval position
+	 * @param coilAspectRatio L/R aspect ratio of coil
+	 * @param radius R radius of coil
+	 * @param N number of windings
+	 * @return
+	 */
+	private static double B_z_coil(double zP, double coilAspectRatio, double radius, int N, double current) {
+		
+		double z = zP * radius; // real-space axial eval position in m
+		double L = radius * coilAspectRatio; // length of coil in m
+		double n = N/L; // winding density in 1/m
+		
+		double bZ = 0.0;
+		for (int i=0; i<N; ++i) {
+			
+			// axial position of i:th winding
+			double z0 = -L/2.0 + (i + 0.5) / n;
+			
+			// compute magnetic field
+			double prefac = ABSCAB.MU_0 * current / (Math.PI * radius);
+			double bZContrib = prefac * ABSCAB.circularWireLoop_B_z(0.0, (z - z0)/radius);
+						
+			bZ += bZContrib;
+		}
+		return bZ;	
 	}
 	
 	public static void demoAntiHelmholtzCoilField() {
