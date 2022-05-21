@@ -5,13 +5,72 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		demoMagneticFieldOnAxisOfCircularWireLoop();
+		demoHelmholtzCoilField();
+//		demoMagneticFieldOnAxisOfCircularWireLoop();
 		
 //		demoStraightWireSegment();
 //		demoCircularWireLoop();
 //
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+	
+	public static void demoHelmholtzCoilField() {
+	
+		double current = 123.0; // A
+		double radius = 0.2; // m
+		double z0 = -0.1; // m
+		double z1 =  0.1; // m
+		
+		double[] normal = { 0.0, 0.0, 1.0 };
+		
+		int n = 100;
+		double deltaZ = (z1-z0)/(n-1);
+		
+		double[] z = new double[n];
+		double[] B_z_ref = new double[n];
+		double[] B_z = new double[n];
+		for (int i = 0; i<n; ++i) {
+			z[i] = z0 + i * deltaZ;
+			
+			// from Demtroeder 2, Sec. 3.2.6c
+			double fiveFourth = 5.0 / 4.0;
+			double prefac = ABSCAB.MU_0 * current / (Math.sqrt(fiveFourth)*fiveFourth * radius);
+			double zP = z[i]/radius;
+			B_z_ref[i] = prefac * (1.0 - 144.0/125.0 * zP*zP * zP*zP);
+			
+			double[][] evalPos = {
+					{0.0},
+					{0.0},
+					{z[i]}
+			};
+			
+			double[] center1 = { 0.0, 0.0, -radius/2.0 };
+			double B_z_1 = ABSCAB.magneticFieldCircularFilament(center1, normal, radius, current, evalPos)[2][0];
+			
+			double[] center2 = { 0.0, 0.0,  radius/2.0 };
+			double B_z_2 = ABSCAB.magneticFieldCircularFilament(center2, normal, radius, current, evalPos)[2][0];
+			
+			B_z[i] = B_z_1 + B_z_2;
+		}
+		
+		JyPlot plt = new JyPlot();
+		
+		plt.figure();
+		plt.plot(z, B_z_ref, "o-", "label='ref'");
+		plt.plot(z, B_z,     "x--", "label='ABSCAB'");
+		plt.grid(true);
+		plt.legend("loc='upper right'");
+		plt.xlabel("z / m");
+		plt.ylabel("B_z / T");
+		plt.ticklabel_format("axis='y', style='sci', scilimits=(-2,2)");
+		plt.title("B_z along the axis of a Helmholtz coil pair");
+		plt.tight_layout();
+		
+		plt.show();
+		plt.exec();
+		
+		
 	}
 	
 	public static void demoMagneticFieldOnAxisOfCircularWireLoop() {
