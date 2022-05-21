@@ -6,6 +6,57 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class TestABSCAB {
+	
+	@Test
+	public void testMagneticFieldInsideLongCoil() {
+		double tolerance = 1.0e-4;
+		
+		// Demtroeder 2, Sec. 3.2.3 ("Magnetic field of a long coil")
+		// B = mu_0 * n * I
+		// where n is the winding density: n = N / L
+		// of a coil of N windings over a length L
+		// Example (which is tested here):
+		// n = 1e3 m^{-1}
+		// I = 10 A
+		// => B = 0.0126T
+		double bZRef = 0.0126;
+		
+		double bZ = 0.0;
+		
+		int N = 50000; // windings
+		double L = 50.0; // total length of coil in m
+		double n = N/L;
+		
+		double current = 10.0; // A
+		double radius = 1.0; // m
+		
+		
+		for (int i=0; i<N; ++i) {
+			
+			// axial position of coil
+			double z0 = -L/2.0 + (i + 0.5) / n;
+			
+			// compute magnetic field
+			//double prefac = ABSCAB.MU_0 * current / (2.0*Math.PI * radius);
+			double prefac = ABSCAB.MU_0 * current / (Math.PI * radius);
+			double bZContrib = prefac * ABSCAB.circularWireLoop_B_z(0.0, z0);
+			
+//			System.out.printf("coil %d at z0 = % .3e => contrib = %.3e\n", i, z0, bZContrib);
+			
+			bZ += bZContrib;
+		}
+//		System.out.printf("B_z = %.5e\n", bZ);
+	
+		double relAbsErr = Math.abs(bZ - bZRef) / (1.0 + Math.abs(bZRef));
+//		System.out.printf("raErr = %.5e\n", relAbsErr);		
+		
+		Assertions.assertTrue(relAbsErr < tolerance);
+	}
+	
+	
+	
+	
+	
 
 	@Test
 	public void testStraightWireSegment_A_z() {
