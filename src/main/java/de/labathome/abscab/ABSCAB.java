@@ -22,7 +22,7 @@ public class ABSCAB {
 
 	/** vacuum magnetic permeability, divided by 4 pi */
 	private static final double MU_0_BY_4_PI = MU_0 / (4.0 * Math.PI);
-
+	
 	/**
 	 * Compute the magnetic vector potential of a polygon filament.
 	 *
@@ -159,10 +159,12 @@ public class ABSCAB {
 
 			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
 
-				// vector from start of wire segment to eval pos
+				// R_i: vector from start of wire segment to eval pos
 				final double r0x = evalPos[0][idxEval] - vertices[0][i];
 				final double r0y = evalPos[1][idxEval] - vertices[1][i];
 				final double r0z = evalPos[2][idxEval] - vertices[2][i];
+				
+				double Ri = Math.sqrt(r0x*r0x + r0y*r0y + r0z*r0z);
 
 				// z position along axis of wire segment
 				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
@@ -183,30 +185,24 @@ public class ABSCAB {
 				// perpendicular distance between evalPos and axis of wire segment
 				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
 
-				// unit vector in radial direction
-				final double eRX = rPerpX / alignedR;
-				final double eRY = rPerpY / alignedR;
-				final double eRZ = rPerpZ / alignedR;
-
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				final double rhoP = alignedR / l;
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
+				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP) / Ri;
 				
-//				double[] allRef = evalStraightWireSegmentMpMath(rhoP, zP);
-//				final double bPhi = bPrefactorL / l * allRef[1];
-				
-				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP);
-				
-				// compute cross product between e_z and e_rho to get e_phi
-				final double ePhiX = eY * eRZ - eZ * eRY;
-				final double ePhiY = eZ * eRX - eX * eRZ;
-				final double ePhiZ = eX * eRY - eY * eRX;
+				// compute cross product between e_z and R_i to get unit vector of magnetic field
+				// Thus, the term "B_phi" is also slightly misleading,
+				// since that B magnitude is actually _not_ in phi direction!
+				// Well, the actual difference should be in the angle between R_i and the radial unit vector !!!
+				final double unitX = eY * r0z - eZ * r0y;
+				final double unitY = eZ * r0x - eX * r0z;
+				final double unitZ = eX * r0y - eY * r0x;
 
 				// add contribution from wire segment to result
-				ret[0][idxEval] += bPhi * ePhiX;
-				ret[1][idxEval] += bPhi * ePhiY;
-				ret[2][idxEval] += bPhi * ePhiZ;
+				ret[0][idxEval] += bPhi * unitX;
+				ret[1][idxEval] += bPhi * unitY;
+				ret[2][idxEval] += bPhi * unitZ;
 			}
 		}
 
