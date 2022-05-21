@@ -190,12 +190,13 @@ public class ABSCAB {
 				final double rhoP = alignedR / l;
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
-				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP);
+				// alignedR in here: include cylindrical Jacobian!
+				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP) * alignedR;
 
 				// compute cross product between e_z and e_rho to get e_phi
-				final double ePhiX = eRY * eZ - eRZ * eY;
-				final double ePhiY = eRZ * eX - eRX * eZ;
-				final double ePhiZ = eRX * eY - eRY * eX;
+				final double ePhiX = eY * eRZ - eZ * eRY;
+				final double ePhiY = eZ * eRX - eX * eRZ;
+				final double ePhiZ = eX * eRY - eY * eRX;
 
 				// add contribution from wire segment to result
 				ret[0][idxEval] += bPhi * ePhiX;
@@ -711,7 +712,7 @@ public class ABSCAB {
 	static double B_phi_2(double rhoP, double zP) {
 		// works everywhere, although only derived for zP < 0 ???
 		double zPM1 = 1 - zP;
-		return (1 / (zPM1 * zPM1) - 1 / (zP * zPM1)) / 4;
+		return (1 / (zPM1 * zPM1) - 1 / (zP * zPM1)) / 2;
 
 	}
 
@@ -724,7 +725,7 @@ public class ABSCAB {
 	 */
 	static double B_phi_3(double rhoP, double zP) {
 		double zPM1 = 1 - zP;
-		return 1 / (2 * rhoP * Math.hypot(rhoP, zPM1));
+		return 1 / (rhoP * Math.hypot(rhoP, zPM1));
 	}
 
 	// near-field:
@@ -740,7 +741,7 @@ public class ABSCAB {
 
 		double den = rhoP * rhoP + zP * (zP - 1) + Ri * Rf;
 
-		return t1 / (2 * den);
+		return t1 / den;
 	}
 
 	// near-field: zP approx 1
@@ -763,7 +764,7 @@ public class ABSCAB {
 		double abm1 = 2.0 / cosGamma * (sinBetaHalf * sinBetaHalf / cosBeta + sinGammaHalf * sinGammaHalf);
 
 		// R_i*R_f - zP*(1-zP) == zP*(1-zP) * (a*b - 1)
-		double den = 2.0 * (rhoP * rhoP + zP * (1.0 - zP) * abm1);
+		double den = rhoP * rhoP + zP * (1.0 - zP) * abm1;
 
 		return t1 / den;
 	}

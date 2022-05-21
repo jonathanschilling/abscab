@@ -37,7 +37,7 @@ def B_phi(rp, zp):
     ri = Ri(rp, zp)
     rf = Rf(rp, zp)
     ri_p_rf = ri + rf
-    return ri_p_rf / (rf * (mp.power(ri_p_rf, two) - one))
+    return (ri / rf + one) * two / (mp.power(ri_p_rf, two) - one)
 
 def ieee754_to_arb(s, E, M):
 
@@ -55,7 +55,7 @@ def ieee754_to_arb(s, E, M):
 
     # compute exact representation of double precision variable
     return sign * mp.power(two, E - exponentBias) * (one + M/mantissaScale)
-    
+
 if __name__ == "__main__":
 
     testPointsFile = "../resources/testPointsStraightWireSegment.dat"
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             outFile.write("")
 
         numLines = len(lines)
-        
+
         for i,line in enumerate(lines):
 
             # skip comment lines
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
             if (i+1)%100 == 0:
                 print("line %d / %d"%(i+1, numLines))
-            
+
             parts = line.strip().split()
 
             # construct rp from sign, exponent and mantissa
@@ -93,7 +93,7 @@ if __name__ == "__main__":
             signZp     = int(parts[3].strip())
             exponentZp = int(parts[4].strip())
             mantissaZp = int(parts[5].strip())
-            zp = ieee754_to_arb(signZp, exponentZp, mantissaZp)        
+            zp = ieee754_to_arb(signZp, exponentZp, mantissaZp)
 
             # compute magnetostatic quantities: A_z, B_phi
             aZ   = A_z(rp, zp)

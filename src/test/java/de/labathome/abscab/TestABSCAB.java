@@ -8,11 +8,48 @@ import org.junit.jupiter.api.Test;
 public class TestABSCAB {
 	
 	@Test
+	public void testMagneticFieldInfiniteLineFilament() {
+		double tolerance = 1.0e-13;
+		
+		// Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+		// B(r) = mu_0 * I / (2 pi r)
+		// Test this here with:
+		// I = 123.0 A
+		// r = 0.132 m
+		// => B = 0.186 mT
+		double current = 123.0;
+		double r = 0.132;
+		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r);
+//		System.out.printf("ref bPhi = %.5e\n", bPhiRef);
+		
+		double[][] vertices = {
+				{0.0, 0.0},
+				{0.0, 0.0},
+				{-1, 1}
+		};
+		
+		double[][] evalPos = {
+				{r},
+				{0.0},
+				{0.0}
+		};
+		
+		// y component is B_phi
+		double bPhi = ABSCAB.magneticFieldPolygonFilament(vertices, current, evalPos)[1][0];
+//		System.out.printf("act bPhi = %.5e\n", bPhi);
+		
+		double relAbsErr = Math.abs(bPhi - bPhiRef) / (1.0 + Math.abs(bPhiRef));
+//		System.out.printf("raErr = %.5e\n", relAbsErr);		
+		
+		Assertions.assertTrue(relAbsErr < tolerance);
+	}
+	
+	@Test
 	public void testMagneticFieldInsideLongCoil() {
 		double tolerance = 1.0e-4;
 		
 		// Demtroeder 2, Sec. 3.2.3 ("Magnetic field of a long coil")
-		// B = mu_0 * n * I
+		// B_z = mu_0 * n * I
 		// where n is the winding density: n = N / L
 		// of a coil of N windings over a length L
 		// Example (which is tested here):
