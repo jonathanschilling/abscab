@@ -1,5 +1,7 @@
 package de.labathome.abscab;
 
+import org.junit.jupiter.params.shadow.com.univocity.parsers.common.processor.core.AbstractBatchedColumnProcessor;
+
 import aliceinnets.python.jyplot.JyPlot;
 
 public class DemoABSCAB {
@@ -18,6 +20,7 @@ public class DemoABSCAB {
 //		dumpInternalResultsCircularWireLoop();
 	}
 	
+	// TODO: works ok along axis, but off-axis needs more work !!!
 	public static void demoMcGreivy() {
 		
 		double radius = 1.23; // m
@@ -27,10 +30,18 @@ public class DemoABSCAB {
 		double[] normal = { 0.0, 0.0, 1.0 };
 		
 		double[][] evalPos = {
-				{0.0},
+				{1.0},
 				{0.0},
 				{0.0}
 		};
+		 
+		double rhoP = Math.hypot(evalPos[0][0], evalPos[1][0]);
+		double zP = 0.0;
+		double f = ABSCAB.MU_0 * current / (Math.PI * radius);
+		double bZRef1 = f * ABSCAB.circularWireLoop_B_z(rhoP, zP);
+		System.out.printf("ref B_z1= %.3e\n", bZRef1);
+		
+		// TODO: something is extremely weird here... !!!
 		
 		double bZRef = ABSCAB.magneticFieldCircularFilament(center, normal, radius, current, evalPos)[2][0];
 		System.out.printf("ref B_z = %.3e\n", bZRef);
@@ -40,45 +51,49 @@ public class DemoABSCAB {
 		// b) Polygon with points slightly offset radially outward (McGreivy correction)
 		// a) should have 2nd-order convergence; b) should have 4th-order convergence wrt. number of Polygon points
 		
-		int[] allNumPhi = {10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000};
+//		int[] allNumPhi = {10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000};
+		int[] allNumPhi = {10, 30, 100, 300, 1000, 3000};
 		int numCases = allNumPhi.length;
 		
 		double[] allBzStdErr = new double[numCases];
-		double[] allBzMcGErr = new double[numCases];
+//		double[] allBzMcGErr = new double[numCases];
 		
 		for (int i=0; i<numCases; ++i) {
 		
 	//		int numPhi = 100;
 			int numPhi = allNumPhi[i];
-			System.out.printf("work on numPhi = %d\n", numPhi);
+			System.out.printf("numPhi = %d\n", numPhi);
 			
-			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
-			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos)[2][0];
-//			System.out.printf("std B_z = %.3e\n", bZStd);
+//			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
+//			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos)[2][0];
+			
+			double bZStd = B_z_hack(evalPos[0][0], evalPos[1][0], radius, numPhi, current);
+			
+			System.out.printf("   std B_z = %.3e\n", bZStd);
 			
 			allBzStdErr[i] = Math.abs((bZStd - bZRef)/bZRef);
 					
-			// McGreivy radius correction
-			//double dPhi = 2.0 * Math.PI / (numPhi - 1);
-			double dPhi = 2.0 * Math.PI / (numPhi - 1); // spacing between points
-			
-			// TODO: This still needs some work... what exactly is alpha for the circular wire loop?
-			// |dr/ds| = 2*pi
-			// --> alpha = 1/R * (dr)^2 / 12
-			// == 4 pi^2 / (12 R)
-			double rCorr = radius * (1.0 + 4 * Math.PI * Math.PI * dPhi/ 12);
-			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
-			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos)[2][0];
+//			// McGreivy radius correction
+//			//double dPhi = 2.0 * Math.PI / (numPhi - 1);
+//			double dPhi = 2.0 * Math.PI / (numPhi - 1); // spacing between points
+//			
+//			// TODO: This still needs some work... what exactly is alpha for the circular wire loop?
+//			// |dr/ds| = 2*pi
+//			// --> alpha = 1/R * (dr)^2 / 12
+//			// == 4 pi^2 / (12 R)
+//			double rCorr = radius * (1.0 + 4 * Math.PI * Math.PI * dPhi/ 12);
+//			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
+//			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos)[2][0];
 //			System.out.printf("McG B_z = %.3e\n", bZMcG);
-			
-			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
+//			
+//			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
 		}
 		
 		JyPlot plt = new JyPlot();
 		
 		plt.figure();
 		plt.loglog(allNumPhi, allBzStdErr, ".-", "label='standard'");
-		plt.loglog(allNumPhi, allBzMcGErr, ".-", "label='McGreivy'");
+//		plt.loglog(allNumPhi, allBzMcGErr, ".-", "label='McGreivy'");
 		plt.grid(true);
 		plt.xlabel("numPhi");
 		plt.ylabel("rel. err");
@@ -90,10 +105,35 @@ public class DemoABSCAB {
 		plt.exec();
 	}
 	
-	private static double[][] polygonCircleAround0(double radius, int n) {
-		double[][] ret = new double[3][n];
-		double omega = 2.0*Math.PI / (n-1);
-		for (int i=0; i<n; ++i) {
+	private static double B_z_hack(double xEval, double yEval, double radius, double numPhi, double current) {
+		
+		double Bz = 0.0;
+		
+		double omega = 2.0*Math.PI / numPhi;
+		for (int i=0; i<numPhi; ++i) {
+			double phi1 = omega * i;
+			double x1 = radius * Math.cos(phi1);
+			double y1 = radius * Math.sin(phi1);
+			
+			double phi2 = omega * (i + 1);
+			double x2 = radius * Math.cos(phi2);
+			double y2 = radius * Math.sin(phi2);
+			
+			double Ri = Math.hypot(x1 - xEval, y1 - yEval);
+			double Rf = Math.hypot(x2 - xEval, y2 - yEval);
+			double L = Math.hypot(x1 - x2, y1 - y2);
+			
+			double scale = ABSCAB.MU_0 * current / (4.0*Math.PI);
+			Bz += scale * 2 * L * (Ri + Rf) / (Rf * ((Ri+Rf)*(Ri+Rf) - L*L)); 
+		}
+		
+		return Bz;
+	}
+	
+	private static double[][] polygonCircleAround0(double radius, int numPhi) {
+		double[][] ret = new double[3][numPhi];
+		double omega = 2.0*Math.PI / (numPhi-1);
+		for (int i=0; i<numPhi; ++i) {
 			double phi = omega * i;
 			ret[0][i] = radius * Math.cos(phi);
 			ret[1][i] = radius * Math.sin(phi);

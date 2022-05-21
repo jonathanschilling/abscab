@@ -1,7 +1,9 @@
 package de.labathome.abscab;
 
+import java.nio.charset.Charset;
 import java.util.Objects;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.util.FastMath;
 
 import de.labathome.CompleteEllipticIntegral;
@@ -190,9 +192,12 @@ public class ABSCAB {
 				final double rhoP = alignedR / l;
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
-				// alignedR in here: include cylindrical Jacobian!
-				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP); // alignedR;
-
+				
+//				double[] allRef = evalStraightWireSegmentMpMath(rhoP, zP);
+//				final double bPhi = bPrefactorL / l * allRef[1];
+				
+				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP);
+				
 				// compute cross product between e_z and e_rho to get e_phi
 				final double ePhiX = eY * eRZ - eZ * eRY;
 				final double ePhiY = eZ * eRX - eX * eRZ;
@@ -206,6 +211,67 @@ public class ABSCAB {
 		}
 
 		return ret;
+	}
+	
+	public static String binStr(double d) {
+		long l = Double.doubleToRawLongBits(d);
+		String str = Long.toBinaryString(l);
+
+		while (str.length() < 64) {
+			str = "0" + str;
+		}
+
+		return "0b" + str;
+	}
+	
+	/**
+	 * Evaluate the magnetostatic quantites of a straight wire segment using mpmath.
+	 *
+	 * @param rhoP normalized radial position
+	 * @param zP normalized vertical position
+	 * @return (A, B, eps, 1-eps, 1+eps, R_i-|z'|)
+	 */
+	public static double[] evalStraightWireSegmentMpMath(double rhoP, double zP) {
+
+		final String script = "/home/jonathan/work/publications/Magnetostatics/src/eval_straightWireSegment.py";
+
+		String rhoPStr = binStr(rhoP);
+		String zPStr = binStr(zP);
+
+		String[] commands = {
+				"python",
+				script,
+				rhoPStr,
+				zPStr
+		};
+
+		Runtime rt = Runtime.getRuntime();
+
+		try {
+			Process p = rt.exec(commands);
+
+			p.waitFor();
+			String output = IOUtils.toString(p.getInputStream(), Charset.forName("utf-8"));
+			String errorOutput = IOUtils.toString(p.getErrorStream(), Charset.forName("utf-8"));
+
+			if (p.exitValue() != 0) {
+				System.out.println("stderr: " + errorOutput);
+
+				throw new RuntimeException("return code of mpmath script was "+p.exitValue());
+			}
+
+			String[] parts = output.strip().split("\\s+");
+
+			double[] ret = new double[parts.length];
+			for (int i=0; i<parts.length; ++i) {
+				ret[i] = Double.parseDouble(parts[i].strip());
+			}
+
+			return ret;
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -409,10 +475,13 @@ public class ABSCAB {
 				rhoP = 0.0;
 			}
 			
+			double[] allRef = evalCircularWireLoopMpMath(rhoP, zP);
+			final double bZ = bPrefactor * allRef[4];
+			
 			// compute vertical component of normalized magnetic field
 			// and scale by current and mu_0
-			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
-
+			//final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
+			
 			// add contribution from wire loop to result
 			ret[0][idxEval] += bZ * eX;
 			ret[1][idxEval] += bZ * eY;
@@ -420,6 +489,57 @@ public class ABSCAB {
 		}
 
 		return ret;
+	}
+	
+	/**
+	 * Evaluate the magnetostatic quantites of a circular wire loop using mpmath.
+	 *
+	 * @param rhoP normalized radial position
+	 * @param zP normalized vertical position
+	 * @return { k^2, k_c^2, A_phi, B_rho, B_z }
+	 */
+	public static double[] evalCircularWireLoopMpMath(double rhoP, double zP) {
+
+		//final String script = "/data/jonathan/work/publications/Magnetostatics/src/eval_circularWireLoop.py";
+		final String script = "/home/jonathan/work/publications/Magnetostatics/src/eval_circularWireLoop.py";
+
+		String rhoPStr = binStr(rhoP); // Double.toString(rhoP)
+		String zPStr = binStr(zP); // Double.toString(zP)
+
+		String[] commands = {
+				"python",
+				script,
+				rhoPStr,
+				zPStr
+		};
+
+		Runtime rt = Runtime.getRuntime();
+
+		try {
+			Process p = rt.exec(commands);
+
+			p.waitFor();
+			String output = IOUtils.toString(p.getInputStream(), Charset.forName("utf-8"));
+			String errorOutput = IOUtils.toString(p.getErrorStream(), Charset.forName("utf-8"));
+
+			if (p.exitValue() != 0) {
+				System.out.println("stderr: " + errorOutput);
+
+				throw new RuntimeException("return code of mpmath script was "+p.exitValue());
+			}
+
+			String[] parts = output.strip().split("\\s+");
+
+			double[] ret = new double[parts.length];
+			for (int i=0; i<parts.length; ++i) {
+				ret[i] = Double.parseDouble(parts[i].strip());
+			}
+
+			return ret;
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

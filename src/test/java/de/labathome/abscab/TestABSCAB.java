@@ -19,7 +19,9 @@ public class TestABSCAB {
 		// => B = 0.186 mT
 		double current = 123.0;
 		double r = 0.132;
-		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r);
+		
+		// additional /r in here: include cylindrical Jacobian!
+		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r) / r;
 //		System.out.printf("ref bPhi = %.5e\n", bPhiRef);
 		
 		double[][] vertices = {
