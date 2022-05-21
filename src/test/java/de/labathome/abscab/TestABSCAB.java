@@ -90,7 +90,39 @@ public class TestABSCAB {
 		Assertions.assertTrue(relAbsErr < tolerance);
 	}
 	
-	
+	@Test
+	public void testMagneticFieldAtCenterOfWireLoop() {
+		double tolerance = 1.0e-13;
+		
+		// Demtroeder 2, Sec. 3.2.6b ("Magnetic field of a circular wire loop")
+		// B_z = mu_0 * I / (2 a)
+		// Test this here with:
+		// I = 123.0 A (loop current)
+		// a = 13.2 m (loop radius)
+		// => B = 5.85 uT
+		double current = 123.0;
+		double a = 13.2;
+		double bZRef = ABSCAB.MU_0 * current / (2.0 * a);
+		System.out.printf("ref bZ = %.5e\n", bZRef);
+		
+		double[] center = { 0.0, 0.0, 0.0 };
+		double[] normal = { 0.0, 0.0, 1.0 };
+		
+		double[][] evalPos = {
+				{0.0},
+				{0.0},
+				{0.0}
+		};
+		
+		double bZ = ABSCAB.magneticFieldCircularFilament(center, normal, a, current, evalPos)[2][0];
+		System.out.printf("act bZ = %.5e\n", bZ);
+		
+		double relAbsErr = Math.abs(bZ - bZRef) / (1.0 + Math.abs(bZRef));
+		System.out.printf("raErr = %.5e\n", relAbsErr);		
+		
+		Assertions.assertTrue(relAbsErr < tolerance);
+		
+	}
 	
 	
 	

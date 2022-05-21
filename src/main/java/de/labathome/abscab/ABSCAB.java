@@ -385,22 +385,38 @@ public class ABSCAB {
 			// perpendicular distance between evalPos and axis of wire loop
 			final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
 
-			// unit vector in radial direction
-			final double eRX = rPerpX / alignedR;
-			final double eRY = rPerpY / alignedR;
-			final double eRZ = rPerpZ / alignedR;
+			final double rhoP;
+			if (alignedR > 0.0) {
+				// radial unit vector is only defined if evaluation pos is off-axis
+				
+				// unit vector in radial direction
+				final double eRX = rPerpX / alignedR;
+				final double eRY = rPerpY / alignedR;
+				final double eRZ = rPerpZ / alignedR;
 
-			// normalized rho component of evaluation location in coordinate system of wire loop
-			final double rhoP = alignedR / radius;
+				// normalized rho component of evaluation location in coordinate system of wire loop
+				rhoP = alignedR / radius;
 
-			// compute radial and vertical components of normalized magnetic field
-			final double bRho = circularWireLoop_B_rho(rhoP, zP);
-			final double bZ = circularWireLoop_B_z(rhoP, zP);
+				// compute radial component of normalized magnetic field
+				// and scale by current and mu_0
+				final double bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP);
+				
+				// add contribution from wire loop to result
+				ret[0][idxEval] += bRho * eRX;
+				ret[1][idxEval] += bRho * eRY;
+				ret[2][idxEval] += bRho * eRZ;
+			} else {
+				rhoP = 0.0;
+			}
+			
+			// compute vertical component of normalized magnetic field
+			// and scale by current and mu_0
+			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
 
-			// add contribution from wire loop to result and scale by current and mu_0
-			ret[0][idxEval] += (bRho * eRX + bZ * eX) * bPrefactor;
-			ret[1][idxEval] += (bRho * eRY + bZ * eY) * bPrefactor;
-			ret[2][idxEval] += (bRho * eRZ + bZ * eZ) * bPrefactor;
+			// add contribution from wire loop to result
+			ret[0][idxEval] += bZ * eX;
+			ret[1][idxEval] += bZ * eY;
+			ret[2][idxEval] += bZ * eZ;
 		}
 
 		return ret;

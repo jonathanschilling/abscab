@@ -1,13 +1,66 @@
 package de.labathome.abscab;
 
+import aliceinnets.python.jyplot.JyPlot;
+
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		demoStraightWireSegment();
-		demoCircularWireLoop();
-
-		dumpInternalResultsStraightWireSegment();
-		dumpInternalResultsCircularWireLoop();
+		demoMagneticFieldOnAxisOfCircularWireLoop();
+		
+//		demoStraightWireSegment();
+//		demoCircularWireLoop();
+//
+//		dumpInternalResultsStraightWireSegment();
+//		dumpInternalResultsCircularWireLoop();
+	}
+	
+	public static void demoMagneticFieldOnAxisOfCircularWireLoop() {
+		
+		double current = 123.0; // A
+		double radius = 0.2; // m
+		double z0 = -1.0; // m
+		double z1 =  1.0; // m
+		
+		double[] center = { 0.0, 0.0, 0.0 };
+		double[] normal = { 0.0, 0.0, 1.0 };
+		
+		int n = 100;
+		double deltaZ = (z1-z0)/(n-1);
+		
+		double[] z = new double[n];
+		double[] B_z_ref = new double[n];
+		double[] B_z = new double[n];
+		for (int i = 0; i<n; ++i) {
+			z[i] = z0 + i * deltaZ;
+			
+			// from Demtroeder 2, Sec. 3.2.6b
+			double d = z[i] * z[i] + radius*radius;
+			B_z_ref[i] = ABSCAB.MU_0 * current * radius*radius / (2 * Math.sqrt(d)*d);
+			
+			double[][] evalPos = {
+					{0.0},
+					{0.0},
+					{z[i]}
+			};
+			
+			B_z[i] = ABSCAB.magneticFieldCircularFilament(center, normal, radius, current, evalPos)[2][0];
+		}
+		
+		JyPlot plt = new JyPlot();
+		
+		plt.figure();
+		plt.plot(z, B_z_ref, "o-", "label='ref'");
+		plt.plot(z, B_z,     "x--", "label='ABSCAB'");
+		plt.grid(true);
+		plt.legend("loc='upper right'");
+		plt.xlabel("z / m");
+		plt.ylabel("B_z / T");
+		plt.ticklabel_format("axis='y', style='sci', scilimits=(-2,2)");
+		plt.title("B_z along the axis of a circular wire loop");
+		plt.tight_layout();
+		
+		plt.show();
+		plt.exec();
 	}
 
 	public static void demoStraightWireSegment() {
