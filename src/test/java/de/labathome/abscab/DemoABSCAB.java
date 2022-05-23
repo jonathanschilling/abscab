@@ -75,13 +75,15 @@ public class DemoABSCAB {
 		
 		double[][] resultTable = new double[3][numCases];
 		
+		boolean useStandardSummation = false;
+		
 		for (int i=0; i<numCases; ++i) {
 		
 			int numPhi = allNumPhi[i];
 			System.out.printf("numPhi = %d\n", numPhi);
 			
 			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
-			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos)[2][0];
+			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos, useStandardSummation)[2][0];
 			System.out.printf("ABSCAB B_z = %.3e\n", bZStd);			
 			allBzStdErr[i] = Math.abs((bZStd - bZRef)/bZRef);
 					
@@ -96,7 +98,7 @@ public class DemoABSCAB {
 			double rCorr = radius * (1.0 + dPhi*dPhi/ 12);
 			
 			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
-			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos)[2][0];
+			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos, useStandardSummation)[2][0];
 			System.out.printf("McGrvy B_z = %.3e\n", bZMcG);
 			
 			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
@@ -106,7 +108,11 @@ public class DemoABSCAB {
 			resultTable[2][i] = allBzMcGErr[i];
 		}
 		
-		Util.dumpToFile(resultTable, "data/convergenceMcGreivy_Accumulator.dat");
+		if (useStandardSummation) {
+			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
+		} else {
+			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
+		}
 		
 		JyPlot plt = new JyPlot();
 		

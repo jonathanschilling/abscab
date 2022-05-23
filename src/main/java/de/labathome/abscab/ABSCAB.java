@@ -34,6 +34,24 @@ public class ABSCAB {
 	 *         vector potential evaluated at the given locations (in Tm)
 	 */
 	public static double[][] vectorPotentialPolygonFilament(double[][] vertices, double current, double[][] evalPos) {
+		boolean useStandardSummation = false;
+		return vectorPotentialPolygonFilament(vertices, current, evalPos, useStandardSummation);
+	}
+	
+	/**
+	 * Compute the magnetic vector potential of a polygon filament.
+	 *
+	 * It is not assumed that the polygon is closed. Pass the first point again at
+	 * the end of the {@code vertices} array to model a closed loop.
+	 *
+	 * @param vertices [3: x, y, z][nVertices] points along filament (in meters)
+	 * @param current  wire current (in A)
+	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
+	 * @param useStandardSummation if true, use a standard running sum instead of Kahan-Babuska summation (default: false)
+	 * @return [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
+	 *         vector potential evaluated at the given locations (in Tm)
+	 */
+	public static double[][] vectorPotentialPolygonFilament(double[][] vertices, double current, double[][] evalPos, boolean useStandardSummation) {
 		final int nVertices = validateCartesianVectorInput(vertices);
 		if (nVertices < 2) {
 			throw new RuntimeException("need at least 2 vertices, but only got " + nVertices);
@@ -44,14 +62,25 @@ public class ABSCAB {
 		final double aPrefactor = MU_0_BY_2_PI * current;
 
 		// setup compensated summation objects
-		CompensatedSummation[] aXSum = new CompensatedSummation[nEvalPos];
-		CompensatedSummation[] aYSum = new CompensatedSummation[nEvalPos];
-		CompensatedSummation[] aZSum = new CompensatedSummation[nEvalPos];
-		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-			aXSum[idxEval] = new CompensatedSummation();
-			aYSum[idxEval] = new CompensatedSummation();
-			aZSum[idxEval] = new CompensatedSummation();
+		final CompensatedSummation[] aXSum;
+		final CompensatedSummation[] aYSum;
+		final CompensatedSummation[] aZSum;
+		if (useStandardSummation) {
+			aXSum = null;
+			aYSum = null;
+			aZSum = null;
+		} else {
+			aXSum = new CompensatedSummation[nEvalPos];
+			aYSum = new CompensatedSummation[nEvalPos];
+			aZSum = new CompensatedSummation[nEvalPos];
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				aXSum[idxEval] = new CompensatedSummation();
+				aYSum[idxEval] = new CompensatedSummation();
+				aZSum[idxEval] = new CompensatedSummation();
+			}
 		}
+		
+		final double[][] ret = new double[3][nEvalPos];
 		
 		for (int i = 0; i < nVertices - 1; ++i) {
 			final int j = i + 1;
@@ -109,22 +138,30 @@ public class ABSCAB {
 				final double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
 
 				// add contribution from wire segment to result
-				aXSum[idxEval].add(aParallel * eX);
-				aYSum[idxEval].add(aParallel * eY);
-				aZSum[idxEval].add(aParallel * eZ);
+				if (useStandardSummation) {
+					ret[0][idxEval] += aParallel * eX;
+					ret[1][idxEval] += aParallel * eY;
+					ret[2][idxEval] += aParallel * eZ;
+				} else {
+					aXSum[idxEval].add(aParallel * eX);
+					aYSum[idxEval].add(aParallel * eY);
+					aZSum[idxEval].add(aParallel * eZ);
+				}
 			}
 		}
 		
-		final double[][] ret = new double[3][nEvalPos];
-		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-			ret[0][idxEval] = aXSum[idxEval].getSum();
-			ret[1][idxEval] = aYSum[idxEval].getSum();
-			ret[2][idxEval] = aZSum[idxEval].getSum();
+		if (!useStandardSummation) {
+			// obtain compensated sums from summation objects
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				ret[0][idxEval] = aXSum[idxEval].getSum();
+				ret[1][idxEval] = aYSum[idxEval].getSum();
+				ret[2][idxEval] = aZSum[idxEval].getSum();
+			}
 		}
 
 		return ret;
 	}
-
+	
 	/**
 	 * Compute the magnetic field of a polygon filament.
 	 *
@@ -135,6 +172,21 @@ public class ABSCAB {
 	 *         field evaluated at the given locations (in T)
 	 */
 	public static double[][] magneticFieldPolygonFilament(double[][] vertices, double current, double[][] evalPos) {
+		boolean useStandardSummation = false;
+		return magneticFieldPolygonFilament(vertices, current, evalPos, useStandardSummation);
+	}
+
+	/**
+	 * Compute the magnetic field of a polygon filament.
+	 *
+	 * @param vertices[3: x, y, z][nVertices] points along filament (in meters)
+	 * @param current  wire current (in A)
+	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
+	 * @param useStandardSummation if true, use a standard running sum instead of Kahan-Babuska summation (default: false)
+	 * @return [3: B_x, B_y, B_z][nEvalPos] Cartesian components of the magnetic
+	 *         field evaluated at the given locations (in T)
+	 */
+	public static double[][] magneticFieldPolygonFilament(double[][] vertices, double current, double[][] evalPos, boolean useStandardSummation) {
 		int nVertices = validateCartesianVectorInput(vertices);
 		if (nVertices < 2) {
 			throw new RuntimeException("need at least 2 vertices, but only got " + nVertices);
@@ -146,14 +198,25 @@ public class ABSCAB {
 		final double bPrefactorL = MU_0_BY_4_PI * current;
 
 		// setup compensated summation objects
-		CompensatedSummation[] bXSum = new CompensatedSummation[nEvalPos];
-		CompensatedSummation[] bYSum = new CompensatedSummation[nEvalPos];
-		CompensatedSummation[] bZSum = new CompensatedSummation[nEvalPos];
-		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-			bXSum[idxEval] = new CompensatedSummation();
-			bYSum[idxEval] = new CompensatedSummation();
-			bZSum[idxEval] = new CompensatedSummation();
+		final CompensatedSummation[] bXSum;
+		final CompensatedSummation[] bYSum;
+		final CompensatedSummation[] bZSum;
+		if (useStandardSummation) {
+			bXSum = null;
+			bYSum = null;
+			bZSum = null;
+		} else {
+			bXSum = new CompensatedSummation[nEvalPos];
+			bYSum = new CompensatedSummation[nEvalPos];
+			bZSum = new CompensatedSummation[nEvalPos];
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				bXSum[idxEval] = new CompensatedSummation();
+				bYSum[idxEval] = new CompensatedSummation();
+				bZSum[idxEval] = new CompensatedSummation();
+			}
 		}
+		
+		final double[][] ret = new double[3][nEvalPos];
 
 		for (int i = 0; i < nVertices - 1; ++i) {
 			final int j = i + 1;
@@ -221,18 +284,25 @@ public class ABSCAB {
 				final double unitZ = eX * r0y - eY * r0x;
 
 				// add contribution from wire segment to result
-				bXSum[idxEval].add(bPhi * unitX);
-				bYSum[idxEval].add(bPhi * unitY);
-				bZSum[idxEval].add(bPhi * unitZ);
+				if (useStandardSummation) {
+					ret[0][idxEval] += bPhi * unitX;
+					ret[1][idxEval] += bPhi * unitY;
+					ret[2][idxEval] += bPhi * unitZ;
+				} else {
+					bXSum[idxEval].add(bPhi * unitX);
+					bYSum[idxEval].add(bPhi * unitY);
+					bZSum[idxEval].add(bPhi * unitZ);
+				}
 			}
 		}
 
-		// obtain compensated sums from summation objects
-		final double[][] ret = new double[3][nEvalPos];
-		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-			ret[0][idxEval] = bXSum[idxEval].getSum();
-			ret[1][idxEval] = bYSum[idxEval].getSum();
-			ret[2][idxEval] = bZSum[idxEval].getSum();
+		if (!useStandardSummation) {
+			// obtain compensated sums from summation objects
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				ret[0][idxEval] = bXSum[idxEval].getSum();
+				ret[1][idxEval] = bYSum[idxEval].getSum();
+				ret[2][idxEval] = bZSum[idxEval].getSum();
+			}
 		}
 		
 		return ret;
