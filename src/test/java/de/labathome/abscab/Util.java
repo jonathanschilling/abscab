@@ -100,27 +100,22 @@ public class Util {
 	public static void dumpTestPoints(double[] testPointsRp, double[] testPointsZp, String filename) {
 		int numCases = testPointsRp.length;
 
-		//                          64   60   56   52   48   44   40   36   32   28   24   20   16   12   8    4
-		final long signMask     = 0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
-		final long exponentMask = 0b0111_1111_1111_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
-		final long mantissaMask = 0b0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111L;
-
 		File outFile = new File(filename);
 		try (PrintWriter pw = new PrintWriter(outFile)) {
 			pw.println("# rp: sign bit, exponent E, mantiassa M; zp: sign bit, exponent E, mantiassa M");
 
 			for (int i = 0; i < numCases; ++i) {
 
-				long rpBits = Double.doubleToRawLongBits(testPointsRp[i]);
-				long zpBits = Double.doubleToRawLongBits(testPointsZp[i]);
+				long[] rpParts = doubleParts(testPointsRp[i]);
+				long[] zpParts = doubleParts(testPointsZp[i]);
 
-				long signRp     = (rpBits &     signMask) >>> 63;
-				long exponentRp = (rpBits & exponentMask) >>> 52;
-				long mantissaRp = (rpBits & mantissaMask);
+				long signRp     = rpParts[0];
+				long exponentRp = rpParts[1];
+				long mantissaRp = rpParts[2];
 
-				long signZp     = (zpBits &     signMask) >>> 63;
-				long exponentZp = (zpBits & exponentMask) >>> 52;
-				long mantissaZp = (zpBits & mantissaMask);
+				long signZp     = zpParts[0];
+				long exponentZp = zpParts[1];
+				long mantissaZp = zpParts[2];
 
 				pw.printf(Locale.ENGLISH, "%1d %4d %16d %1d %4d %16d\n",
 						signRp, exponentRp, mantissaRp,
@@ -131,6 +126,35 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Decompose a IEEE 754 double precision variable F as:
+	 * <pre>
+	 * F = (-1)^s * 2^{E - 1023} * (1 + M/2^{52})
+	 * </pre>
+	 * where:
+	 * <pre>
+	 * s = 0, 1            ( 1 bit )
+	 * E = 0, 1, ..., 2047 (11 bits)
+	 * M = 0, 1, ...       (52 bits)
+	 * </pre>
+	 * @param f variable to decompose
+	 * @return {s, E, M}
+	 */
+	public static long[] doubleParts(double f) {
+		//                          64   60   56   52   48   44   40   36   32   28   24   20   16   12   8    4
+		final long signMask     = 0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
+		final long exponentMask = 0b0111_1111_1111_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
+		final long mantissaMask = 0b0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111L;
+		
+		long bits = Double.doubleToRawLongBits(f);
+
+		long sign     = (bits &     signMask) >>> 63;
+		long exponent = (bits & exponentMask) >>> 52;
+		long mantissa = (bits & mantissaMask);
+		
+		return new long[] {sign, exponent, mantissa};
+	}
+	
 	/**
 	 * Load columns of data from a text file.
 	 *

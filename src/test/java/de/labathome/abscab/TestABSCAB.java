@@ -18,16 +18,14 @@ public class TestABSCAB {
 		// r = 0.132 m
 		// => B = 0.186 mT
 		double current = 123.0;
-		double r = 0.132;
-		
-		// additional /r in here: include cylindrical Jacobian!
-		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r) / r;
+		double r = 0.132;		
+		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r);
 //		System.out.printf("ref bPhi = %.5e\n", bPhiRef);
 		
 		double[][] vertices = {
 				{0.0, 0.0},
 				{0.0, 0.0},
-				{-1, 1}
+				{-1e6, 1e6}
 		};
 		
 		double[][] evalPos = {
@@ -105,7 +103,7 @@ public class TestABSCAB {
 		double current = 123.0;
 		double a = 13.2;
 		double bZRef = ABSCAB.MU_0 * current / (2.0 * a);
-		System.out.printf("ref bZ = %.5e\n", bZRef);
+//		System.out.printf("ref bZ = %.5e\n", bZRef);
 		
 		double[] center = { 0.0, 0.0, 0.0 };
 		double[] normal = { 0.0, 0.0, 1.0 };
@@ -117,17 +115,13 @@ public class TestABSCAB {
 		};
 		
 		double bZ = ABSCAB.magneticFieldCircularFilament(center, normal, a, current, evalPos)[2][0];
-		System.out.printf("act bZ = %.5e\n", bZ);
+//		System.out.printf("act bZ = %.5e\n", bZ);
 		
 		double relAbsErr = Math.abs(bZ - bZRef) / (1.0 + Math.abs(bZRef));
-		System.out.printf("raErr = %.5e\n", relAbsErr);		
+//		System.out.printf("raErr = %.5e\n", relAbsErr);		
 		
-		Assertions.assertTrue(relAbsErr < tolerance);
-		
-	}
-	
-	
-	
+		Assertions.assertTrue(relAbsErr < tolerance);	
+	}	
 
 	@Test
 	public void testStraightWireSegment_A_z() {

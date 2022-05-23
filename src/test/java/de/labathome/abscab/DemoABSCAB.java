@@ -5,6 +5,9 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
+		
+//		run();
+		
 		demoMcGreivy();
 //		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
@@ -16,6 +19,22 @@ public class DemoABSCAB {
 //
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+	
+	public static void run() {
+		int s = 0;
+		int E = 127;
+		int M = 1432344328;
+		
+		double f = Math.pow(-1, s) * Math.pow(2.0, E - 1023) * (1 + M / Math.pow(2, 52));
+		
+		int exponent = Math.getExponent(f) + 1023;
+		
+		long[] fParts = Util.doubleParts(f);
+		
+		System.out.printf("s: %d =?= %d\n", s, fParts[0]);
+		System.out.printf("E: %d =?= %d =?= %d\n", E, fParts[1], exponent);
+		System.out.printf("M: %d =?= %d\n", M, fParts[2]);
 	}
 	
 	public static void demoMcGreivy() {
@@ -38,18 +57,26 @@ public class DemoABSCAB {
 		// mimic circular wire loop as:
 		// a) Polygon with points on the circule to be mimiced
 		// b) Polygon with points slightly offset radially outward (McGreivy correction)
-		// a) should have 2nd-order convergence; b) should have 4th-order convergence wrt. number of Polygon points
+		// --> a) should have 2nd-order convergence;
+		//     b) should have 4th-order convergence wrt. number of Polygon points
 		
-		int[] allNumPhi = {10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000};
+		int[] allNumPhi = {
+				10, 30, 100, 300, 1000, 3000,
+				10_000, 30_000, 100_000, 300_000,
+				1_000_000, 3_000_000,
+				10_000_000, 30_000_000,
+				100_000_000, 300_000_000 //, 1_000_000_000
+		};
 //		int[] allNumPhi = {10, 30, 100, 300, 1000, 3000};
 		int numCases = allNumPhi.length;
 		
 		double[] allBzStdErr = new double[numCases];
 		double[] allBzMcGErr = new double[numCases];
 		
+		double[][] resultTable = new double[3][numCases];
+		
 		for (int i=0; i<numCases; ++i) {
 		
-	//		int numPhi = 100;
 			int numPhi = allNumPhi[i];
 			System.out.printf("numPhi = %d\n", numPhi);
 			
@@ -73,7 +100,13 @@ public class DemoABSCAB {
 			System.out.printf("McGrvy B_z = %.3e\n", bZMcG);
 			
 			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
+			
+			resultTable[0][i] = numPhi;
+			resultTable[1][i] = allBzStdErr[i];
+			resultTable[2][i] = allBzMcGErr[i];
 		}
+		
+		Util.dumpToFile(resultTable, "data/convergenceMcGreivy_Accumulator.dat");
 		
 		JyPlot plt = new JyPlot();
 		
@@ -85,6 +118,7 @@ public class DemoABSCAB {
 		plt.ylabel("rel. err");
 		plt.legend("loc='upper right'");
 		plt.title("McGreivy method for circular loop");
+		plt.ylim(new double[] {1e-16, 1});
 		plt.tight_layout();
 		
 		plt.show();

@@ -1,9 +1,7 @@
 package de.labathome.abscab;
 
-import java.nio.charset.Charset;
 import java.util.Objects;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.util.FastMath;
 
 import de.labathome.CompleteEllipticIntegral;
@@ -45,8 +43,16 @@ public class ABSCAB {
 
 		final double aPrefactor = MU_0_BY_2_PI * current;
 
-		final double[][] ret = new double[3][nEvalPos];
-
+		// setup compensated summation objects
+		CompensatedSummation[] aXSum = new CompensatedSummation[nEvalPos];
+		CompensatedSummation[] aYSum = new CompensatedSummation[nEvalPos];
+		CompensatedSummation[] aZSum = new CompensatedSummation[nEvalPos];
+		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+			aXSum[idxEval] = new CompensatedSummation();
+			aYSum[idxEval] = new CompensatedSummation();
+			aZSum[idxEval] = new CompensatedSummation();
+		}
+		
 		for (int i = 0; i < nVertices - 1; ++i) {
 			final int j = i + 1;
 
@@ -100,13 +106,20 @@ public class ABSCAB {
 				final double rhoP = alignedR / l;
 
 				// compute parallel component of magnetic vector potential, including current and mu_0
-				final double aZ = aPrefactor * straightWireSegment_A_z(rhoP, zP);
+				final double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
 
 				// add contribution from wire segment to result
-				ret[0][idxEval] += aZ * eX;
-				ret[1][idxEval] += aZ * eY;
-				ret[2][idxEval] += aZ * eZ;
+				aXSum[idxEval].add(aParallel * eX);
+				aYSum[idxEval].add(aParallel * eY);
+				aZSum[idxEval].add(aParallel * eZ);
 			}
+		}
+		
+		final double[][] ret = new double[3][nEvalPos];
+		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+			ret[0][idxEval] = aXSum[idxEval].getSum();
+			ret[1][idxEval] = aYSum[idxEval].getSum();
+			ret[2][idxEval] = aZSum[idxEval].getSum();
 		}
 
 		return ret;
@@ -132,7 +145,15 @@ public class ABSCAB {
 		// needs additional division by length of wire segment!
 		final double bPrefactorL = MU_0_BY_4_PI * current;
 
-		final double[][] ret = new double[3][nEvalPos];
+		// setup compensated summation objects
+		CompensatedSummation[] bXSum = new CompensatedSummation[nEvalPos];
+		CompensatedSummation[] bYSum = new CompensatedSummation[nEvalPos];
+		CompensatedSummation[] bZSum = new CompensatedSummation[nEvalPos];
+		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+			bXSum[idxEval] = new CompensatedSummation();
+			bYSum[idxEval] = new CompensatedSummation();
+			bZSum[idxEval] = new CompensatedSummation();
+		}
 
 		for (int i = 0; i < nVertices - 1; ++i) {
 			final int j = i + 1;
@@ -158,7 +179,7 @@ public class ABSCAB {
 			final double eZ = dz / l;
 
 			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-
+				
 				// R_i: vector from start of wire segment to eval pos
 				final double r0x = evalPos[0][idxEval] - vertices[0][i];
 				final double r0y = evalPos[1][idxEval] - vertices[1][i];
@@ -200,76 +221,23 @@ public class ABSCAB {
 				final double unitZ = eX * r0y - eY * r0x;
 
 				// add contribution from wire segment to result
-				ret[0][idxEval] += bPhi * unitX;
-				ret[1][idxEval] += bPhi * unitY;
-				ret[2][idxEval] += bPhi * unitZ;
+				bXSum[idxEval].add(bPhi * unitX);
+				bYSum[idxEval].add(bPhi * unitY);
+				bZSum[idxEval].add(bPhi * unitZ);
 			}
 		}
 
+		// obtain compensated sums from summation objects
+		final double[][] ret = new double[3][nEvalPos];
+		for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+			ret[0][idxEval] = bXSum[idxEval].getSum();
+			ret[1][idxEval] = bYSum[idxEval].getSum();
+			ret[2][idxEval] = bZSum[idxEval].getSum();
+		}
+		
 		return ret;
 	}
 	
-	public static String binStr(double d) {
-		long l = Double.doubleToRawLongBits(d);
-		String str = Long.toBinaryString(l);
-
-		while (str.length() < 64) {
-			str = "0" + str;
-		}
-
-		return "0b" + str;
-	}
-	
-	/**
-	 * Evaluate the magnetostatic quantites of a straight wire segment using mpmath.
-	 *
-	 * @param rhoP normalized radial position
-	 * @param zP normalized vertical position
-	 * @return (A, B, eps, 1-eps, 1+eps, R_i-|z'|)
-	 */
-	public static double[] evalStraightWireSegmentMpMath(double rhoP, double zP) {
-
-		final String script = "/home/jonathan/work/publications/Magnetostatics/src/eval_straightWireSegment.py";
-
-		String rhoPStr = binStr(rhoP);
-		String zPStr = binStr(zP);
-
-		String[] commands = {
-				"python",
-				script,
-				rhoPStr,
-				zPStr
-		};
-
-		Runtime rt = Runtime.getRuntime();
-
-		try {
-			Process p = rt.exec(commands);
-
-			p.waitFor();
-			String output = IOUtils.toString(p.getInputStream(), Charset.forName("utf-8"));
-			String errorOutput = IOUtils.toString(p.getErrorStream(), Charset.forName("utf-8"));
-
-			if (p.exitValue() != 0) {
-				System.out.println("stderr: " + errorOutput);
-
-				throw new RuntimeException("return code of mpmath script was "+p.exitValue());
-			}
-
-			String[] parts = output.strip().split("\\s+");
-
-			double[] ret = new double[parts.length];
-			for (int i=0; i<parts.length; ++i) {
-				ret[i] = Double.parseDouble(parts[i].strip());
-			}
-
-			return ret;
-
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	/**
 	 * Compute the magnetic vector potential of a circular wire loop.
 	 *
@@ -471,12 +439,9 @@ public class ABSCAB {
 				rhoP = 0.0;
 			}
 			
-			double[] allRef = evalCircularWireLoopMpMath(rhoP, zP);
-			final double bZ = bPrefactor * allRef[4];
-			
 			// compute vertical component of normalized magnetic field
 			// and scale by current and mu_0
-			//final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
+			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
 			
 			// add contribution from wire loop to result
 			ret[0][idxEval] += bZ * eX;
@@ -485,57 +450,6 @@ public class ABSCAB {
 		}
 
 		return ret;
-	}
-	
-	/**
-	 * Evaluate the magnetostatic quantites of a circular wire loop using mpmath.
-	 *
-	 * @param rhoP normalized radial position
-	 * @param zP normalized vertical position
-	 * @return { k^2, k_c^2, A_phi, B_rho, B_z }
-	 */
-	public static double[] evalCircularWireLoopMpMath(double rhoP, double zP) {
-
-		//final String script = "/data/jonathan/work/publications/Magnetostatics/src/eval_circularWireLoop.py";
-		final String script = "/home/jonathan/work/publications/Magnetostatics/src/eval_circularWireLoop.py";
-
-		String rhoPStr = binStr(rhoP); // Double.toString(rhoP)
-		String zPStr = binStr(zP); // Double.toString(zP)
-
-		String[] commands = {
-				"python",
-				script,
-				rhoPStr,
-				zPStr
-		};
-
-		Runtime rt = Runtime.getRuntime();
-
-		try {
-			Process p = rt.exec(commands);
-
-			p.waitFor();
-			String output = IOUtils.toString(p.getInputStream(), Charset.forName("utf-8"));
-			String errorOutput = IOUtils.toString(p.getErrorStream(), Charset.forName("utf-8"));
-
-			if (p.exitValue() != 0) {
-				System.out.println("stderr: " + errorOutput);
-
-				throw new RuntimeException("return code of mpmath script was "+p.exitValue());
-			}
-
-			String[] parts = output.strip().split("\\s+");
-
-			double[] ret = new double[parts.length];
-			for (int i=0; i<parts.length; ++i) {
-				ret[i] = Double.parseDouble(parts[i].strip());
-			}
-
-			return ret;
-
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
