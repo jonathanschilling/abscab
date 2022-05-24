@@ -34,10 +34,12 @@ def A_z(rp, zp):
     return mp.atanh(swlEps(rp, zp))
 
 def B_phi(rp, zp):
+    if rp == zero:
+        return zero
     ri = Ri(rp, zp)
     rf = Rf(rp, zp)
     ri_p_rf = ri + rf
-    return (one / ri + one / rf) * rp / (ri*rf + rp*rp + zp*(zp-one))
+    return (one / ri + one / rf) * rp / (ri*rf + rp*rp + zp * (zp - one))
 
 def ieee754_to_arb(s, E, M):
 
