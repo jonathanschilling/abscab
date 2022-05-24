@@ -5,20 +5,19 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
+		//		run();
 		
-//		run();
-		
-		demoMcGreivy();
+//		demoMcGreivy();
 //		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 		
-//		demoStraightWireSegment();
-//		demoCircularWireLoop();
-//
-//		dumpInternalResultsStraightWireSegment();
-//		dumpInternalResultsCircularWireLoop();
+		demoStraightWireSegment();
+		demoCircularWireLoop();
+
+		dumpInternalResultsStraightWireSegment();
+		dumpInternalResultsCircularWireLoop();
 	}
 	
 	public static void run() {
@@ -459,7 +458,6 @@ public class DemoABSCAB {
 		double[] A_z_6c              = new double[numCases];
 		double[] A_z_1               = new double[numCases];
 
-		double[] B_phi_2 = new double[numCases];
 		double[] B_phi_3 = new double[numCases];
 		double[] B_phi_4 = new double[numCases];
 		double[] B_phi_5 = new double[numCases];
@@ -475,7 +473,6 @@ public class DemoABSCAB {
 			A_z_6c[i]              = ABSCAB.A_z_6c(rhoP, zP);
 			A_z_1[i]               = ABSCAB.A_z_1(rhoP, zP);
 
-			B_phi_2[i] = ABSCAB.B_phi_2(rhoP, zP);
 			B_phi_3[i] = ABSCAB.B_phi_3(rhoP, zP);
 			B_phi_4[i] = ABSCAB.B_phi_4(rhoP, zP);
 			B_phi_5[i] = ABSCAB.B_phi_5(rhoP, zP);
@@ -489,7 +486,6 @@ public class DemoABSCAB {
 		Util.dumpToFile(A_z_6c,              "data/StraightWireSegment_A_z_6c_Java.dat");
 		Util.dumpToFile(A_z_1,               "data/StraightWireSegment_A_z_1_Java.dat");
 
-		Util.dumpToFile(B_phi_2, "data/StraightWireSegment_B_phi_2_Java.dat");
 		Util.dumpToFile(B_phi_3, "data/StraightWireSegment_B_phi_3_Java.dat");
 		Util.dumpToFile(B_phi_4, "data/StraightWireSegment_B_phi_4_Java.dat");
 		Util.dumpToFile(B_phi_5, "data/StraightWireSegment_B_phi_5_Java.dat");

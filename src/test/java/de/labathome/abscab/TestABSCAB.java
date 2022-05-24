@@ -9,7 +9,7 @@ public class TestABSCAB {
 	
 	@Test
 	public void testMagneticFieldInfiniteLineFilament() {
-		double tolerance = 1.0e-13;
+		double tolerance = 1.0e-15;
 		
 		// Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
 		// B(r) = mu_0 * I / (2 pi r)
@@ -18,7 +18,7 @@ public class TestABSCAB {
 		// r = 0.132 m
 		// => B = 0.186 mT
 		double current = 123.0;
-		double r = 0.132;		
+		double r = 0.132;
 		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r);
 //		System.out.printf("ref bPhi = %.5e\n", bPhiRef);
 		
@@ -36,6 +36,35 @@ public class TestABSCAB {
 		
 		// y component is B_phi
 		double bPhi = ABSCAB.magneticFieldPolygonFilament(vertices, current, evalPos)[1][0];
+//		System.out.printf("act bPhi = %.5e\n", bPhi);
+		
+		double relAbsErr = Math.abs(bPhi - bPhiRef) / (1.0 + Math.abs(bPhiRef));
+//		System.out.printf("raErr = %.5e\n", relAbsErr);		
+		
+		Assertions.assertTrue(relAbsErr < tolerance);
+	}
+	
+	@Test
+	public void testBPhiInfiniteLineFilament() {
+		double tolerance = 1.0e-15;
+		
+		// Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+		// B(r) = mu_0 * I / (2 pi r)
+		// Test this here with:
+		// I = 123.0 A
+		// r = 0.132 m
+		// => B = 0.186 mT
+		double current = 123.0;
+		double r = 0.132;
+		double bPhiRef = ABSCAB.MU_0 * current / (2.0 * Math.PI * r);
+//		System.out.printf("ref bPhi = %.5e\n", bPhiRef);
+		
+		// half the length of the wire segment
+		double halfL = 1e6;
+		double L = 2*halfL;
+		double rhoP = r / L;
+		double zP = halfL / L;
+		double bPhi = ABSCAB.MU_0 * current / (4.0 * Math.PI * L) * ABSCAB.straightWireSegment_B_phi(rhoP, zP);
 //		System.out.printf("act bPhi = %.5e\n", bPhi);
 		
 		double relAbsErr = Math.abs(bPhi - bPhiRef) / (1.0 + Math.abs(bPhiRef));

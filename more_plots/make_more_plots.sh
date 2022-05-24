@@ -28,8 +28,7 @@ do
     "${i} of Straight Wire Segment (Java)"
 done
 
-for i in B_phi_2 \
-         B_phi_3 \
+for i in B_phi_3 \
          B_phi_4 \
          B_phi_5
 do

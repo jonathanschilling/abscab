@@ -37,7 +37,7 @@ def B_phi(rp, zp):
     ri = Ri(rp, zp)
     rf = Rf(rp, zp)
     ri_p_rf = ri + rf
-    return (ri / rf + one) * two / (mp.power(ri_p_rf, two) - one)
+    return (one / ri + one / rf) * rp / (ri*rf + rp*rp + zp*(zp-one))
 
 def ieee754_to_arb(s, E, M):
 

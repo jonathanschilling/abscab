@@ -236,6 +236,8 @@ public class ABSCAB {
 			// length of wire segment
 			final double l = Math.sqrt(l2);
 
+			double bPrefactor = bPrefactorL / l;
+			
 			// unit vector parallel to wire segment
 			final double eX = dx / l;
 			final double eY = dy / l;
@@ -248,8 +250,6 @@ public class ABSCAB {
 				final double r0y = evalPos[1][idxEval] - vertices[1][i];
 				final double r0z = evalPos[2][idxEval] - vertices[2][i];
 				
-				double Ri = Math.sqrt(r0x*r0x + r0y*r0y + r0z*r0z);
-
 				// z position along axis of wire segment
 				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
 
@@ -269,29 +269,35 @@ public class ABSCAB {
 				// perpendicular distance between evalPos and axis of wire segment
 				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
 
-				// normalized rho component of evaluation location in coordinate system of wire segment
-				final double rhoP = alignedR / l;
-
-				// compute tangential component of magnetic vector potential, including current and mu_0
-				final double bPhi = bPrefactorL / l * straightWireSegment_B_phi(rhoP, zP) / Ri;
-				
-				// compute cross product between e_z and R_i to get unit vector of magnetic field
-				// Thus, the term "B_phi" is also slightly misleading,
-				// since that B magnitude is actually _not_ in phi direction!
-				// Well, the actual difference should be in the angle between R_i and the radial unit vector !!!
-				final double unitX = eY * r0z - eZ * r0y;
-				final double unitY = eZ * r0x - eX * r0z;
-				final double unitZ = eX * r0y - eY * r0x;
-
-				// add contribution from wire segment to result
-				if (useStandardSummation) {
-					ret[0][idxEval] += bPhi * unitX;
-					ret[1][idxEval] += bPhi * unitY;
-					ret[2][idxEval] += bPhi * unitZ;
-				} else {
-					bXSum[idxEval].add(bPhi * unitX);
-					bYSum[idxEval].add(bPhi * unitY);
-					bZSum[idxEval].add(bPhi * unitZ);
+				// B_phi is zero along axis of filament
+				if (alignedR > 0.0) {
+					
+					// normalized rho component of evaluation location in coordinate system of wire segment
+					final double rhoP = alignedR / l;
+	
+					// compute tangential component of magnetic vector potential, including current and mu_0
+					final double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
+					
+					// unit vector in radial direction
+					final double eRX = rPerpX / alignedR;
+					final double eRY = rPerpY / alignedR;
+					final double eRZ = rPerpZ / alignedR;
+					
+					// compute cross product between e_z and e_rho to get e_phi
+					final double ePhiX = eY * eRZ - eZ * eRY;
+					final double ePhiY = eZ * eRX - eX * eRZ;
+					final double ePhiZ = eX * eRY - eY * eRX;
+					
+					// add contribution from wire segment to result
+					if (useStandardSummation) {
+						ret[0][idxEval] += bPhi * ePhiX;
+						ret[1][idxEval] += bPhi * ePhiY;
+						ret[2][idxEval] += bPhi * ePhiZ;
+					} else {
+						bXSum[idxEval].add(bPhi * ePhiX);
+						bYSum[idxEval].add(bPhi * ePhiY);
+						bZSum[idxEval].add(bPhi * ePhiZ);
+					}
 				}
 			}
 		}
@@ -590,12 +596,16 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_B_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return B_phi_2(rhoP, zP);
+			// line along rho'=0: exactly 0
+			return 0.0;
 		} else if (zP == 0.0 || zP == 1.0) {
+			// line along z'=0 or z'=1
 			return B_phi_3(rhoP, zP);
 		} else if (zP >= 1.0 || zP <= 0.0 || rhoP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
+			// far-field
 			return B_phi_4(rhoP, zP);
 		} else {
+			// near field between z'=0 and z'=1
 			return B_phi_5(rhoP, zP);
 		}
 	}
@@ -819,20 +829,6 @@ public class ABSCAB {
 	}
 
 	/**
-	 * special case for rho'=0
-	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
-	 */
-	static double B_phi_2(double rhoP, double zP) {
-		// works everywhere, although only derived for zP < 0 ???
-		double zPM1 = 1 - zP;
-		return (1 / (zPM1 * zPM1) - 1 / (zP * zPM1)) / 2;
-
-	}
-
-	/**
 	 * special case for zP=0 or zP=1
 	 *
 	 * @param rhoP
@@ -840,20 +836,16 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double B_phi_3(double rhoP, double zP) {
-		double zPM1 = 1 - zP;
-		return 1 / (rhoP * Math.hypot(rhoP, zPM1));
+		return 1 / (rhoP * Math.hypot(rhoP, 1));
 	}
 
-	// near-field:
-	// zp>=1 or zp<0, all rhoP
-	// zP from 0 to 1/2, rhoP from 1e-30 at zp=0 to rhoP=1 at zP=1/2
-	// zP from 1/2 to 1, rhoP from 1e-15 at zp=1 to rhoP=1 at zP=1/2
+	// straight-forward implementation; good for far-field
 	static double B_phi_4(double rhoP, double zP) {
 
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
 
-		double t1 = Ri / Rf + 1;
+		double t1 = rhoP * (1/Ri + 1/Rf);
 
 		double den = rhoP * rhoP + zP * (zP - 1) + Ri * Rf;
 
@@ -866,7 +858,7 @@ public class ABSCAB {
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1 - zP);
 
-		double t1 = Ri / Rf + 1;
+		double t1 = rhoP * (1/Ri + 1/Rf);
 
 		double beta = Math.atan2(rhoP, 1 - zP);
 		double cosBeta = Math.cos(beta);
