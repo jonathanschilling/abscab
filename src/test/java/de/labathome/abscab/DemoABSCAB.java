@@ -7,17 +7,17 @@ public class DemoABSCAB {
 	public static void main(String[] args) {
 		//		run();
 		
-//		demoMcGreivy();
+		demoMcGreivy();
 //		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 		
-		demoStraightWireSegment();
-		demoCircularWireLoop();
-
-		dumpInternalResultsStraightWireSegment();
-		dumpInternalResultsCircularWireLoop();
+//		demoStraightWireSegment();
+//		demoCircularWireLoop();
+//
+//		dumpInternalResultsStraightWireSegment();
+//		dumpInternalResultsCircularWireLoop();
 	}
 	
 	public static void run() {
