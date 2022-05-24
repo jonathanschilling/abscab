@@ -236,7 +236,8 @@ public class ABSCAB {
 			// length of wire segment
 			final double l = Math.sqrt(l2);
 
-			double bPrefactor = bPrefactorL / l;
+			// assemble full prefactor for B_phi
+			final double bPrefactor = bPrefactorL / l;
 			
 			// unit vector parallel to wire segment
 			final double eX = dx / l;
@@ -681,12 +682,19 @@ public class ABSCAB {
 			return B_z_6(rhoP, zP);
 		}
 	}
+	
+	/////// A_z of straight wire segment
 
+	/**
+	 * Straight-forward implementation of A_z for straight wire segment.
+	 * Useful for far-field.
+	 * @param rhoP
+	 * @param zP
+	 * @return
+	 */
 	static double A_z_1(double rhoP, double zP) {
-
 		double Ri = Math.hypot(rhoP, zP);
 		double Rf = Math.hypot(rhoP, 1.0 - zP);
-
 		return FastMath.atanh(1.0 / (Ri + Rf));
 	}
 
@@ -698,7 +706,6 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double A_z_along_rhoP_0(double rhoP, double zP) {
-
 		if (zP < -1 || zP > 2) {
 			return A_z_2(rhoP, zP);
 		} else {
@@ -736,7 +743,6 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double A_z_along_zP_0_or_1(double rhoP, double zP) {
-
 		if (rhoP > 1.0) {
 			return A_z_3(rhoP, 0.0);
 		} else {
@@ -764,10 +770,9 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double A_z_3b(double rhoP, double zP) {
-		// a little bit more robust --> around rho'=1 +/- one test point we have 15
-		// digits
-		double cat = 1 / Math.sqrt(rhoP * rhoP + 1);
-		double sat = Math.sin(Math.atan(rhoP) / 2);
+		// a little bit more robust --> around rho'=1 +/- one test point we have 15 digits
+		double cat = 1 / Math.sqrt(rhoP * rhoP + 1); // cos(atan(...))
+		double sat = Math.sin(Math.atan(rhoP) / 2); // sin(atan(...)/2)
 		double num = rhoP * cat + 1 + cat;
 		double den = rhoP * cat + 2 * sat * sat;
 		return Math.log(num / den) / 2;
@@ -776,12 +781,12 @@ public class ABSCAB {
 	// (1): rho' < 1e-15, |z'|>=1
 	static double A_z_6a(double rhoP, double zP) {
 
-		double ang = Math.atan2(rhoP, zP);
-		double s = Math.sin(ang / 2);
-		double c = Math.cos(ang);
-
+		double alpha = Math.atan2(rhoP, zP);
+		double cosAlpha = Math.cos(alpha);
+		double sinAlphaHalf = Math.sin(alpha / 2);
+		
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
-		double Ri_zP = zP * 2 * s * s / c; // R_i - z'
+		double Ri_zP = zP * 2 * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
 		double zpM1 = zP - 1.0;
 		double Rf = Math.sqrt(rhoP * rhoP + zpM1 * zpM1);
@@ -794,17 +799,17 @@ public class ABSCAB {
 	static double A_z_6b(double rhoP, double zP) {
 
 		double alpha = Math.atan2(rhoP, zP);
-		double sinAlphaHalf = Math.sin(alpha / 2);
 		double cosAlpha = Math.cos(alpha);
-
+		double sinAlphaHalf = Math.sin(alpha / 2);
+		
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
 		double Ri_zP = 2 * zP * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
 		double omz = 1.0 - zP;
 		double beta = Math.atan2(rhoP, omz);
-		double sinBetaHalf = Math.sin(beta / 2);
 		double cosBeta = Math.cos(beta);
-
+		double sinBetaHalf = Math.sin(beta / 2);
+		
 		double Rf_p_zM1 = 2 * omz * sinBetaHalf * sinBetaHalf / cosBeta; // R_f - 1 + z'
 
 		double n = Ri_zP + Rf_p_zM1;
@@ -813,21 +818,23 @@ public class ABSCAB {
 	}
 
 	static double A_z_6c(double rhoP, double zP) {
+		double omz = 1.0 - zP;
+		
+		double beta = Math.atan2(rhoP, omz);
+		double sinBetaHalf = Math.sin(beta / 2);
 
-		double alpha = Math.atan2(rhoP, 1 - zP);
-		double sinAlphaHalf = Math.sin(alpha / 2);
-
-		double R_i = Math.sqrt(rhoP * rhoP + zP * zP);
-		double R_f = Math.sqrt(rhoP * rhoP + (1.0 - zP) * (1.0 - zP));
-
-		double Rf_m_1 = 2.0 * R_f * sinAlphaHalf * sinAlphaHalf - zP;
+		double R_i = Math.hypot(rhoP, zP);
+		double R_f = Math.hypot(rhoP, omz);
+		
+		double Rf_m_1 = 2.0 * R_f * sinBetaHalf * sinBetaHalf - zP;
 
 		double n = R_i + Rf_m_1;
-		double omEps = n / (n + 1);
-		double opEps = 2 - omEps;
-		return (Math.log(opEps) - Math.log(omEps)) / 2;
+		
+		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
 
+	/////// B_phi of straight wire segment
+	
 	/**
 	 * special case for zP=0 or zP=1
 	 *
@@ -859,17 +866,17 @@ public class ABSCAB {
 		double Rf = Math.hypot(rhoP, 1 - zP);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
-
+		
+		double alpha = Math.atan2(rhoP, zP);
+		double cosAlpha = Math.cos(alpha);
+		double sinAlphaHalf = Math.sin(alpha / 2.0);
+		
 		double beta = Math.atan2(rhoP, 1 - zP);
 		double cosBeta = Math.cos(beta);
 		double sinBetaHalf = Math.sin(beta / 2.0);
 
-		double gamma = Math.atan2(rhoP, zP);
-		double cosGamma = Math.cos(gamma);
-		double sinGammaHalf = Math.sin(gamma / 2.0);
-
 		// (a*b - 1)
-		double abm1 = 2.0 / cosGamma * (sinBetaHalf * sinBetaHalf / cosBeta + sinGammaHalf * sinGammaHalf);
+		double abm1 = 2.0 / cosAlpha * (sinBetaHalf * sinBetaHalf / cosBeta + sinAlphaHalf * sinAlphaHalf);
 
 		// R_i*R_f - zP*(1-zP) == zP*(1-zP) * (a*b - 1)
 		double den = rhoP * rhoP + zP * (1.0 - zP) * abm1;
@@ -877,10 +884,13 @@ public class ABSCAB {
 		return t1 / den;
 	}
 
+	///// A_phi of circular wire loop
+	
 	static double A_phi_1(double rhoP, double zP) {
 		// complementary modulus k_c
-		double kCSqNum = zP * zP + 1 + rhoP * rhoP - 2.0 * rhoP;
-		double kCSqDen = zP * zP + 1 + rhoP * rhoP + 2.0 * rhoP;
+		double t = zP * zP + 1 + rhoP * rhoP;
+		double kCSqNum = t - 2.0 * rhoP;
+		double kCSqDen = t + 2.0 * rhoP;
 
 		double sqrt_kCSqNum = Math.sqrt(kCSqNum);
 		double sqrt_kCSqDen = Math.sqrt(kCSqDen);
@@ -929,6 +939,8 @@ public class ABSCAB {
 		return prefac * celPart;
 	}
 
+	//////// B_rho of circular wire loop
+	
 	static double B_rho_1(double rhoP, double zP) {
 		double n = zP / (rhoP - 1);
 		double m = 1 + 2 / (rhoP - 1);
@@ -988,6 +1000,8 @@ public class ABSCAB {
 		return 1 / (2 * Math.sqrt(pfd)) * (E / pfd * (1 + (6 + 8 / zPSq) / zPSq) - K);
 	}
 
+	////// B_z of circular wire loop
+	
 	static double B_z_1(double rhoP, double zP) {
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
