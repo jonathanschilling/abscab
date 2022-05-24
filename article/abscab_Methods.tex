@@ -18,7 +18,11 @@ The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWi
 
 \subsubsection{Magnetic Vector Potential}
 The magnetic vector potential of a straight wire segment
-only has component~$A_z$ parallel to the wire that is given by:
+only has component~$A_z$ parallel to the wire:
+\begin{equation}
+ \mathbf{A} = A_z \hat{\mathbf{e}}_z \, .
+\end{equation}
+It is given by:
 \begin{equation}
   A_z(\rho, z) = \frac{\mu_0 I}{4 \pi} \ln \left( \frac{1+\epsilon}{1 - \epsilon} \right)
 \end{equation}
@@ -201,7 +205,7 @@ It follows that the magnetic field of a straight wire segment only has a compone
 \end{equation}
 with
 \begin{equation}
- B_\varphi
+ B_\varphi (\rho, z)
  = \frac{\mu_0 I}{4 \pi}
    \frac{\rho}{R_i}
    \frac{2 L (R_i + R_f)}{R_f}
@@ -365,7 +369,7 @@ with $k_c^2$ computed as follows:
   k_c^2 = \frac{\left( \frac{z'}{\rho'-1} \right)^2 + 1}{\left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2} \, .
 \end{equation}
 At~$\rho' = 1$, some further simplification can be carried out.
-This leads to the following formulation for~$\rho' = 1$ and~$\sqrt{\epsilon} <= z' < 1$ (where $\epsilon$ is the machine precision):
+This leads to the following formulation for~$\rho' = 1$ and~$z' < 1$:
 \begin{equation}
   \tilde{A}_{\varphi,5} (\rho'=1, z') = \frac{1}{z'} \,\mathrm{cel}(k_c, 1, 1, -1)
 \end{equation}
@@ -661,3 +665,15 @@ for the case of the circular wire loop.
           Note that the problem is symmetric in $z$ direction, even though only the positive-$z$ quadrant is considered here.}
  \label{fig:circularLoop_criticalPoints}
 \end{figure}
+
+The error metric employed in this work is given as follows:
+\begin{equation}
+ \delta(a, b)
+ = \begin{cases}
+    \min\left(1, \log_{10} \left(\left| \frac{a - b}{b} \right|\right) \right) & b \neq 0 \\
+    1                                                                          & b=0, a \neq 0 \\
+    -16                                                                        & \textrm{else}
+   \end{cases}
+\end{equation}
+
+
