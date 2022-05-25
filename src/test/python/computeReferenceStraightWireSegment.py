@@ -27,6 +27,7 @@ def Ri(rp, zp):
 def Rf(rp, zp):
     return mp.sqrt(mp.power(rp, two) + mp.power(one - zp, two))
 
+# epsilon as occuring in the straight-wire-loop math
 def swlEps(rp, zp):
     return one / (Ri(rp, zp) + Rf(rp, zp))
 

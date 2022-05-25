@@ -679,7 +679,11 @@ The floating point numbers are re-constructed within the arbitrary-precision sof
 in order to properly transport their intended value.
 In case of \texttt{float64}, this is done as follows for a floating-point number~$f$:
 \begin{equation}
- f = (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) \label{eqn:float64}
+ f = \begin{cases}
+      0                                                             & E=0 \textrm{ and } M=0 \\
+      (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) & \textrm{else}
+     \end{cases}
+     \label{eqn:float64}
 \end{equation}
 where $s$ is the sign bit, $E$ is the exponent specified as an 11-bit unsigned integer
 and $M$ is the mantissa specified as a 52-bit unsigned integer.
@@ -701,6 +705,66 @@ In particular, a test point coordinate value~$f$ is passed to the reference comp
 by passing the three values $s$, $E$ and $M$ as integers (which are easy to represent exactly).
 Within the reference computation, the value of $f$ is constructed using~\eqn{float64} implemented
 in arbitrary precision and with the exact values of $s$, $E$ and $M$.
+
+
+The reference data for the straight wire segment methods
+is computed using 300 decimal digits of precision.
+The reference data for the circular wire loop
+is computed using 200 decimal digits of precision.
+
+
+The evaluation position is specified exactly
+via $s_\rho$, $E_\rho$ and $M_\rho$ (for $\rho'$)
+and $s_z$, $E_z$ and $M_z$ (for $z'$):
+\begin{align}
+ \rho' \leftarrow&\, (-1)^{s_\rho} \, 2^{E_\rho - 1023} \, \left(1 + \frac{M_\rho}{2^{52}}  \right) \nonumber \\
+    z' \leftarrow&\, (-1)^{s_z   } \, 2^{E_z    - 1023} \, \left(1 + \frac{M_z   }{2^{52}}  \right)
+\end{align}
+The following algorithm is used to compute reference values
+of $\tilde{A}_z$ and $\tilde{B}_\varphi$ at~$(\rho', z')$
+for the straight wire segment:
+\begin{align}
+  r_i  \leftarrow&\, \sqrt{ {\rho'}^2 + {z'}^2 } \nonumber \\
+  r_f  \leftarrow&\, \sqrt{ {\rho'}^2 + \left(1 - z'\right)^2 } \label{alg:sws_ref} \\
+  \epsilon \leftarrow&\, \left( r_i + r_f \right)^{-1} \nonumber \\
+  \tilde{A}_z \leftarrow&\, \textrm{atanh} (\epsilon) \nonumber \\
+  \tilde{B}_\varphi \leftarrow&\, \left(\frac{1}{r_i} + \frac{1}{r_f} \right) \frac{\rho'}{r_i r_f + {\rho'}^2 + z' (z' - 1)} \nonumber
+\end{align}
+The following algorithm is used to compute reference values
+of $\tilde{A}_\varphi$ and $\tilde{B}_\rho$ at~$(\rho', z')$
+for the circular wire loop:
+\begin{align}
+ k_c^2 \leftarrow&\, \frac{{z'}^2 + \left(1 - \rho'\right)^2}{{z'}^2 + \left(1 + \rho'\right)^2} \nonumber \\
+ \textrm{if } \rho' =&\, 0 : \tilde{A}_\varphi = 0 ; \textrm{else:} \nonumber \\
+ \tilde{A}_\varphi \leftarrow&\,
+     \frac{1}{\sqrt{{z'}^2 + \left(1 + \rho'\right)^2}}
+                                 \int\limits_0^{\pi/2}
+                                   \frac{\sin^2(\varphi) - \cos^2(\varphi)}
+                                        {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \\
+ \textrm{if } \rho' =&\, 0 \textrm{ or } z' = 0 : \tilde{B}_\rho = 0 ; \textrm{else:} \nonumber \\
+ \tilde{B}_\rho \leftarrow&\,
+    \frac{z'}{\left[{z'}^2 + \left(1 + \rho'\right)^2\right]^{3/2}}
+                                 \int\limits_0^{\pi/2}
+                                   \frac{\sin^2(\varphi) - \cos^2(\varphi)}
+                                        {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi
+\end{align}
+The method used to compute $\tilde{B}_z$ works slightly differently:
+\begin{align}
+ k^2 \leftarrow&\,
+  \begin{cases}
+    4 / \left( \frac{1}{\rho'} + 2 + \rho' \right) &\, z' = 0 \\
+    \frac{4 \rho'}{{z'}^2 + \left(1 + \rho'\right)^2} &\, \textrm{else}
+  \end{cases} \nonumber \\
+ \tilde{B}_z \leftarrow&\,
+   \frac{1}{\left[ {z'}^2 + \left(1 + \rho'\right)^2 \right]^{3/2} }
+                                 \int\limits_0^{\pi/2}
+                                   \frac{(1-\rho') \sin^2(\varphi) + (1+\rho') \cos^2(\varphi)}
+                                        {\left[1 - k^2 \sin^2(\varphi) \right]^{3/2}} \,\mathrm{d}\varphi
+\end{align}
+The integrals are carried out numerically within the arbitrary-precision software.
+In case of~\texttt{mpmath}, double-exponential quadrature~\cite{double_exp_quad} is used~\cite{mpmath_quad}.
+
+
 
 
 The error metric employed in this work is given as follows:
