@@ -625,7 +625,9 @@ The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \end{equation}
 
 \subsection{Superposition in multi-filament assemblies}
+
 % PolygonFilament
+
 An infinitely thin polygon filament $P$ is described by a list of $N$ points $\mathbf{x}_i$ with $i=1, ..., N$ in three-dimensional (3D) space and a current $I$.
 The $(N-1)$ straight connecting lines between each two consecutive points $\mathbf{x}_i$ and $\mathbf{x}_{i+1}$ are assumed to represent the geometry of a wire which carries the current.
 If the first and the last point of the polygon filament coincide, the wire forms a closed loop and $\nabla \cdot \mathbf{j} = 0$ is ensured by construction.
@@ -643,13 +645,14 @@ $\mathbf{B}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x})$
 are given in Ref.~\cite{hanson_hirshman_2002}.
 The detailed derivation of these expressions is given below.
 
-% multi-winding circular coil
+% Kahan-Babuska summation
 
 
 
 \subsection{Verification Method}
 The asymptotic behavior of an implementation of above formulas for the magnetic vector potential
 and magnetic field needs to be tested before using that implementation in daily routine work.
+
 A set of critical test points used to check this is shown in Fig.~\ref{fig:circularLoop_criticalPoints}
 for the case of the circular wire loop.
 \begin{figure}[htbp]
@@ -666,11 +669,45 @@ for the case of the circular wire loop.
  \label{fig:circularLoop_criticalPoints}
 \end{figure}
 
+The reference results are computed on each test point using arbitrary-precision arithmetic
+as provided by the Python package~\texttt{mpmath}~\cite{mpmath} and Mathematica~\cite{Mathematica}.
+The test point coordinates are computed within the finite-precision test programs used to check the accuracy of the results.
+This implies that the exact \textit{implied} values of the test point coordinates have to be transported
+into the arbitrary-precision software used to compute the reference data.
+The evaluation positions are specified at IEEE754~\texttt{float64} floating-point numbers.
+The floating point numbers are re-constructed within the arbitrary-precision software
+in order to properly transport their intended value.
+In case of \texttt{float64}, this is done as follows for a floating-point number~$f$:
+\begin{equation}
+ f = (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) \label{eqn:float64}
+\end{equation}
+where $s$ is the sign bit, $E$ is the exponent specified as an 11-bit unsigned integer
+and $M$ is the mantissa specified as a 52-bit unsigned integer.
+Several special cases are defined for certain values of $s$, $E$ and $M$,
+but in the context of this work only the case $E=0$, $M=0$ ($s$ arbitrary),
+which represents an exact zero, is relevant.
+The organization of those bits in a \texttt{float64} number is shown in Fig.~\ref{fig:float64}.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/IEEE754_float64.eps}
+ \caption{Organization of sign bit~$s$, exponent~$E$ (11 bits, unsigned integer)
+          and mantissa~$M$ (52 bits, unsigned integer) within the 64 bits
+          of a IEEE754~\texttt{float64} floating-point number.
+          Each box represents one bit and the colors indicate which quantity a bit belongs to
+          (red: sign bit, green: exponent, blue: mantiassa).}
+ \label{fig:float64}
+\end{figure}
+In particular, a test point coordinate value~$f$ is passed to the reference computation
+by passing the three values $s$, $E$ and $M$ as integers (which are easy to represent exactly).
+Within the reference computation, the value of $f$ is constructed using~\eqn{float64} implemented
+in arbitrary precision and with the exact values of $s$, $E$ and $M$.
+
+
 The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
  = \begin{cases}
-    \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) & b \neq 0 \\
+    \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) & b \neq 0, a \neq b \\
     0                                                                          & b=0, a \neq 0 \\
     -16                                                                        & \textrm{else}
    \end{cases}
