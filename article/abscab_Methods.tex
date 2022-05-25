@@ -523,7 +523,7 @@ with
 \begin{equation}
   k_c^2 = \frac{{z'}^2}{{z'}^2 + 4} \, .
 \end{equation}
-In the vicinity of the wire loop, but explicitly obeying $z' > 0$,
+In the vicinity of the wire loop, but explicitly obeying $z' \neq 0$,
 the following method should be used to compute $\tilde{B}_z$:
 \begin{equation}
   \tilde{B}_{z,5} (\rho', z')
@@ -670,8 +670,8 @@ The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
  = \begin{cases}
-    \min\left(1, \log_{10} \left(\left| \frac{a - b}{b} \right|\right) \right) & b \neq 0 \\
-    1                                                                          & b=0, a \neq 0 \\
+    \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) & b \neq 0 \\
+    0                                                                          & b=0, a \neq 0 \\
     -16                                                                        & \textrm{else}
    \end{cases}
 \end{equation}

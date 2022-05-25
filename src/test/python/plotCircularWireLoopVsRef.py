@@ -76,6 +76,7 @@ if __name__ == "__main__":
         act[idxZp[i], idxRp[i]] = act1d[i]
     
     # compute rel. error between ref and act
+    bad  =   0
     good = -16
     
     data = np.zeros([numZ, numR])
@@ -86,16 +87,16 @@ if __name__ == "__main__":
                 data[j,i] = np.nan
             elif abs(ref[j,i]) > 0:
                 if act[j,i] != ref[j,i]:
-                    data[j,i] = np.log10(min(1, abs((act[j,i] - ref[j,i])/ref[j,i])))
+                    data[j,i] = np.log10(min(10**bad, abs((act[j,i] - ref[j,i])/ref[j,i])))
                 else:
                     data[j,i] = good
             else:
-                data[j,i] = 1.0 if abs(act[j,i]) > 0.0 else good
+                data[j,i] = bad if abs(act[j,i]) > 0.0 else good
         
     # lazy loading
     import matplotlib.pyplot as plt
     
-    nClusters = 18
+    nClusters = 16
     cmap = plt.get_cmap("viridis", nClusters)
     
     fig=plt.figure(figsize=(6.5, 4.5))
@@ -106,6 +107,9 @@ if __name__ == "__main__":
     cbar = plt.colorbar(im, drawedges = True, fraction=0.025, pad=-0.02,
                         anchor=(0, 0.53), extend="min")
     cbar.set_label(r"$\log_{10}(\mathrm{relative~deviation~from~reference})$")
+    
+    # constant offset of axis label from plots
+    cbar.ax.yaxis.set_label_coords(5.5, 0.5)
     
     plt.axis("off")
     
