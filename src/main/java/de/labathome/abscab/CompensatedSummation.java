@@ -30,7 +30,7 @@ public class CompensatedSummation {
 
 	/**
 	 * Add a number of contributions to the sum.
-	 * 
+	 *
 	 * @param contributions contributions to add to the sum
 	 */
 	public void add(double[] contributions) {
@@ -41,7 +41,7 @@ public class CompensatedSummation {
 
 	/**
 	 * Add a single contribution to the sum.
-	 * 
+	 *
 	 * @param contribution contribution to add to the sum
 	 */
 	public void add(double contribution) {
@@ -67,7 +67,7 @@ public class CompensatedSummation {
 
 	/**
 	 * Compute the second-order corrected sum of all contributions.
-	 * 
+	 *
 	 * @return compensated sum of all contributions since creation or last reset
 	 */
 	public double getSum() {
