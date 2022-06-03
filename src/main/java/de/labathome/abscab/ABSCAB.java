@@ -1,6 +1,7 @@
 package de.labathome.abscab;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -20,7 +21,251 @@ public class ABSCAB {
 
 	/** vacuum magnetic permeability, divided by 4 pi */
 	private static final double MU_0_BY_4_PI = MU_0 / (4.0 * Math.PI);
-	
+
+	// vertices provided as array
+	// return evaluated A
+	public static double[][] vectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] fieldPos,
+			int numProcessors,
+			boolean useStandardSummation) {
+
+		return null;
+	}
+
+	// vertices provided as array
+	// write A into provided array
+	public static void vectorPotentialPolygonFilament(
+			double[][] polygonFilament,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int numProcessors,
+			boolean useStandardSummation) {
+
+	}
+
+	// vertices provided via Function
+	// return evaluated A
+	public static double[][] vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			int numProcessors,
+			boolean useStandardSummation) {
+
+		return null;
+	}
+
+	// vertices provided via Function
+	// write A into provided array
+	public static double[][] vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int numProcessors,
+			boolean useStandardSummation) {
+
+		return null;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Compute the magnetic vector potential of a polygon filament.
+	 *
+	 * It is not assumed that the polygon is closed. Pass the first point again
+	 * as last return value of {@code vertexSupplier} to model a closed loop.
+	 *
+	 * @param nVertices number of vertices, i.e., points in the polygon
+	 * @param vertexSupplier will be evaluated at 0, 1, ..., (nVertices-1); should return vertices of Polygon as {x, y, z}
+	 * @param current wire current (in A)
+	 * @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+	 * @return [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
+	 *         vector potential evaluated at the given locations (in Tm)
+	 */
+	public static double[][] vectorPotentialPolygonFilament(int nVertices, Function<Integer, double[]> vertexSupplier, double current, double[][] evalPos) {
+		boolean useStandardSummation = false;
+		return vectorPotentialPolygonFilament(nVertices, vertexSupplier, current, evalPos, useStandardSummation);
+	}
+
+	/**
+	 * Compute the magnetic vector potential of a polygon filament.
+	 *
+	 * It is not assumed that the polygon is closed. Pass the first point again
+	 * as last return value of {@code vertexSupplier} to model a closed loop.
+	 *
+	 * @param nVertices number of vertices, i.e., points in the polygon
+	 * @param vertexSupplier will be evaluated at 0, 1, ..., (nVertices-1); should return vertices of Polygon as {x, y, z}
+	 * @param current wire current (in A)
+	 * @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+	 * @param useStandardSummation if true, use a standard running sum instead of Kahan-Babuska summation (default: false)
+	 * @return [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
+	 *         vector potential evaluated at the given locations (in Tm)
+	 */
+	public static double[][] vectorPotentialPolygonFilament(int nVertices, Function<Integer, double[]> vertexSupplier, double current, double[][] evalPos, boolean useStandardSummation) {
+
+		if (nVertices < 2) {
+			throw new RuntimeException("need at least 2 vertices, but only got " + nVertices);
+		}
+
+		final int nEvalPos = validateCartesianVectorInput(evalPos);
+
+		final double aPrefactor = MU_0_BY_2_PI * current;
+
+		// setup compensated summation objects
+		final CompensatedSummation[] aXSum;
+		final CompensatedSummation[] aYSum;
+		final CompensatedSummation[] aZSum;
+		if (useStandardSummation) {
+			aXSum = null;
+			aYSum = null;
+			aZSum = null;
+		} else {
+			aXSum = new CompensatedSummation[nEvalPos];
+			aYSum = new CompensatedSummation[nEvalPos];
+			aZSum = new CompensatedSummation[nEvalPos];
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				aXSum[idxEval] = new CompensatedSummation();
+				aYSum[idxEval] = new CompensatedSummation();
+				aZSum[idxEval] = new CompensatedSummation();
+			}
+		}
+
+		final double[][] ret = new double[3][nEvalPos];
+
+		double[] firstPoint = vertexSupplier.apply(0);
+
+		double x_i = firstPoint[0];
+		double y_i = firstPoint[0];
+		double z_i = firstPoint[0];
+
+		for (int i = 1; i < nVertices; ++i) {
+			final double[] nextPoint = vertexSupplier.apply(i);
+			final double x_f = nextPoint[0];
+			final double y_f = nextPoint[1];
+			final double z_f = nextPoint[2];
+
+			// vector from start to end of i:th wire segment
+			final double dx = x_f - x_i;
+			final double dy = y_f - y_i;
+			final double dz = z_f - z_i;
+
+			// squared length of wire segment
+			final double l2 = dx * dx + dy * dy + dz * dz;
+			if (l2 == 0.0) {
+				// skip zero-length segments: no contribution
+				continue;
+			}
+
+			// length of wire segment
+			final double l = Math.sqrt(l2);
+
+			// unit vector parallel to wire segment
+			final double eX = dx / l;
+			final double eY = dy / l;
+			final double eZ = dz / l;
+
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+
+				// vector from start of wire segment to eval pos
+				final double r0x = evalPos[0][idxEval] - x_i;
+				final double r0y = evalPos[1][idxEval] - y_i;
+				final double r0z = evalPos[2][idxEval] - z_i;
+
+				// z position along axis of wire segment
+				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+				// normalized z component of evaluation location in coordinate system of wire segment
+				final double zP = alignedZ / l;
+
+				// r0 projected onto axis of wire segment
+				final double rParallelX = alignedZ * eX;
+				final double rParallelY = alignedZ * eY;
+				final double rParallelZ = alignedZ * eZ;
+
+				// vector perpendicular to axis of wire segment, pointing at evaluation pos
+				final double rPerpX = r0x - rParallelX;
+				final double rPerpY = r0y - rParallelY;
+				final double rPerpZ = r0z - rParallelZ;
+
+				// perpendicular distance between evalPos and axis of wire segment
+				final double alignedR = (rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+				// normalized rho component of evaluation location in coordinate system of wire segment
+				final double rhoP = alignedR / l;
+
+				// compute parallel component of magnetic vector potential, including current and mu_0
+				final double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
+
+				// add contribution from wire segment to result
+				if (useStandardSummation) {
+					ret[0][idxEval] += aParallel * eX;
+					ret[1][idxEval] += aParallel * eY;
+					ret[2][idxEval] += aParallel * eZ;
+				} else {
+					aXSum[idxEval].add(aParallel * eX);
+					aYSum[idxEval].add(aParallel * eY);
+					aZSum[idxEval].add(aParallel * eZ);
+				}
+			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
+		}
+
+		if (!useStandardSummation) {
+			// obtain compensated sums from summation objects
+			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+				ret[0][idxEval] = aXSum[idxEval].getSum();
+				ret[1][idxEval] = aYSum[idxEval].getSum();
+				ret[2][idxEval] = aZSum[idxEval].getSum();
+			}
+		}
+
+		return ret;
+	}
+
 	/**
 	 * Compute the magnetic vector potential of a polygon filament.
 	 *
@@ -37,7 +282,7 @@ public class ABSCAB {
 		boolean useStandardSummation = false;
 		return vectorPotentialPolygonFilament(vertices, current, evalPos, useStandardSummation);
 	}
-	
+
 	/**
 	 * Compute the magnetic vector potential of a polygon filament.
 	 *
@@ -79,9 +324,9 @@ public class ABSCAB {
 				aZSum[idxEval] = new CompensatedSummation();
 			}
 		}
-		
+
 		final double[][] ret = new double[3][nEvalPos];
-		
+
 		for (int i = 0; i < nVertices - 1; ++i) {
 			final int j = i + 1;
 
@@ -149,7 +394,7 @@ public class ABSCAB {
 				}
 			}
 		}
-		
+
 		if (!useStandardSummation) {
 			// obtain compensated sums from summation objects
 			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
@@ -161,7 +406,7 @@ public class ABSCAB {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Compute the magnetic field of a polygon filament.
 	 *
@@ -215,7 +460,7 @@ public class ABSCAB {
 				bZSum[idxEval] = new CompensatedSummation();
 			}
 		}
-		
+
 		final double[][] ret = new double[3][nEvalPos];
 
 		for (int i = 0; i < nVertices - 1; ++i) {
@@ -238,19 +483,19 @@ public class ABSCAB {
 
 			// assemble full prefactor for B_phi
 			final double bPrefactor = bPrefactorL / l;
-			
+
 			// unit vector parallel to wire segment
 			final double eX = dx / l;
 			final double eY = dy / l;
 			final double eZ = dz / l;
 
 			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-				
+
 				// R_i: vector from start of wire segment to eval pos
 				final double r0x = evalPos[0][idxEval] - vertices[0][i];
 				final double r0y = evalPos[1][idxEval] - vertices[1][i];
 				final double r0z = evalPos[2][idxEval] - vertices[2][i];
-				
+
 				// z position along axis of wire segment
 				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
 
@@ -272,23 +517,23 @@ public class ABSCAB {
 
 				// B_phi is zero along axis of filament
 				if (alignedR > 0.0) {
-					
+
 					// normalized rho component of evaluation location in coordinate system of wire segment
 					final double rhoP = alignedR / l;
-	
+
 					// compute tangential component of magnetic vector potential, including current and mu_0
 					final double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
-					
+
 					// unit vector in radial direction
 					final double eRX = rPerpX / alignedR;
 					final double eRY = rPerpY / alignedR;
 					final double eRZ = rPerpZ / alignedR;
-					
+
 					// compute cross product between e_z and e_rho to get e_phi
 					final double ePhiX = eY * eRZ - eZ * eRY;
 					final double ePhiY = eZ * eRX - eX * eRZ;
 					final double ePhiZ = eX * eRY - eY * eRX;
-					
+
 					// add contribution from wire segment to result
 					if (useStandardSummation) {
 						ret[0][idxEval] += bPhi * ePhiX;
@@ -311,10 +556,10 @@ public class ABSCAB {
 				ret[2][idxEval] = bZSum[idxEval].getSum();
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Compute the magnetic vector potential of a circular wire loop.
 	 *
@@ -495,7 +740,7 @@ public class ABSCAB {
 			final double rhoP;
 			if (alignedR > 0.0) {
 				// radial unit vector is only defined if evaluation pos is off-axis
-				
+
 				// unit vector in radial direction
 				final double eRX = rPerpX / alignedR;
 				final double eRY = rPerpY / alignedR;
@@ -507,7 +752,7 @@ public class ABSCAB {
 				// compute radial component of normalized magnetic field
 				// and scale by current and mu_0
 				final double bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP);
-				
+
 				// add contribution from wire loop to result
 				ret[0][idxEval] += bRho * eRX;
 				ret[1][idxEval] += bRho * eRY;
@@ -515,11 +760,11 @@ public class ABSCAB {
 			} else {
 				rhoP = 0.0;
 			}
-			
+
 			// compute vertical component of normalized magnetic field
 			// and scale by current and mu_0
 			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
-			
+
 			// add contribution from wire loop to result
 			ret[0][idxEval] += bZ * eX;
 			ret[1][idxEval] += bZ * eY;
@@ -682,7 +927,7 @@ public class ABSCAB {
 			return B_z_6(rhoP, zP);
 		}
 	}
-	
+
 	/////// A_z of straight wire segment
 
 	/**
@@ -784,7 +1029,7 @@ public class ABSCAB {
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2);
-		
+
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
 		double Ri_zP = zP * 2 * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
@@ -801,7 +1046,7 @@ public class ABSCAB {
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2);
-		
+
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
 		double Ri_zP = 2 * zP * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
@@ -809,7 +1054,7 @@ public class ABSCAB {
 		double beta = Math.atan2(rhoP, omz);
 		double cosBeta = Math.cos(beta);
 		double sinBetaHalf = Math.sin(beta / 2);
-		
+
 		double Rf_p_zM1 = 2 * omz * sinBetaHalf * sinBetaHalf / cosBeta; // R_f - 1 + z'
 
 		double n = Ri_zP + Rf_p_zM1;
@@ -819,22 +1064,22 @@ public class ABSCAB {
 
 	static double A_z_6c(double rhoP, double zP) {
 		double omz = 1.0 - zP;
-		
+
 		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
 		double R_i = Math.hypot(rhoP, zP);
 		double R_f = Math.hypot(rhoP, omz);
-		
+
 		double Rf_m_1 = 2.0 * R_f * sinBetaHalf * sinBetaHalf - zP;
 
 		double n = R_i + Rf_m_1;
-		
+
 		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
 
 	/////// B_phi of straight wire segment
-	
+
 	/**
 	 * special case for zP=0 or zP=1
 	 *
@@ -866,11 +1111,11 @@ public class ABSCAB {
 		double Rf = Math.hypot(rhoP, 1 - zP);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
-		
+
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2.0);
-		
+
 		double beta = Math.atan2(rhoP, 1 - zP);
 		double cosBeta = Math.cos(beta);
 		double sinBetaHalf = Math.sin(beta / 2.0);
@@ -885,7 +1130,7 @@ public class ABSCAB {
 	}
 
 	///// A_phi of circular wire loop
-	
+
 	static double A_phi_1(double rhoP, double zP) {
 		// complementary modulus k_c
 		double t = zP * zP + 1 + rhoP * rhoP;
@@ -940,7 +1185,7 @@ public class ABSCAB {
 	}
 
 	//////// B_rho of circular wire loop
-	
+
 	static double B_rho_1(double rhoP, double zP) {
 		double n = zP / (rhoP - 1);
 		double m = 1 + 2 / (rhoP - 1);
@@ -1001,7 +1246,7 @@ public class ABSCAB {
 	}
 
 	////// B_z of circular wire loop
-	
+
 	static double B_z_1(double rhoP, double zP) {
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
