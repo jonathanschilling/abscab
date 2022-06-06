@@ -1,5 +1,7 @@
 package de.labathome.abscab;
 
+import java.util.function.Function;
+
 import aliceinnets.python.jyplot.JyPlot;
 
 public class DemoABSCAB {
@@ -45,8 +47,8 @@ public class DemoABSCAB {
 		double[] normal = { 0.0, 0.0, 1.0 };
 
 		double[][] evalPos = {
-				{10.0},
-				{5.0},
+				{0.0},
+				{0.0},
 				{0.0}
 		};
 
@@ -74,17 +76,30 @@ public class DemoABSCAB {
 
 		double[][] resultTable = new double[3][numCases];
 
-		boolean useStandardSummation = false;
+//		int numProcessors = 1;
+		int numProcessors = Runtime.getRuntime().availableProcessors();
+		boolean useCompensatedSummation = true;
 
 		for (int i=0; i<numCases; ++i) {
 
 			int numPhi = allNumPhi[i];
 			System.out.printf("numPhi = %d\n", numPhi);
 
-			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
-			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos, useStandardSummation)[2][0];
-			System.out.printf("ABSCAB B_z = %.3e\n", bZStd);
+			double omega = 2.0*Math.PI / (numPhi-1);
+			Function<Integer, double[]> vertexSupplierStd = idxVertex -> {
+				double phi = omega * idxVertex;
+				double x = radius * Math.cos(phi);
+				double y = radius * Math.sin(phi);
+				double z = 0.0;
+				return new double[] {x, y, z};
+			};
+			double bZStd = ABSCAB.magneticFieldPolygonFilament(numPhi, vertexSupplierStd, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
+
+//			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
+//			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
+
 			allBzStdErr[i] = Math.abs((bZStd - bZRef)/bZRef);
+			System.out.printf("ABSCAB B_z = %.3e (err %g)\n", bZStd, allBzStdErr[i]);
 
 			// McGreivy radius correction
 			double dPhi = 2.0 * Math.PI / (numPhi - 1); // spacing between points
@@ -96,18 +111,27 @@ public class DemoABSCAB {
 			//double rCorr = radius * (1.0 + 4 * Math.PI * Math.PI * dPhi*dPhi/ 12);
 			double rCorr = radius * (1.0 + dPhi*dPhi/ 12);
 
-			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
-			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos, useStandardSummation)[2][0];
-			System.out.printf("McGrvy B_z = %.3e\n", bZMcG);
+			Function<Integer, double[]> vertexSupplierMcGreivy = idxVertex -> {
+				double phi = omega * idxVertex;
+				double x = rCorr * Math.cos(phi);
+				double y = rCorr * Math.sin(phi);
+				double z = 0.0;
+				return new double[] {x, y, z};
+			};
+			double bZMcG = ABSCAB.magneticFieldPolygonFilament(numPhi, vertexSupplierMcGreivy, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
+
+//			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
+//			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
 
 			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
+			System.out.printf("McGrvy B_z = %.3e (err %g)\n", bZMcG, allBzMcGErr[i]);
 
 			resultTable[0][i] = numPhi;
 			resultTable[1][i] = allBzStdErr[i];
 			resultTable[2][i] = allBzMcGErr[i];
 		}
 
-		if (useStandardSummation) {
+		if (useCompensatedSummation) {
 			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
 		} else {
 			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
@@ -130,17 +154,17 @@ public class DemoABSCAB {
 		plt.exec();
 	}
 
-	private static double[][] polygonCircleAround0(double radius, int numPhi) {
-		double[][] ret = new double[3][numPhi];
-		double omega = 2.0*Math.PI / (numPhi-1);
-		for (int i=0; i<numPhi; ++i) {
-			double phi = omega * i;
-			ret[0][i] = radius * Math.cos(phi);
-			ret[1][i] = radius * Math.sin(phi);
-		}
-
-		return ret;
-	}
+//	private static double[][] polygonCircleAround0(double radius, int numPhi) {
+//		double[][] ret = new double[3][numPhi];
+//		double omega = 2.0*Math.PI / (numPhi-1);
+//		for (int i=0; i<numPhi; ++i) {
+//			double phi = omega * i;
+//			ret[0][i] = radius * Math.cos(phi);
+//			ret[1][i] = radius * Math.sin(phi);
+//		}
+//
+//		return ret;
+//	}
 
 	public static void demoFiniteCoil() {
 		// Demtroeder 2, Sec. 3.2.6d ("Magnetic field of a cylindrical coil")

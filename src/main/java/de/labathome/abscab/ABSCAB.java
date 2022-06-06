@@ -1,6 +1,10 @@
 package de.labathome.abscab;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -20,44 +24,926 @@ public class ABSCAB {
 
 	/** vacuum magnetic permeability, divided by 4 pi */
 	private static final double MU_0_BY_4_PI = MU_0 / (4.0 * Math.PI);
-	
-	/**
-	 * Compute the magnetic vector potential of a polygon filament.
-	 *
-	 * It is not assumed that the polygon is closed. Pass the first point again at
-	 * the end of the {@code vertices} array to model a closed loop.
-	 *
-	 * @param vertices [3: x, y, z][nVertices] points along filament (in meters)
-	 * @param current  wire current (in A)
-	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
-	 * @return [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
-	 *         vector potential evaluated at the given locations (in Tm)
-	 */
-	public static double[][] vectorPotentialPolygonFilament(double[][] vertices, double current, double[][] evalPos) {
-		boolean useStandardSummation = false;
-		return vectorPotentialPolygonFilament(vertices, current, evalPos, useStandardSummation);
+
+	// --------------------------------------------------
+
+	public static double[][] vectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos) {
+		int numProcessors = Runtime.getRuntime().availableProcessors();
+		return vectorPotentialPolygonFilament(vertices, current, evalPos, numProcessors);
 	}
-	
-	/**
-	 * Compute the magnetic vector potential of a polygon filament.
-	 *
-	 * It is not assumed that the polygon is closed. Pass the first point again at
-	 * the end of the {@code vertices} array to model a closed loop.
-	 *
-	 * @param vertices [3: x, y, z][nVertices] points along filament (in meters)
-	 * @param current  wire current (in A)
-	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
-	 * @param useStandardSummation if true, use a standard running sum instead of Kahan-Babuska summation (default: false)
-	 * @return [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
-	 *         vector potential evaluated at the given locations (in Tm)
-	 */
-	public static double[][] vectorPotentialPolygonFilament(double[][] vertices, double current, double[][] evalPos, boolean useStandardSummation) {
-		final int nVertices = validateCartesianVectorInput(vertices);
-		if (nVertices < 2) {
-			throw new RuntimeException("need at least 2 vertices, but only got " + nVertices);
+
+	public static double[][] vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos) {
+		int numProcessors = Runtime.getRuntime().availableProcessors();
+		return vectorPotentialPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors);
+	}
+
+	public static double[][] magneticFieldPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos) {
+		int numProcessors = Runtime.getRuntime().availableProcessors();
+		return magneticFieldPolygonFilament(vertices, current, evalPos, numProcessors);
+	}
+
+	public static double[][] magneticFieldPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos) {
+		int numProcessors = Runtime.getRuntime().availableProcessors();
+		return magneticFieldPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors);
+	}
+
+	// --------------------------------------------------
+
+	public static double[][] vectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			int numProcessors) {
+		boolean useCompensatedSummation = true;
+		return vectorPotentialPolygonFilament(vertices, current, evalPos, numProcessors, useCompensatedSummation);
+	}
+
+	public static double[][] vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			int numProcessors) {
+		boolean useCompensatedSummation = true;
+		return vectorPotentialPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors, useCompensatedSummation);
+	}
+
+	public static double[][] magneticFieldPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			int numProcessors) {
+		boolean useCompensatedSummation = true;
+		return magneticFieldPolygonFilament(vertices, current, evalPos, numProcessors, useCompensatedSummation);
+	}
+
+	public static double[][] magneticFieldPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			int numProcessors) {
+		boolean useCompensatedSummation = true;
+		return magneticFieldPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors, useCompensatedSummation);
+	}
+
+	// --------------------------------------------------
+
+	// vertices provided as array
+	// return evaluated A
+	public static double[][] vectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+		double[][] vectorPotential = new double[3][numEvalPos];
+		vectorPotentialPolygonFilament(vertices, current, evalPos, vectorPotential, numProcessors, useCompensatedSummation);
+		return vectorPotential;
+	}
+
+	// vertices provided via Function
+	// return evaluated A
+	public static double[][] vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+		double[][] vectorPotential = new double[3][numEvalPos];
+		vectorPotentialPolygonFilament(numVertices, vertexSupplier, current, evalPos, vectorPotential, numProcessors, useCompensatedSummation);
+		return vectorPotential;
+	}
+
+	// vertices provided as array
+	// return evaluated B
+	public static double[][] magneticFieldPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+		double[][] magneticField = new double[3][numEvalPos];
+		magneticFieldPolygonFilament(vertices, current, evalPos, magneticField, numProcessors, useCompensatedSummation);
+		return magneticField;
+	}
+
+
+	// vertices provided via Function
+	// return evaluated B
+	public static double[][] magneticFieldPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+		double[][] magneticField = new double[3][numEvalPos];
+		magneticFieldPolygonFilament(numVertices, vertexSupplier, current, evalPos, magneticField, numProcessors, useCompensatedSummation);
+		return magneticField;
+	}
+
+	// --------------------------------------------------
+
+	// vertices provided as array
+	// write A into provided array
+	public static void vectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+
+		final int numVertices = validateCartesianVectorInput(vertices);
+
+		if (numVertices < 2) {
+			throw new RuntimeException("need at least 2 vertices, but only got " + numVertices);
 		}
 
-		final int nEvalPos = validateCartesianVectorInput(evalPos);
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+
+		if (numProcessors < 1) {
+			throw new RuntimeException("need at least 1 processor, but only got " + numProcessors);
+		}
+
+		if (current == 0.0) {
+			return;
+		}
+
+		if (numProcessors == 1) {
+			// single-threaded call
+			final int idxSourceStart = 0;
+			final int idxSourceEnd   = numVertices-1;
+			final int idxEvalStart   = 0;
+			final int idxEvalEnd     = numEvalPos;
+			kernelVectorPotentialPolygonFilament(
+					vertices, current,
+					evalPos,
+					vectorPotential,
+					idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+					useCompensatedSummation);
+		} else {
+			// use multithreading
+
+			final int nThreads;
+
+			if (numVertices-1 > numEvalPos) {
+				// parallelize over nSource-1
+
+				// Note that each thread needs its own copy of the vectorPotential array,
+				// so this approach might need quite some memory in case the number of
+				// threads and the number of evaluation points is large.
+
+				final int nSourcePerThread;
+				if (numVertices-1 < numProcessors) {
+					nThreads = numVertices-1;
+					nSourcePerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads) ;
+				}
+
+				final double[][][] vectorPotentialContributions = new double[nThreads][3][numEvalPos];
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart =           idxThread    * nSourcePerThread;
+								final int idxSourceEnd   = Math.min((idxThread+1) * nSourcePerThread, numVertices-1);
+								final int idxEvalStart   = 0;
+								final int idxEvalEnd     = numEvalPos;
+
+								kernelVectorPotentialPolygonFilament(
+										vertices, current,
+										evalPos,
+										vectorPotentialContributions[idxThread],
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// sum up contributions from source chunks
+				if (useCompensatedSummation) {
+					for (int i=0; i<numEvalPos; ++i) {
+						CompensatedSummation sumX = new CompensatedSummation();
+						CompensatedSummation sumY = new CompensatedSummation();
+						CompensatedSummation sumZ = new CompensatedSummation();
+						for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+							sumX.add(vectorPotentialContributions[idxThread][0][i]);
+							sumY.add(vectorPotentialContributions[idxThread][1][i]);
+							sumZ.add(vectorPotentialContributions[idxThread][2][i]);
+						}
+						vectorPotential[0][i] = sumX.getSum();
+						vectorPotential[1][i] = sumY.getSum();
+						vectorPotential[2][i] = sumZ.getSum();
+					}
+				} else {
+					for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+						for (int i=0; i<numEvalPos; ++i) {
+							vectorPotential[0][i] += vectorPotentialContributions[idxThread][0][i];
+							vectorPotential[1][i] += vectorPotentialContributions[idxThread][1][i];
+							vectorPotential[2][i] += vectorPotentialContributions[idxThread][2][i];
+						}
+					}
+				}
+			} else { // nEval > nSource
+				// parallelize over nEval
+
+				final int nEvalPerThread;
+				if (numEvalPos < numProcessors) {
+					nThreads = numEvalPos;
+					nEvalPerThread = 1;
+				} else {
+					nThreads = numProcessors;
+					nEvalPerThread = (int) Math.ceil( ((double) numEvalPos) / nThreads );
+				}
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart = 0;
+								final int idxSourceEnd   = numVertices-1;
+								final int idxEvalStart   =           idxThread    * nEvalPerThread;
+								final int idxEvalEnd     = Math.min((idxThread+1) * nEvalPerThread, numEvalPos);
+
+								kernelVectorPotentialPolygonFilament(
+										vertices, current,
+										evalPos,
+										vectorPotential,
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} // parallelize over nSource or nEval
+		} // parallelization
+	}
+
+	// vertices provided via Function
+	// write A into provided array
+	public static void vectorPotentialPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+
+		if (numVertices < 2) {
+			throw new RuntimeException("need at least 2 vertices, but only got " + numVertices);
+		}
+
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+
+		if (numProcessors < 1) {
+			throw new RuntimeException("need at least 1 processor, but only got " + numProcessors);
+		}
+
+		if (current == 0.0) {
+			return;
+		}
+
+		if (numProcessors == 1) {
+			// single-threaded call
+			final int idxSourceStart = 0;
+			final int idxSourceEnd   = numVertices-1;
+			final int idxEvalStart   = 0;
+			final int idxEvalEnd     = numEvalPos;
+			kernelVectorPotentialPolygonFilament(
+					vertexSupplier, current,
+					evalPos,
+					vectorPotential,
+					idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+					useCompensatedSummation);
+		} else {
+			// use multithreading
+
+			final int nThreads;
+
+			if (numVertices-1 > numEvalPos) {
+				// parallelize over nSource-1
+
+				// Note that each thread needs its own copy of the vectorPotential array,
+				// so this approach might need quite some memory in case the number of
+				// threads and the number of evaluation points is large.
+
+				final int nSourcePerThread;
+				if (numVertices-1 < numProcessors) {
+					nThreads = numVertices-1;
+					nSourcePerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads) ;
+				}
+
+				final double[][][] vectorPotentialContributions = new double[nThreads][3][numEvalPos];
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart =           idxThread    * nSourcePerThread;
+								final int idxSourceEnd   = Math.min((idxThread+1) * nSourcePerThread, numVertices-1);
+								final int idxEvalStart   = 0;
+								final int idxEvalEnd     = numEvalPos;
+
+								kernelVectorPotentialPolygonFilament(
+										vertexSupplier, current,
+										evalPos,
+										vectorPotentialContributions[idxThread],
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// sum up contributions from source chunks
+				if (useCompensatedSummation) {
+					for (int i=0; i<numEvalPos; ++i) {
+						CompensatedSummation sumX = new CompensatedSummation();
+						CompensatedSummation sumY = new CompensatedSummation();
+						CompensatedSummation sumZ = new CompensatedSummation();
+						for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+							sumX.add(vectorPotentialContributions[idxThread][0][i]);
+							sumY.add(vectorPotentialContributions[idxThread][1][i]);
+							sumZ.add(vectorPotentialContributions[idxThread][2][i]);
+						}
+						vectorPotential[0][i] = sumX.getSum();
+						vectorPotential[1][i] = sumY.getSum();
+						vectorPotential[2][i] = sumZ.getSum();
+					}
+				} else {
+					for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+						for (int i=0; i<numEvalPos; ++i) {
+							vectorPotential[0][i] += vectorPotentialContributions[idxThread][0][i];
+							vectorPotential[1][i] += vectorPotentialContributions[idxThread][1][i];
+							vectorPotential[2][i] += vectorPotentialContributions[idxThread][2][i];
+						}
+					}
+				}
+			} else { // nEval > nSource
+				// parallelize over nEval
+
+				final int nEvalPerThread;
+				if (numEvalPos < numProcessors) {
+					nThreads = numEvalPos;
+					nEvalPerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nEvalPerThread = (int) Math.ceil( ((double) numEvalPos) / nThreads );
+				}
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart = 0;
+								final int idxSourceEnd   = numVertices-1;
+								final int idxEvalStart   =           idxThread    * nEvalPerThread;
+								final int idxEvalEnd     = Math.min((idxThread+1) * nEvalPerThread, numEvalPos);
+
+								kernelVectorPotentialPolygonFilament(
+										vertexSupplier, current,
+										evalPos,
+										vectorPotential,
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} // parallelize over nSource or nEval
+		} // parallelization
+	}
+
+	// vertices provided as array
+	// write B into provided array
+	public static void magneticFieldPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			double[][] magneticField,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+
+		final int numVertices = validateCartesianVectorInput(vertices);
+
+		if (numVertices < 2) {
+			throw new RuntimeException("need at least 2 vertices, but only got " + numVertices);
+		}
+
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+
+		if (numProcessors < 1) {
+			throw new RuntimeException("need at least 1 processor, but only got " + numProcessors);
+		}
+
+		if (current == 0.0) {
+			return;
+		}
+
+		if (numProcessors == 1) {
+			// single-threaded call
+			final int idxSourceStart = 0;
+			final int idxSourceEnd   = numVertices-1;
+			final int idxEvalStart   = 0;
+			final int idxEvalEnd     = numEvalPos;
+			kernelMagneticFieldPolygonFilament(
+					vertices, current,
+					evalPos,
+					magneticField,
+					idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+					useCompensatedSummation);
+		} else {
+			// use multithreading
+
+			final int nThreads;
+
+			if (numVertices-1 > numEvalPos) {
+				// parallelize over nSource-1
+
+				// Note that each thread needs its own copy of the vectorPotential array,
+				// so this approach might need quite some memory in case the number of
+				// threads and the number of evaluation points is large.
+
+				final int nSourcePerThread;
+				if (numVertices-1 < numProcessors) {
+					nThreads = numVertices-1;
+					nSourcePerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads) ;
+				}
+
+				final double[][][] magneticFieldContributions = new double[nThreads][3][numEvalPos];
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart =           idxThread    * nSourcePerThread;
+								final int idxSourceEnd   = Math.min((idxThread+1) * nSourcePerThread, numVertices-1);
+								final int idxEvalStart   = 0;
+								final int idxEvalEnd     = numEvalPos;
+
+								kernelMagneticFieldPolygonFilament(
+										vertices, current,
+										evalPos,
+										magneticFieldContributions[idxThread],
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// sum up contributions from source chunks
+				if (useCompensatedSummation) {
+					for (int i=0; i<numEvalPos; ++i) {
+						CompensatedSummation sumX = new CompensatedSummation();
+						CompensatedSummation sumY = new CompensatedSummation();
+						CompensatedSummation sumZ = new CompensatedSummation();
+						for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+							sumX.add(magneticFieldContributions[idxThread][0][i]);
+							sumY.add(magneticFieldContributions[idxThread][1][i]);
+							sumZ.add(magneticFieldContributions[idxThread][2][i]);
+						}
+						magneticField[0][i] = sumX.getSum();
+						magneticField[1][i] = sumY.getSum();
+						magneticField[2][i] = sumZ.getSum();
+					}
+				} else {
+					for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+						for (int i=0; i<numEvalPos; ++i) {
+							magneticField[0][i] += magneticFieldContributions[idxThread][0][i];
+							magneticField[1][i] += magneticFieldContributions[idxThread][1][i];
+							magneticField[2][i] += magneticFieldContributions[idxThread][2][i];
+						}
+					}
+				}
+			} else { // nEval > nSource
+				// parallelize over nEval
+
+				final int nEvalPerThread;
+				if (numEvalPos < numProcessors) {
+					nThreads = numEvalPos;
+					nEvalPerThread = 1;
+				} else {
+					nThreads = numProcessors;
+					nEvalPerThread = (int) Math.ceil( ((double) numEvalPos) / nThreads );
+				}
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart = 0;
+								final int idxSourceEnd   = numVertices-1;
+								final int idxEvalStart   =           idxThread    * nEvalPerThread;
+								final int idxEvalEnd     = Math.min((idxThread+1) * nEvalPerThread, numEvalPos);
+
+								kernelMagneticFieldPolygonFilament(
+										vertices, current,
+										evalPos,
+										magneticField,
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} // parallelize over nSource or nEval
+		} // parallelization
+	}
+
+	// vertices provided via Function
+	// write B into provided array
+	public static void magneticFieldPolygonFilament(
+			int numVertices,
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			double[][] magneticField,
+			int numProcessors,
+			boolean useCompensatedSummation) {
+
+		if (numVertices < 2) {
+			throw new RuntimeException("need at least 2 vertices, but only got " + numVertices);
+		}
+
+		final int numEvalPos = validateCartesianVectorInput(evalPos);
+
+		if (numProcessors < 1) {
+			throw new RuntimeException("need at least 1 processor, but only got " + numProcessors);
+		}
+
+		if (current == 0.0) {
+			return;
+		}
+
+		if (numProcessors == 1) {
+			// single-threaded call
+			final int idxSourceStart = 0;
+			final int idxSourceEnd   = numVertices-1;
+			final int idxEvalStart   = 0;
+			final int idxEvalEnd     = numEvalPos;
+			kernelMagneticFieldPolygonFilament(
+					vertexSupplier, current,
+					evalPos,
+					magneticField,
+					idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+					useCompensatedSummation);
+		} else {
+			// use multithreading
+
+			final int nThreads;
+
+			if (numVertices-1 > numEvalPos) {
+				// parallelize over nSource-1
+
+				// Note that each thread needs its own copy of the vectorPotential array,
+				// so this approach might need quite some memory in case the number of
+				// threads and the number of evaluation points is large.
+
+				final int nSourcePerThread;
+				if (numVertices-1 < numProcessors) {
+					nThreads = numVertices-1;
+					nSourcePerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads) ;
+				}
+
+				final double[][][] magneticFieldContributions = new double[nThreads][3][numEvalPos];
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart =           idxThread    * nSourcePerThread;
+								final int idxSourceEnd   = Math.min((idxThread+1) * nSourcePerThread, numVertices-1);
+								final int idxEvalStart   = 0;
+								final int idxEvalEnd     = numEvalPos;
+
+								kernelMagneticFieldPolygonFilament(
+										vertexSupplier, current,
+										evalPos,
+										magneticFieldContributions[idxThread],
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// sum up contributions from source chunks
+				if (useCompensatedSummation) {
+					for (int i=0; i<numEvalPos; ++i) {
+						CompensatedSummation sumX = new CompensatedSummation();
+						CompensatedSummation sumY = new CompensatedSummation();
+						CompensatedSummation sumZ = new CompensatedSummation();
+						for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+							sumX.add(magneticFieldContributions[idxThread][0][i]);
+							sumY.add(magneticFieldContributions[idxThread][1][i]);
+							sumZ.add(magneticFieldContributions[idxThread][2][i]);
+						}
+						magneticField[0][i] = sumX.getSum();
+						magneticField[1][i] = sumY.getSum();
+						magneticField[2][i] = sumZ.getSum();
+					}
+				} else {
+					for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+						for (int i=0; i<numEvalPos; ++i) {
+							magneticField[0][i] += magneticFieldContributions[idxThread][0][i];
+							magneticField[1][i] += magneticFieldContributions[idxThread][1][i];
+							magneticField[2][i] += magneticFieldContributions[idxThread][2][i];
+						}
+					}
+				}
+			} else { // nEval > nSource
+				// parallelize over nEval
+
+				final int nEvalPerThread;
+				if (numEvalPos < numProcessors) {
+					nThreads = numEvalPos;
+					nEvalPerThread = 1;
+				} else {
+					nThreads = numProcessors;
+
+					// It is better that many threads do more
+					// than one thread needs to do more.
+					nEvalPerThread = (int) Math.ceil( ((double) numEvalPos) / nThreads );
+				}
+
+				ExecutorService service = Executors.newFixedThreadPool(nThreads);
+
+				// submit jobs
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					service.submit(new Runnable() {
+						private int idxThread;
+
+						public Runnable init(final int idxThread) {
+							this.idxThread = idxThread;
+							return this;
+						}
+
+						@Override
+						public void run() {
+							try {
+								final int idxSourceStart = 0;
+								final int idxSourceEnd   = numVertices-1;
+								final int idxEvalStart   =           idxThread    * nEvalPerThread;
+								final int idxEvalEnd     = Math.min((idxThread+1) * nEvalPerThread, numEvalPos);
+
+								kernelMagneticFieldPolygonFilament(
+										vertexSupplier, current,
+										evalPos,
+										magneticField,
+										idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+										useCompensatedSummation);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.init(idxThread));
+				}
+
+				// accept no more new threads and start execution
+				service.shutdown();
+
+				// wait until all threads are done
+				try {
+					service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} // parallelize over nSource or nEval
+		} // parallelization
+	}
+
+	// --------------------------------------------------
+
+	private static void kernelVectorPotentialPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int idxSourceStart,
+			int idxSourceEnd,
+			int idxEvalStart,
+			int idxEvalEnd,
+			boolean useCompensatedSummation) {
 
 		final double aPrefactor = MU_0_BY_2_PI * current;
 
@@ -65,30 +951,36 @@ public class ABSCAB {
 		final CompensatedSummation[] aXSum;
 		final CompensatedSummation[] aYSum;
 		final CompensatedSummation[] aZSum;
-		if (useStandardSummation) {
-			aXSum = null;
-			aYSum = null;
-			aZSum = null;
-		} else {
-			aXSum = new CompensatedSummation[nEvalPos];
-			aYSum = new CompensatedSummation[nEvalPos];
-			aZSum = new CompensatedSummation[nEvalPos];
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+		if (useCompensatedSummation) {
+			int numEvalPos = idxEvalEnd - idxEvalStart;
+			aXSum = new CompensatedSummation[numEvalPos];
+			aYSum = new CompensatedSummation[numEvalPos];
+			aZSum = new CompensatedSummation[numEvalPos];
+			for (int idxEval = 0; idxEval < numEvalPos; ++idxEval) {
 				aXSum[idxEval] = new CompensatedSummation();
 				aYSum[idxEval] = new CompensatedSummation();
 				aZSum[idxEval] = new CompensatedSummation();
 			}
+		} else {
+			aXSum = null;
+			aYSum = null;
+			aZSum = null;
 		}
-		
-		final double[][] ret = new double[3][nEvalPos];
-		
-		for (int i = 0; i < nVertices - 1; ++i) {
-			final int j = i + 1;
+
+		double x_i = vertices[0][idxSourceStart];
+		double y_i = vertices[1][idxSourceStart];
+		double z_i = vertices[2][idxSourceStart];
+
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+			final double x_f = vertices[0][idxSource+1];
+			final double y_f = vertices[1][idxSource+1];
+			final double z_f = vertices[2][idxSource+1];
 
 			// vector from start to end of i:th wire segment
-			final double dx = vertices[0][j] - vertices[0][i];
-			final double dy = vertices[1][j] - vertices[1][i];
-			final double dz = vertices[2][j] - vertices[2][i];
+			final double dx = x_f - x_i;
+			final double dy = y_f - y_i;
+			final double dz = z_f - z_i;
 
 			// squared length of wire segment
 			final double l2 = dx * dx + dy * dy + dz * dz;
@@ -105,12 +997,12 @@ public class ABSCAB {
 			final double eY = dy / l;
 			final double eZ = dz / l;
 
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
 
 				// vector from start of wire segment to eval pos
-				final double r0x = evalPos[0][idxEval] - vertices[0][i];
-				final double r0y = evalPos[1][idxEval] - vertices[1][i];
-				final double r0z = evalPos[2][idxEval] - vertices[2][i];
+				final double r0x = evalPos[0][idxEval] - x_i;
+				final double r0y = evalPos[1][idxEval] - y_i;
+				final double r0z = evalPos[2][idxEval] - z_i;
 
 				// z position along axis of wire segment
 				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
@@ -138,93 +1030,82 @@ public class ABSCAB {
 				final double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
 
 				// add contribution from wire segment to result
-				if (useStandardSummation) {
-					ret[0][idxEval] += aParallel * eX;
-					ret[1][idxEval] += aParallel * eY;
-					ret[2][idxEval] += aParallel * eZ;
-				} else {
+				if (useCompensatedSummation) {
 					aXSum[idxEval].add(aParallel * eX);
 					aYSum[idxEval].add(aParallel * eY);
 					aZSum[idxEval].add(aParallel * eZ);
+				} else {
+					vectorPotential[0][idxEval] += aParallel * eX;
+					vectorPotential[1][idxEval] += aParallel * eY;
+					vectorPotential[2][idxEval] += aParallel * eZ;
 				}
 			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
 		}
-		
-		if (!useStandardSummation) {
+
+		if (useCompensatedSummation) {
 			// obtain compensated sums from summation objects
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-				ret[0][idxEval] = aXSum[idxEval].getSum();
-				ret[1][idxEval] = aYSum[idxEval].getSum();
-				ret[2][idxEval] = aZSum[idxEval].getSum();
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				vectorPotential[0][idxEval] = aXSum[idxEval - idxEvalStart].getSum();
+				vectorPotential[1][idxEval] = aYSum[idxEval - idxEvalStart].getSum();
+				vectorPotential[2][idxEval] = aZSum[idxEval - idxEvalStart].getSum();
 			}
 		}
-
-		return ret;
-	}
-	
-	/**
-	 * Compute the magnetic field of a polygon filament.
-	 *
-	 * @param vertices [3: x, y, z][nVertices] points along filament (in meters)
-	 * @param current  wire current (in A)
-	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
-	 * @return [3: B_x, B_y, B_z][nEvalPos] Cartesian components of the magnetic
-	 *         field evaluated at the given locations (in T)
-	 */
-	public static double[][] magneticFieldPolygonFilament(double[][] vertices, double current, double[][] evalPos) {
-		boolean useStandardSummation = false;
-		return magneticFieldPolygonFilament(vertices, current, evalPos, useStandardSummation);
 	}
 
-	/**
-	 * Compute the magnetic field of a polygon filament.
-	 *
-	 * @param vertices[3: x, y, z][nVertices] points along filament (in meters)
-	 * @param current  wire current (in A)
-	 * @param evalPos  [3: x, y, z][nEvalPos] evaluation locations (in meters)
-	 * @param useStandardSummation if true, use a standard running sum instead of Kahan-Babuska summation (default: false)
-	 * @return [3: B_x, B_y, B_z][nEvalPos] Cartesian components of the magnetic
-	 *         field evaluated at the given locations (in T)
-	 */
-	public static double[][] magneticFieldPolygonFilament(double[][] vertices, double current, double[][] evalPos, boolean useStandardSummation) {
-		int nVertices = validateCartesianVectorInput(vertices);
-		if (nVertices < 2) {
-			throw new RuntimeException("need at least 2 vertices, but only got " + nVertices);
-		}
+	private static void kernelVectorPotentialPolygonFilament(
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			double[][] vectorPotential,
+			int idxSourceStart,
+			int idxSourceEnd,
+			int idxEvalStart,
+			int idxEvalEnd,
+			boolean useCompensatedSummation) {
 
-		int nEvalPos = validateCartesianVectorInput(evalPos);
-
-		// needs additional division by length of wire segment!
-		final double bPrefactorL = MU_0_BY_4_PI * current;
+		final double aPrefactor = MU_0_BY_2_PI * current;
 
 		// setup compensated summation objects
-		final CompensatedSummation[] bXSum;
-		final CompensatedSummation[] bYSum;
-		final CompensatedSummation[] bZSum;
-		if (useStandardSummation) {
-			bXSum = null;
-			bYSum = null;
-			bZSum = null;
-		} else {
-			bXSum = new CompensatedSummation[nEvalPos];
-			bYSum = new CompensatedSummation[nEvalPos];
-			bZSum = new CompensatedSummation[nEvalPos];
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-				bXSum[idxEval] = new CompensatedSummation();
-				bYSum[idxEval] = new CompensatedSummation();
-				bZSum[idxEval] = new CompensatedSummation();
+		final CompensatedSummation[] aXSum;
+		final CompensatedSummation[] aYSum;
+		final CompensatedSummation[] aZSum;
+		if (useCompensatedSummation) {
+			int numEvalPos = idxEvalEnd - idxEvalStart;
+			aXSum = new CompensatedSummation[numEvalPos];
+			aYSum = new CompensatedSummation[numEvalPos];
+			aZSum = new CompensatedSummation[numEvalPos];
+			for (int idxEval = 0; idxEval < numEvalPos; ++idxEval) {
+				aXSum[idxEval] = new CompensatedSummation();
+				aYSum[idxEval] = new CompensatedSummation();
+				aZSum[idxEval] = new CompensatedSummation();
 			}
+		} else {
+			aXSum = null;
+			aYSum = null;
+			aZSum = null;
 		}
-		
-		final double[][] ret = new double[3][nEvalPos];
 
-		for (int i = 0; i < nVertices - 1; ++i) {
-			final int j = i + 1;
+		double[] firstPoint = vertexSupplier.apply(idxSourceStart);
+		double x_i = firstPoint[0];
+		double y_i = firstPoint[1];
+		double z_i = firstPoint[2];
+
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+			final double[] nextPoint = vertexSupplier.apply(idxSource+1);
+			final double x_f = nextPoint[0];
+			final double y_f = nextPoint[1];
+			final double z_f = nextPoint[2];
 
 			// vector from start to end of i:th wire segment
-			final double dx = vertices[0][j] - vertices[0][i];
-			final double dy = vertices[1][j] - vertices[1][i];
-			final double dz = vertices[2][j] - vertices[2][i];
+			final double dx = x_f - x_i;
+			final double dy = y_f - y_i;
+			final double dz = z_f - z_i;
 
 			// squared length of wire segment
 			final double l2 = dx * dx + dy * dy + dz * dz;
@@ -236,21 +1117,18 @@ public class ABSCAB {
 			// length of wire segment
 			final double l = Math.sqrt(l2);
 
-			// assemble full prefactor for B_phi
-			final double bPrefactor = bPrefactorL / l;
-			
 			// unit vector parallel to wire segment
 			final double eX = dx / l;
 			final double eY = dy / l;
 			final double eZ = dz / l;
 
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-				
-				// R_i: vector from start of wire segment to eval pos
-				final double r0x = evalPos[0][idxEval] - vertices[0][i];
-				final double r0y = evalPos[1][idxEval] - vertices[1][i];
-				final double r0z = evalPos[2][idxEval] - vertices[2][i];
-				
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+				// vector from start of wire segment to eval pos
+				final double r0x = evalPos[0][idxEval] - x_i;
+				final double r0y = evalPos[1][idxEval] - y_i;
+				final double r0z = evalPos[2][idxEval] - z_i;
+
 				// z position along axis of wire segment
 				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
 
@@ -268,53 +1146,334 @@ public class ABSCAB {
 				final double rPerpZ = r0z - rParallelZ;
 
 				// perpendicular distance between evalPos and axis of wire segment
-				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+				final double alignedR = (rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+				// normalized rho component of evaluation location in coordinate system of wire segment
+				final double rhoP = alignedR / l;
+
+				// compute parallel component of magnetic vector potential, including current and mu_0
+				final double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
+
+				// add contribution from wire segment to result
+				if (useCompensatedSummation) {
+					aXSum[idxEval].add(aParallel * eX);
+					aYSum[idxEval].add(aParallel * eY);
+					aZSum[idxEval].add(aParallel * eZ);
+				} else {
+					vectorPotential[0][idxEval] += aParallel * eX;
+					vectorPotential[1][idxEval] += aParallel * eY;
+					vectorPotential[2][idxEval] += aParallel * eZ;
+				}
+			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
+		}
+
+		if (useCompensatedSummation) {
+			// obtain compensated sums from summation objects
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				vectorPotential[0][idxEval] = aXSum[idxEval - idxEvalStart].getSum();
+				vectorPotential[1][idxEval] = aYSum[idxEval - idxEvalStart].getSum();
+				vectorPotential[2][idxEval] = aZSum[idxEval - idxEvalStart].getSum();
+			}
+		}
+	}
+
+	private static void kernelMagneticFieldPolygonFilament(
+			double[][] vertices,
+			double current,
+			double[][] evalPos,
+			double[][] magneticField,
+			int idxSourceStart,
+			int idxSourceEnd,
+			int idxEvalStart,
+			int idxEvalEnd,
+			boolean useCompensatedSummation) {
+
+		// needs additional division by length of wire segment!
+		final double bPrefactorL = MU_0_BY_4_PI * current;
+
+		// setup compensated summation objects
+		final CompensatedSummation[] bXSum;
+		final CompensatedSummation[] bYSum;
+		final CompensatedSummation[] bZSum;
+		if (useCompensatedSummation) {
+			int numEvalPos = idxEvalEnd - idxEvalStart;
+			bXSum = new CompensatedSummation[numEvalPos];
+			bYSum = new CompensatedSummation[numEvalPos];
+			bZSum = new CompensatedSummation[numEvalPos];
+			for (int idxEval = 0; idxEval < numEvalPos; ++idxEval) {
+				bXSum[idxEval] = new CompensatedSummation();
+				bYSum[idxEval] = new CompensatedSummation();
+				bZSum[idxEval] = new CompensatedSummation();
+			}
+		} else {
+			bXSum = null;
+			bYSum = null;
+			bZSum = null;
+		}
+
+		double x_i = vertices[0][idxSourceStart];
+		double y_i = vertices[1][idxSourceStart];
+		double z_i = vertices[2][idxSourceStart];
+
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+			final double x_f = vertices[0][idxSource+1];
+			final double y_f = vertices[1][idxSource+1];
+			final double z_f = vertices[2][idxSource+1];
+
+			// vector from start to end of i:th wire segment
+			final double dx = x_f - x_i;
+			final double dy = y_f - y_i;
+			final double dz = z_f - z_i;
+
+			// squared length of wire segment
+			final double l2 = dx * dx + dy * dy + dz * dz;
+			if (l2 == 0.0) {
+				// skip zero-length segments: no contribution
+				continue;
+			}
+
+			// length of wire segment
+			final double l = Math.sqrt(l2);
+
+			// assemble full prefactor for B_phi
+			final double bPrefactor = bPrefactorL / l;
+
+			// unit vector parallel to wire segment
+			final double eX = dx / l;
+			final double eY = dy / l;
+			final double eZ = dz / l;
+
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+				// vector from start of wire segment to eval pos
+				final double r0x = evalPos[0][idxEval] - x_i;
+				final double r0y = evalPos[1][idxEval] - y_i;
+				final double r0z = evalPos[2][idxEval] - z_i;
+
+				// z position along axis of wire segment
+				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+				// normalized z component of evaluation location in coordinate system of wire segment
+				final double zP = alignedZ / l;
+
+				// r0 projected onto axis of wire segment
+				final double rParallelX = alignedZ * eX;
+				final double rParallelY = alignedZ * eY;
+				final double rParallelZ = alignedZ * eZ;
+
+				// vector perpendicular to axis of wire segment, pointing at evaluation pos
+				final double rPerpX = r0x - rParallelX;
+				final double rPerpY = r0y - rParallelY;
+				final double rPerpZ = r0z - rParallelZ;
+
+				// perpendicular distance squared between evalPos and axis of wire segment
+				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
 
 				// B_phi is zero along axis of filament
-				if (alignedR > 0.0) {
-					
+				if (alignedRSq > 0.0) {
+
+					// perpendicular distance between evalPos and axis of wire segment
+					final double alignedR = Math.sqrt(alignedRSq) ;
+
 					// normalized rho component of evaluation location in coordinate system of wire segment
 					final double rhoP = alignedR / l;
-	
+
 					// compute tangential component of magnetic vector potential, including current and mu_0
 					final double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
-					
+
 					// unit vector in radial direction
 					final double eRX = rPerpX / alignedR;
 					final double eRY = rPerpY / alignedR;
 					final double eRZ = rPerpZ / alignedR;
-					
+
 					// compute cross product between e_z and e_rho to get e_phi
 					final double ePhiX = eY * eRZ - eZ * eRY;
 					final double ePhiY = eZ * eRX - eX * eRZ;
 					final double ePhiZ = eX * eRY - eY * eRX;
-					
+
 					// add contribution from wire segment to result
-					if (useStandardSummation) {
-						ret[0][idxEval] += bPhi * ePhiX;
-						ret[1][idxEval] += bPhi * ePhiY;
-						ret[2][idxEval] += bPhi * ePhiZ;
-					} else {
+					if (useCompensatedSummation) {
 						bXSum[idxEval].add(bPhi * ePhiX);
 						bYSum[idxEval].add(bPhi * ePhiY);
 						bZSum[idxEval].add(bPhi * ePhiZ);
+					} else {
+						magneticField[0][idxEval] += bPhi * ePhiX;
+						magneticField[1][idxEval] += bPhi * ePhiY;
+						magneticField[2][idxEval] += bPhi * ePhiZ;
 					}
 				}
 			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
 		}
 
-		if (!useStandardSummation) {
+		if (useCompensatedSummation) {
 			// obtain compensated sums from summation objects
-			for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
-				ret[0][idxEval] = bXSum[idxEval].getSum();
-				ret[1][idxEval] = bYSum[idxEval].getSum();
-				ret[2][idxEval] = bZSum[idxEval].getSum();
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				magneticField[0][idxEval] = bXSum[idxEval - idxEvalStart].getSum();
+				magneticField[1][idxEval] = bYSum[idxEval - idxEvalStart].getSum();
+				magneticField[2][idxEval] = bZSum[idxEval - idxEvalStart].getSum();
 			}
 		}
-		
-		return ret;
 	}
-	
+
+	private static void kernelMagneticFieldPolygonFilament(
+			Function<Integer, double[]> vertexSupplier,
+			double current,
+			double[][] evalPos,
+			double[][] magneticField,
+			int idxSourceStart,
+			int idxSourceEnd,
+			int idxEvalStart,
+			int idxEvalEnd,
+			boolean useCompensatedSummation) {
+
+		// setup compensated summation objects
+		final CompensatedSummation[] bXSum;
+		final CompensatedSummation[] bYSum;
+		final CompensatedSummation[] bZSum;
+		if (useCompensatedSummation) {
+			int numEvalPos = idxEvalEnd - idxEvalStart;
+			bXSum = new CompensatedSummation[numEvalPos];
+			bYSum = new CompensatedSummation[numEvalPos];
+			bZSum = new CompensatedSummation[numEvalPos];
+			for (int idxEval = 0; idxEval < numEvalPos; ++idxEval) {
+				bXSum[idxEval] = new CompensatedSummation();
+				bYSum[idxEval] = new CompensatedSummation();
+				bZSum[idxEval] = new CompensatedSummation();
+			}
+		} else {
+			bXSum = null;
+			bYSum = null;
+			bZSum = null;
+		}
+
+		// needs additional division by length of wire segment!
+		final double bPrefactorL = MU_0_BY_4_PI * current;
+
+		double[] firstPoint = vertexSupplier.apply(idxSourceStart);
+		double x_i = firstPoint[0];
+		double y_i = firstPoint[1];
+		double z_i = firstPoint[2];
+
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+			final double[] nextPoint = vertexSupplier.apply(idxSource+1);
+			final double x_f = nextPoint[0];
+			final double y_f = nextPoint[1];
+			final double z_f = nextPoint[2];
+
+			// vector from start to end of i:th wire segment
+			final double dx = x_f - x_i;
+			final double dy = y_f - y_i;
+			final double dz = z_f - z_i;
+
+			// squared length of wire segment
+			final double l2 = dx * dx + dy * dy + dz * dz;
+			if (l2 == 0.0) {
+				// skip zero-length segments: no contribution
+				continue;
+			}
+
+			// length of wire segment
+			final double l = Math.sqrt(l2);
+
+			// assemble full prefactor for B_phi
+			final double bPrefactor = bPrefactorL / l;
+
+			// unit vector parallel to wire segment
+			final double eX = dx / l;
+			final double eY = dy / l;
+			final double eZ = dz / l;
+
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+				// vector from start of wire segment to eval pos
+				final double r0x = evalPos[0][idxEval] - x_i;
+				final double r0y = evalPos[1][idxEval] - y_i;
+				final double r0z = evalPos[2][idxEval] - z_i;
+
+				// z position along axis of wire segment
+				final double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+				// normalized z component of evaluation location in coordinate system of wire segment
+				final double zP = alignedZ / l;
+
+				// r0 projected onto axis of wire segment
+				final double rParallelX = alignedZ * eX;
+				final double rParallelY = alignedZ * eY;
+				final double rParallelZ = alignedZ * eZ;
+
+				// vector perpendicular to axis of wire segment, pointing at evaluation pos
+				final double rPerpX = r0x - rParallelX;
+				final double rPerpY = r0y - rParallelY;
+				final double rPerpZ = r0z - rParallelZ;
+
+				// perpendicular distance squared between evalPos and axis of wire segment
+				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
+
+				// B_phi is zero along axis of filament
+				if (alignedRSq > 0.0) {
+
+					// perpendicular distance between evalPos and axis of wire segment
+					final double alignedR = Math.sqrt(alignedRSq);
+
+					// normalized rho component of evaluation location in coordinate system of wire segment
+					final double rhoP = alignedR / l;
+
+					// compute tangential component of magnetic vector potential, including current and mu_0
+					final double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
+
+					// unit vector in radial direction
+					final double eRX = rPerpX / alignedR;
+					final double eRY = rPerpY / alignedR;
+					final double eRZ = rPerpZ / alignedR;
+
+					// compute cross product between e_z and e_rho to get e_phi
+					final double ePhiX = eY * eRZ - eZ * eRY;
+					final double ePhiY = eZ * eRX - eX * eRZ;
+					final double ePhiZ = eX * eRY - eY * eRX;
+
+					// add contribution from wire segment to result
+					if (useCompensatedSummation) {
+						bXSum[idxEval].add(bPhi * ePhiX);
+						bYSum[idxEval].add(bPhi * ePhiY);
+						bZSum[idxEval].add(bPhi * ePhiZ);
+					} else {
+						magneticField[0][idxEval] += bPhi * ePhiX;
+						magneticField[1][idxEval] += bPhi * ePhiY;
+						magneticField[2][idxEval] += bPhi * ePhiZ;
+					}
+				}
+			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
+		}
+
+		if (useCompensatedSummation) {
+			// obtain compensated sums from summation objects
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				magneticField[0][idxEval] = bXSum[idxEval - idxEvalStart].getSum();
+				magneticField[1][idxEval] = bYSum[idxEval - idxEvalStart].getSum();
+				magneticField[2][idxEval] = bZSum[idxEval - idxEvalStart].getSum();
+			}
+		}
+	}
+
+	// --------------------------------------------------
+
 	/**
 	 * Compute the magnetic vector potential of a circular wire loop.
 	 *
@@ -495,7 +1654,7 @@ public class ABSCAB {
 			final double rhoP;
 			if (alignedR > 0.0) {
 				// radial unit vector is only defined if evaluation pos is off-axis
-				
+
 				// unit vector in radial direction
 				final double eRX = rPerpX / alignedR;
 				final double eRY = rPerpY / alignedR;
@@ -507,7 +1666,7 @@ public class ABSCAB {
 				// compute radial component of normalized magnetic field
 				// and scale by current and mu_0
 				final double bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP);
-				
+
 				// add contribution from wire loop to result
 				ret[0][idxEval] += bRho * eRX;
 				ret[1][idxEval] += bRho * eRY;
@@ -515,11 +1674,11 @@ public class ABSCAB {
 			} else {
 				rhoP = 0.0;
 			}
-			
+
 			// compute vertical component of normalized magnetic field
 			// and scale by current and mu_0
 			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
-			
+
 			// add contribution from wire loop to result
 			ret[0][idxEval] += bZ * eX;
 			ret[1][idxEval] += bZ * eY;
@@ -682,7 +1841,7 @@ public class ABSCAB {
 			return B_z_6(rhoP, zP);
 		}
 	}
-	
+
 	/////// A_z of straight wire segment
 
 	/**
@@ -784,7 +1943,7 @@ public class ABSCAB {
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2);
-		
+
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
 		double Ri_zP = zP * 2 * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
@@ -801,7 +1960,7 @@ public class ABSCAB {
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2);
-		
+
 		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
 		double Ri_zP = 2 * zP * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
 
@@ -809,7 +1968,7 @@ public class ABSCAB {
 		double beta = Math.atan2(rhoP, omz);
 		double cosBeta = Math.cos(beta);
 		double sinBetaHalf = Math.sin(beta / 2);
-		
+
 		double Rf_p_zM1 = 2 * omz * sinBetaHalf * sinBetaHalf / cosBeta; // R_f - 1 + z'
 
 		double n = Ri_zP + Rf_p_zM1;
@@ -819,22 +1978,22 @@ public class ABSCAB {
 
 	static double A_z_6c(double rhoP, double zP) {
 		double omz = 1.0 - zP;
-		
+
 		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
 		double R_i = Math.hypot(rhoP, zP);
 		double R_f = Math.hypot(rhoP, omz);
-		
+
 		double Rf_m_1 = 2.0 * R_f * sinBetaHalf * sinBetaHalf - zP;
 
 		double n = R_i + Rf_m_1;
-		
+
 		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
 
 	/////// B_phi of straight wire segment
-	
+
 	/**
 	 * special case for zP=0 or zP=1
 	 *
@@ -866,11 +2025,11 @@ public class ABSCAB {
 		double Rf = Math.hypot(rhoP, 1 - zP);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
-		
+
 		double alpha = Math.atan2(rhoP, zP);
 		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2.0);
-		
+
 		double beta = Math.atan2(rhoP, 1 - zP);
 		double cosBeta = Math.cos(beta);
 		double sinBetaHalf = Math.sin(beta / 2.0);
@@ -885,7 +2044,7 @@ public class ABSCAB {
 	}
 
 	///// A_phi of circular wire loop
-	
+
 	static double A_phi_1(double rhoP, double zP) {
 		// complementary modulus k_c
 		double t = zP * zP + 1 + rhoP * rhoP;
@@ -940,7 +2099,7 @@ public class ABSCAB {
 	}
 
 	//////// B_rho of circular wire loop
-	
+
 	static double B_rho_1(double rhoP, double zP) {
 		double n = zP / (rhoP - 1);
 		double m = 1 + 2 / (rhoP - 1);
@@ -1001,7 +2160,7 @@ public class ABSCAB {
 	}
 
 	////// B_z of circular wire loop
-	
+
 	static double B_z_1(double rhoP, double zP) {
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
