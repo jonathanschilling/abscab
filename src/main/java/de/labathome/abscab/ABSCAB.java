@@ -1021,7 +1021,7 @@ public class ABSCAB {
 				final double rPerpZ = r0z - rParallelZ;
 
 				// perpendicular distance between evalPos and axis of wire segment
-				final double alignedR = (rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
 
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				final double rhoP = alignedR / l;
@@ -1146,7 +1146,7 @@ public class ABSCAB {
 				final double rPerpZ = r0z - rParallelZ;
 
 				// perpendicular distance between evalPos and axis of wire segment
-				final double alignedR = (rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
 
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				final double rhoP = alignedR / l;

@@ -47,8 +47,8 @@ public class DemoABSCAB {
 		double[] normal = { 0.0, 0.0, 1.0 };
 
 		double[][] evalPos = {
-				{0.0},
-				{0.0},
+				{10.0},
+				{5.0},
 				{0.0}
 		};
 
@@ -78,7 +78,8 @@ public class DemoABSCAB {
 
 //		int numProcessors = 1;
 		int numProcessors = Runtime.getRuntime().availableProcessors();
-		boolean useCompensatedSummation = true;
+
+		boolean useCompensatedSummation = false;
 
 		for (int i=0; i<numCases; ++i) {
 
