@@ -27,6 +27,18 @@ public class ABSCAB {
 
 	// --------------------------------------------------
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 * The computation is parallelized over all available processors.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -35,6 +47,19 @@ public class ABSCAB {
 		return vectorPotentialPolygonFilament(vertices, current, evalPos, numProcessors);
 	}
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 * The computation is parallelized over all available processors.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -44,6 +69,18 @@ public class ABSCAB {
 		return vectorPotentialPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors);
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 * The computation is parallelized over all available processors.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -52,6 +89,19 @@ public class ABSCAB {
 		return magneticFieldPolygonFilament(vertices, current, evalPos, numProcessors);
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 * The computation is parallelized over all available processors.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -63,6 +113,18 @@ public class ABSCAB {
 
 	// --------------------------------------------------
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -72,6 +134,19 @@ public class ABSCAB {
 		return vectorPotentialPolygonFilament(vertices, current, evalPos, numProcessors, useCompensatedSummation);
 	}
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -82,6 +157,18 @@ public class ABSCAB {
 		return vectorPotentialPolygonFilament(numVertices, vertexSupplier, current, evalPos, numProcessors, useCompensatedSummation);
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -91,6 +178,19 @@ public class ABSCAB {
 		return magneticFieldPolygonFilament(vertices, current, evalPos, numProcessors, useCompensatedSummation);
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 * Kahan-Babuska compensated summation is used to compute the superposition
+	 * of the contributions from the polygon vertices.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -103,8 +203,18 @@ public class ABSCAB {
 
 	// --------------------------------------------------
 
-	// vertices provided as array
-	// return evaluated A
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -117,8 +227,19 @@ public class ABSCAB {
 		return vectorPotential;
 	}
 
-	// vertices provided via Function
-	// return evaluated A
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 * @return [3: x, y, z][numEvalPos] magnetic vector potential at evaluation locations; in Tm
+	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -132,8 +253,18 @@ public class ABSCAB {
 		return vectorPotential;
 	}
 
-	// vertices provided as array
-	// return evaluated B
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -146,9 +277,19 @@ public class ABSCAB {
 		return magneticField;
 	}
 
-
-	// vertices provided via Function
-	// return evaluated B
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 * @return [3: x, y, z][numEvalPos] magnetic field at evaluation locations; in T
+	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -164,8 +305,18 @@ public class ABSCAB {
 
 	// --------------------------------------------------
 
-	// vertices provided as array
-	// write A into provided array
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	public static void vectorPotentialPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -355,8 +506,19 @@ public class ABSCAB {
 		} // parallelization
 	}
 
-	// vertices provided via Function
-	// write A into provided array
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	public static void vectorPotentialPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -548,8 +710,18 @@ public class ABSCAB {
 		} // parallelization
 	}
 
-	// vertices provided as array
-	// write B into provided array
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	public static void magneticFieldPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -739,8 +911,19 @@ public class ABSCAB {
 		} // parallelization
 	}
 
-	// vertices provided via Function
-	// write B into provided array
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param numVertices number of points along polygon
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+	 * @param numProcessors number of processors to use for parallelization
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	public static void magneticFieldPolygonFilament(
 			int numVertices,
 			Function<Integer, double[]> vertexSupplier,
@@ -934,6 +1117,21 @@ public class ABSCAB {
 
 	// --------------------------------------------------
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+	 * @param idxSourceStart first index in {@code vertices} to take into account
+	 * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+	 * @param idxEvalStart first index in {@code evalPos} to take into account
+	 * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	private static void kernelVectorPotentialPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -1057,6 +1255,21 @@ public class ABSCAB {
 		}
 	}
 
+	/**
+	 * Compute the magnetic vector potential of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+	 * @param idxSourceStart first index in {@code vertices} to take into account
+	 * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+	 * @param idxEvalStart first index in {@code evalPos} to take into account
+	 * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	private static void kernelVectorPotentialPolygonFilament(
 			Function<Integer, double[]> vertexSupplier,
 			double current,
@@ -1182,6 +1395,21 @@ public class ABSCAB {
 		}
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+	 * @param idxSourceStart first index in {@code vertices} to take into account
+	 * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+	 * @param idxEvalStart first index in {@code evalPos} to take into account
+	 * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	private static void kernelMagneticFieldPolygonFilament(
 			double[][] vertices,
 			double current,
@@ -1326,6 +1554,21 @@ public class ABSCAB {
 		}
 	}
 
+	/**
+	 * Compute the magnetic field of a polygon filament
+	 * at a number of evaluation locations.
+	 *
+	 * @param vertexSupplier callback which provides the points along the polygon as {x, y, z}; in m
+	 * @param current current along polygon; in A
+	 * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+	 * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+	 * @param idxSourceStart first index in {@code vertices} to take into account
+	 * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+	 * @param idxEvalStart first index in {@code evalPos} to take into account
+	 * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+	 * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+	 */
 	private static void kernelMagneticFieldPolygonFilament(
 			Function<Integer, double[]> vertexSupplier,
 			double current,
