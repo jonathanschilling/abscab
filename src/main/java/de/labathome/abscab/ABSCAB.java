@@ -971,11 +971,11 @@ public class ABSCAB {
 		double y_i = vertices[1][idxSourceStart];
 		double z_i = vertices[2][idxSourceStart];
 
-		for (int i = idxSourceStart; i < idxSourceEnd; ++i) {
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
 
-			final double x_f = vertices[0][i+1];
-			final double y_f = vertices[1][i+1];
-			final double z_f = vertices[2][i+1];
+			final double x_f = vertices[0][idxSource+1];
+			final double y_f = vertices[1][idxSource+1];
+			final double z_f = vertices[2][idxSource+1];
 
 			// vector from start to end of i:th wire segment
 			final double dx = x_f - x_i;
@@ -1095,9 +1095,9 @@ public class ABSCAB {
 		double y_i = firstPoint[1];
 		double z_i = firstPoint[2];
 
-		for (int i = idxSourceStart; i < idxSourceEnd; ++i) {
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
 
-			final double[] nextPoint = vertexSupplier.apply(i+1);
+			final double[] nextPoint = vertexSupplier.apply(idxSource+1);
 			final double x_f = nextPoint[0];
 			final double y_f = nextPoint[1];
 			final double z_f = nextPoint[2];
@@ -1220,11 +1220,11 @@ public class ABSCAB {
 		double y_i = vertices[1][idxSourceStart];
 		double z_i = vertices[2][idxSourceStart];
 
-		for (int i = idxSourceStart; i < idxSourceEnd; ++i) {
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
 
-			final double x_f = vertices[0][i+1];
-			final double y_f = vertices[1][i+1];
-			final double z_f = vertices[2][i+1];
+			final double x_f = vertices[0][idxSource+1];
+			final double y_f = vertices[1][idxSource+1];
+			final double z_f = vertices[2][idxSource+1];
 
 			// vector from start to end of i:th wire segment
 			final double dx = x_f - x_i;
@@ -1272,11 +1272,14 @@ public class ABSCAB {
 				final double rPerpY = r0y - rParallelY;
 				final double rPerpZ = r0z - rParallelZ;
 
-				// perpendicular distance between evalPos and axis of wire segment
-				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+				// perpendicular distance squared between evalPos and axis of wire segment
+				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
 
 				// B_phi is zero along axis of filament
-				if (alignedR > 0.0) {
+				if (alignedRSq > 0.0) {
+
+					// perpendicular distance between evalPos and axis of wire segment
+					final double alignedR = Math.sqrt(alignedRSq) ;
 
 					// normalized rho component of evaluation location in coordinate system of wire segment
 					final double rhoP = alignedR / l;
@@ -1306,14 +1309,19 @@ public class ABSCAB {
 					}
 				}
 			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
 		}
 
 		if (useCompensatedSummation) {
 			// obtain compensated sums from summation objects
-			for (int idxEval = idxSourceStart; idxEval < idxSourceEnd; ++idxEval) {
-				magneticField[0][idxEval] = bXSum[idxEval - idxSourceStart].getSum();
-				magneticField[1][idxEval] = bYSum[idxEval - idxSourceStart].getSum();
-				magneticField[2][idxEval] = bZSum[idxEval - idxSourceStart].getSum();
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				magneticField[0][idxEval] = bXSum[idxEval - idxEvalStart].getSum();
+				magneticField[1][idxEval] = bYSum[idxEval - idxEvalStart].getSum();
+				magneticField[2][idxEval] = bZSum[idxEval - idxEvalStart].getSum();
 			}
 		}
 	}
@@ -1357,9 +1365,9 @@ public class ABSCAB {
 		double y_i = firstPoint[1];
 		double z_i = firstPoint[2];
 
-		for (int i = idxSourceStart; i < idxSourceEnd; ++i) {
+		for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
 
-			final double[] nextPoint = vertexSupplier.apply(i+1);
+			final double[] nextPoint = vertexSupplier.apply(idxSource+1);
 			final double x_f = nextPoint[0];
 			final double y_f = nextPoint[1];
 			final double z_f = nextPoint[2];
@@ -1410,11 +1418,14 @@ public class ABSCAB {
 				final double rPerpY = r0y - rParallelY;
 				final double rPerpZ = r0z - rParallelZ;
 
-				// perpendicular distance between evalPos and axis of wire segment
-				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+				// perpendicular distance squared between evalPos and axis of wire segment
+				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
 
 				// B_phi is zero along axis of filament
-				if (alignedR > 0.0) {
+				if (alignedRSq > 0.0) {
+
+					// perpendicular distance between evalPos and axis of wire segment
+					final double alignedR = Math.sqrt(alignedRSq);
 
 					// normalized rho component of evaluation location in coordinate system of wire segment
 					final double rhoP = alignedR / l;
@@ -1444,14 +1455,19 @@ public class ABSCAB {
 					}
 				}
 			}
+
+			// shift to next point
+			x_i = x_f;
+			y_i = y_f;
+			z_i = z_f;
 		}
 
 		if (useCompensatedSummation) {
 			// obtain compensated sums from summation objects
-			for (int idxEval = idxSourceStart; idxEval < idxSourceEnd; ++idxEval) {
-				magneticField[0][idxEval] = bXSum[idxEval - idxSourceStart].getSum();
-				magneticField[1][idxEval] = bYSum[idxEval - idxSourceStart].getSum();
-				magneticField[2][idxEval] = bZSum[idxEval - idxSourceStart].getSum();
+			for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+				magneticField[0][idxEval] = bXSum[idxEval - idxEvalStart].getSum();
+				magneticField[1][idxEval] = bYSum[idxEval - idxEvalStart].getSum();
+				magneticField[2][idxEval] = bZSum[idxEval - idxEvalStart].getSum();
 			}
 		}
 	}
