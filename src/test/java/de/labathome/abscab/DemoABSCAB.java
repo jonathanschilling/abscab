@@ -79,7 +79,7 @@ public class DemoABSCAB {
 //		int numProcessors = 1;
 		int numProcessors = Runtime.getRuntime().availableProcessors();
 
-		boolean useCompensatedSummation = false;
+		boolean useCompensatedSummation = true;
 
 		for (int i=0; i<numCases; ++i) {
 
