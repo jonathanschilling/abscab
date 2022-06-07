@@ -570,20 +570,69 @@ into cylindrical coordinates in the frame of reference of the current carrier
 and subsequently transform back the magnetostatic quantities into the global Cartesian coordinate system.
 
 \subsubsection{Straight Wire Segment}
-
-
-
-\subsubsection{Circular Wire Loop}
-Figure~\ref{fig:mappingToCartesian} illustrates the setup of a circular wire loop.
+Figure~\ref{fig:StraightWireSegment_MappingToCartesian} illustrates the setup of a straight wire segment.
 \begin{figure}[htbp]
  \centering
- \includegraphics{img/MappingToCartesian.eps}
+ \includegraphics{img/StraightWireSegment_MappingToCartesian.eps}
+ \caption{Mapping the components to Cartesian coordinates for an exemplary straight wire segment.
+          The wire segment is positioned from~$\mathbf{x}_i$ to~$\mathbf{x}_f$.
+          Its parallel unit vector is denoted $\hat{\mathbf{e}}_z$.
+          The length of the wire segment is denoted by~$L$.
+          The evaluation location is denoted by~$\mathbf{r}$.}
+ \label{fig:StraightWireSegment_MappingToCartesian}
+\end{figure}
+
+The length of the wire segment is denoted by~$L$:
+\begin{equation}
+  L = |\mathbf{x}_f - \mathbf{x}_i| \, .
+\end{equation}
+The unit vector along the segment~$\hat{\mathbf{e}}_z$ is then computed as:
+\begin{equation}
+  \hat{\mathbf{e}}_z = \frac{\mathbf{x}_f - \mathbf{x}_i}{L} \, .
+\end{equation}
+The vertical coordinate~$z$ in the coordinate system of the wire segment is:
+\begin{equation}
+  z = (\mathbf{r} - \mathbf{x}_i) \cdot \hat{\mathbf{e}}_z
+\end{equation}
+and the normalized $z$-coordinate is:
+\begin{equation}
+  z' = \frac{z}{L} = \frac{1}{L} (\mathbf{r} - \mathbf{x}_i) \cdot \hat{\mathbf{e}}_z \, .
+\end{equation}
+For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
+\begin{equation}
+  \Delta \mathbf{r} = (\mathbf{r} - \mathbf{x}_i) - z \, \hat{\mathbf{e}}_z
+\end{equation}
+and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
+A unit vector in radial direction is formed as follows:
+\begin{equation}
+  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
+\end{equation}
+The normalized radial coordinate~$\rho'$ is then obtained as:
+\begin{equation}
+  \rho' = \frac{\rho}{a} = \frac{1}{a} |(\mathbf{r} - \mathbf{x}_i) - z \, \hat{\mathbf{e}}_z| \, .
+\end{equation}
+The magnetic field of the straight wire segment consists of the tangential component~$B_\varphi$:
+\begin{equation}
+  \mathbf{B}(\mathbf{r}) = B_\varphi \hat{\mathbf{e}}_\varphi
+\end{equation}
+with $\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho$.
+The magnetic vector potential only has a component in parallel direction in the coordinate system of the wire segment.
+The vector potential of the circular wire loop in thus in Cartesian coordinates:
+\begin{equation}
+  \mathbf{A}(\mathbf{r}) = A_z \hat{\mathbf{e}}_z \, .
+\end{equation}
+
+\subsubsection{Circular Wire Loop}
+Figure~\ref{fig:CircularWireLoop_MappingToCartesian} illustrates the setup of a circular wire loop.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/CircularWireLoop_MappingToCartesian.eps}
  \caption{Mapping the components to Cartesian coordinates for an exemplary circular wire loop.
           The loop is centered around its origin~$\mathbf{r}_0$.
           Its normal vector is denoted $\mathbf{n}$ and defines the orientation of the loop.
           The radius of the loop is denoted by~$a$.
           The evaluation location is denoted by~$\mathbf{r}$.}
- \label{fig:mappingToCartesian}
+ \label{fig:CircularWireLoop_MappingToCartesian}
 \end{figure}
 
 The $z$-axis of the wire loop's coordinate system is defined by the normal vector~$\mathbf{n}$:
@@ -605,11 +654,7 @@ For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
 and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
 A unit vector in radial direction is formed as follows:
 \begin{equation}
-  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{|\Delta \mathbf{r}|} \, .
-\end{equation}
-The radial coordinate is the length of the vector~$\Delta \mathbf{r}$:
-\begin{equation}
-  \rho = |\Delta \mathbf{r}| \, .
+  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
 \end{equation}
 The normalized radial coordinate~$\rho'$ is then obtained as:
 \begin{equation}
