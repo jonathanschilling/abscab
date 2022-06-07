@@ -605,7 +605,11 @@ For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
 and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
 A unit vector in radial direction is formed as follows:
 \begin{equation}
-  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
+  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{|\Delta \mathbf{r}|} \, .
+\end{equation}
+The radial coordinate is the length of the vector~$\Delta \mathbf{r}$:
+\begin{equation}
+  \rho = |\Delta \mathbf{r}| \, .
 \end{equation}
 The normalized radial coordinate~$\rho'$ is then obtained as:
 \begin{equation}
@@ -618,7 +622,7 @@ The Cartesian magnetic field components are then computed as follows:
 \end{equation}
 The magnetic vector potential only has a component in angular direction in the coordinate system of the wire loop.
 The corresponding unit vector~$\hat{\mathbf{e}}_\varphi$ is then given by
-$\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_\rho \times \hat{\mathbf{e}}_z$.
+$\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho$.
 The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \begin{equation}
   \mathbf{A}(\mathbf{r}) = A_\varphi \hat{\mathbf{e}}_\varphi \, .
