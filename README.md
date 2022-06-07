@@ -1,6 +1,5 @@
 # abscab
-Accurate Biot-Savart routines with Correct Asymptotic Behaviour
-
+Accurate Biot-Savart routines with Correct Asymptotic Behaviour: 
 <img src="abscab_logo.png" alt="ABSCAB logo" width="200"/>
 
 The main article on this software can be found here: [abscab_main.pdf](article/abscab_main.pdf)
