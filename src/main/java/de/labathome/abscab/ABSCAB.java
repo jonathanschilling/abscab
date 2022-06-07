@@ -1208,15 +1208,10 @@ public class ABSCAB {
 				// normalized z component of evaluation location in coordinate system of wire segment
 				final double zP = alignedZ / l;
 
-				// r0 projected onto axis of wire segment
-				final double rParallelX = alignedZ * eX;
-				final double rParallelY = alignedZ * eY;
-				final double rParallelZ = alignedZ * eZ;
-
 				// vector perpendicular to axis of wire segment, pointing at evaluation pos
-				final double rPerpX = r0x - rParallelX;
-				final double rPerpY = r0y - rParallelY;
-				final double rPerpZ = r0z - rParallelZ;
+				final double rPerpX = r0x - alignedZ * eX;
+				final double rPerpY = r0y - alignedZ * eY;
+				final double rPerpZ = r0z - alignedZ * eZ;
 
 				// perpendicular distance between evalPos and axis of wire segment
 				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
@@ -1348,15 +1343,10 @@ public class ABSCAB {
 				// normalized z component of evaluation location in coordinate system of wire segment
 				final double zP = alignedZ / l;
 
-				// r0 projected onto axis of wire segment
-				final double rParallelX = alignedZ * eX;
-				final double rParallelY = alignedZ * eY;
-				final double rParallelZ = alignedZ * eZ;
-
 				// vector perpendicular to axis of wire segment, pointing at evaluation pos
-				final double rPerpX = r0x - rParallelX;
-				final double rPerpY = r0y - rParallelY;
-				final double rPerpZ = r0z - rParallelZ;
+				final double rPerpX = r0x - alignedZ * eX;
+				final double rPerpY = r0y - alignedZ * eY;
+				final double rPerpZ = r0z - alignedZ * eZ;
 
 				// perpendicular distance between evalPos and axis of wire segment
 				final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
@@ -1490,15 +1480,10 @@ public class ABSCAB {
 				// normalized z component of evaluation location in coordinate system of wire segment
 				final double zP = alignedZ / l;
 
-				// r0 projected onto axis of wire segment
-				final double rParallelX = alignedZ * eX;
-				final double rParallelY = alignedZ * eY;
-				final double rParallelZ = alignedZ * eZ;
-
 				// vector perpendicular to axis of wire segment, pointing at evaluation pos
-				final double rPerpX = r0x - rParallelX;
-				final double rPerpY = r0y - rParallelY;
-				final double rPerpZ = r0z - rParallelZ;
+				final double rPerpX = r0x - alignedZ * eX;
+				final double rPerpY = r0y - alignedZ * eY;
+				final double rPerpZ = r0z - alignedZ * eZ;
 
 				// perpendicular distance squared between evalPos and axis of wire segment
 				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
@@ -1651,15 +1636,10 @@ public class ABSCAB {
 				// normalized z component of evaluation location in coordinate system of wire segment
 				final double zP = alignedZ / l;
 
-				// r0 projected onto axis of wire segment
-				final double rParallelX = alignedZ * eX;
-				final double rParallelY = alignedZ * eY;
-				final double rParallelZ = alignedZ * eZ;
-
 				// vector perpendicular to axis of wire segment, pointing at evaluation pos
-				final double rPerpX = r0x - rParallelX;
-				final double rPerpY = r0y - rParallelY;
-				final double rPerpZ = r0z - rParallelZ;
+				final double rPerpX = r0x - alignedZ * eX;
+				final double rPerpY = r0y - alignedZ * eY;
+				final double rPerpZ = r0z - alignedZ * eZ;
 
 				// perpendicular distance squared between evalPos and axis of wire segment
 				final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
