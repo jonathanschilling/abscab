@@ -207,7 +207,7 @@ public class DemoABSCAB {
 //			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
 //			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
 
-			allBzStdErr[i] = Math.abs((bZStd - bZRef)/bZRef);
+			allBzStdErr[i] = Util.errorMetric(bZRef, bZStd);
 			System.out.printf("ABSCAB B_z = %.3e (err %g)\n", bZStd, allBzStdErr[i]);
 
 			// McGreivy radius correction
@@ -232,7 +232,7 @@ public class DemoABSCAB {
 //			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
 //			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
 
-			allBzMcGErr[i] = Math.abs((bZMcG - bZRef)/bZRef);
+			allBzMcGErr[i] = Util.errorMetric(bZRef, bZMcG);
 			System.out.printf("McGrvy B_z = %.3e (err %g)\n", bZMcG, allBzMcGErr[i]);
 
 			resultTable[0][i] = numPhi;
@@ -241,9 +241,9 @@ public class DemoABSCAB {
 		}
 
 		if (useCompensatedSummation) {
-			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
-		} else {
 			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
+		} else {
+			Util.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
 		}
 
 		JyPlot plt = new JyPlot();
