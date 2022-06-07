@@ -356,8 +356,6 @@ public class ABSCAB {
 		} else {
 			// use multithreading
 
-			final int nThreads;
-
 			if (numVertices-1 > numEvalPos) {
 				// parallelize over nSource-1
 
@@ -365,6 +363,7 @@ public class ABSCAB {
 				// so this approach might need quite some memory in case the number of
 				// threads and the number of evaluation points is large.
 
+				final int nThreads;
 				final int nSourcePerThread;
 				if (numVertices-1 < numProcessors) {
 					nThreads = numVertices-1;
@@ -450,6 +449,7 @@ public class ABSCAB {
 			} else { // nEval > nSource
 				// parallelize over nEval
 
+				final int nThreads;
 				final int nEvalPerThread;
 				if (numEvalPos < numProcessors) {
 					nThreads = numEvalPos;
@@ -557,8 +557,6 @@ public class ABSCAB {
 		} else {
 			// use multithreading
 
-			final int nThreads;
-
 			if (numVertices-1 > numEvalPos) {
 				// parallelize over nSource-1
 
@@ -566,6 +564,7 @@ public class ABSCAB {
 				// so this approach might need quite some memory in case the number of
 				// threads and the number of evaluation points is large.
 
+				final int nThreads;
 				final int nSourcePerThread;
 				if (numVertices-1 < numProcessors) {
 					nThreads = numVertices-1;
@@ -651,6 +650,7 @@ public class ABSCAB {
 			} else { // nEval > nSource
 				// parallelize over nEval
 
+				final int nThreads;
 				final int nEvalPerThread;
 				if (numEvalPos < numProcessors) {
 					nThreads = numEvalPos;
@@ -761,8 +761,6 @@ public class ABSCAB {
 		} else {
 			// use multithreading
 
-			final int nThreads;
-
 			if (numVertices-1 > numEvalPos) {
 				// parallelize over nSource-1
 
@@ -770,6 +768,7 @@ public class ABSCAB {
 				// so this approach might need quite some memory in case the number of
 				// threads and the number of evaluation points is large.
 
+				final int nThreads;
 				final int nSourcePerThread;
 				if (numVertices-1 < numProcessors) {
 					nThreads = numVertices-1;
@@ -855,6 +854,7 @@ public class ABSCAB {
 			} else { // nEval > nSource
 				// parallelize over nEval
 
+				final int nThreads;
 				final int nEvalPerThread;
 				if (numEvalPos < numProcessors) {
 					nThreads = numEvalPos;
@@ -962,8 +962,6 @@ public class ABSCAB {
 		} else {
 			// use multithreading
 
-			final int nThreads;
-
 			if (numVertices-1 > numEvalPos) {
 				// parallelize over nSource-1
 
@@ -971,6 +969,7 @@ public class ABSCAB {
 				// so this approach might need quite some memory in case the number of
 				// threads and the number of evaluation points is large.
 
+				final int nThreads;
 				final int nSourcePerThread;
 				if (numVertices-1 < numProcessors) {
 					nThreads = numVertices-1;
@@ -1056,6 +1055,7 @@ public class ABSCAB {
 			} else { // nEval > nSource
 				// parallelize over nEval
 
+				final int nThreads;
 				final int nEvalPerThread;
 				if (numEvalPos < numProcessors) {
 					nThreads = numEvalPos;
@@ -1790,29 +1790,37 @@ public class ABSCAB {
 			final double rPerpY = r0y - rParallelY;
 			final double rPerpZ = r0z - rParallelZ;
 
-			// perpendicular distance between evalPos and axis of wire loop
-			final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+			// perpendicular distance squared between evalPos and axis of wire loop
+			double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
 
-			// unit vector in radial direction
-			final double eRX = rPerpX / alignedR;
-			final double eRY = rPerpY / alignedR;
-			final double eRZ = rPerpZ / alignedR;
+			// prevent division-by-zero when computing radial unit vector
+			// A_phi is zero anyway on-axis --> no contribution expected
+			if (alignedRSq > 0.0) {
 
-			// normalized rho component of evaluation location in coordinate system of wire loop
-			final double rhoP = alignedR / radius;
+				// perpendicular distance between evalPos and axis of wire loop
+				final double alignedR = Math.sqrt(alignedRSq);
 
-			// compute tangential component of magnetic vector potential, including current and mu_0
-			final double aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP);
+				// unit vector in radial direction
+				final double eRX = rPerpX / alignedR;
+				final double eRY = rPerpY / alignedR;
+				final double eRZ = rPerpZ / alignedR;
 
-			// compute cross product between e_z and e_rho to get e_phi
-			final double ePhiX = eRY * eZ - eRZ * eY;
-			final double ePhiY = eRZ * eX - eRX * eZ;
-			final double ePhiZ = eRX * eY - eRY * eX;
+				// normalized rho component of evaluation location in coordinate system of wire loop
+				final double rhoP = alignedR / radius;
 
-			// add contribution from wire loop to result
-			ret[0][idxEval] += aPhi * ePhiX;
-			ret[1][idxEval] += aPhi * ePhiY;
-			ret[2][idxEval] += aPhi * ePhiZ;
+				// compute tangential component of magnetic vector potential, including current and mu_0
+				final double aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP);
+
+				// compute cross product between e_z and e_rho to get e_phi
+				final double ePhiX = eRY * eZ - eRZ * eY;
+				final double ePhiY = eRZ * eX - eRX * eZ;
+				final double ePhiZ = eRX * eY - eRY * eX;
+
+				// add contribution from wire loop to result
+				ret[0][idxEval] = aPhi * ePhiX;
+				ret[1][idxEval] = aPhi * ePhiY;
+				ret[2][idxEval] = aPhi * ePhiZ;
+			}
 		}
 
 		return ret;
@@ -1891,12 +1899,15 @@ public class ABSCAB {
 			final double rPerpY = r0y - rParallelY;
 			final double rPerpZ = r0z - rParallelZ;
 
-			// perpendicular distance between evalPos and axis of wire loop
-			final double alignedR = Math.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+			// perpendicular distance squared between evalPos and axis of wire loop
+			final double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
 
 			final double rhoP;
-			if (alignedR > 0.0) {
+			if (alignedRSq > 0.0) {
 				// radial unit vector is only defined if evaluation pos is off-axis
+
+				// perpendicular distance between evalPos and axis of wire loop
+				final double alignedR = Math.sqrt(alignedRSq);
 
 				// unit vector in radial direction
 				final double eRX = rPerpX / alignedR;
@@ -1910,10 +1921,10 @@ public class ABSCAB {
 				// and scale by current and mu_0
 				final double bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP);
 
-				// add contribution from wire loop to result
-				ret[0][idxEval] += bRho * eRX;
-				ret[1][idxEval] += bRho * eRY;
-				ret[2][idxEval] += bRho * eRZ;
+				// add contribution from B_rho of wire loop to result
+				ret[0][idxEval] = bRho * eRX;
+				ret[1][idxEval] = bRho * eRY;
+				ret[2][idxEval] = bRho * eRZ;
 			} else {
 				rhoP = 0.0;
 			}
@@ -1922,7 +1933,7 @@ public class ABSCAB {
 			// and scale by current and mu_0
 			final double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
 
-			// add contribution from wire loop to result
+			// add contribution from B_z of wire loop to result
 			ret[0][idxEval] += bZ * eX;
 			ret[1][idxEval] += bZ * eY;
 			ret[2][idxEval] += bZ * eZ;
