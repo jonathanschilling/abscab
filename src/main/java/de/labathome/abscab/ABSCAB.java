@@ -2262,11 +2262,8 @@ public class ABSCAB {
 	// straight-forward implementation; good for far-field
 	static double B_phi_4(double rhoP, double zP) {
 
-//		double Ri = Math.hypot(rhoP, zP);
-//		double Rf = Math.hypot(rhoP, 1 - zP);
-
-		double Ri = Math.sqrt(rhoP * rhoP + zP*zP);
-		double Rf = Math.sqrt(rhoP * rhoP + (1.0 - zP)*(1.0 - zP));
+		double Ri = Math.hypot(rhoP, zP);
+		double Rf = Math.hypot(rhoP, 1 - zP);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
 
