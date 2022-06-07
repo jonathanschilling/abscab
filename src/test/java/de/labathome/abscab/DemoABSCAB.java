@@ -1,13 +1,18 @@
 package de.labathome.abscab;
 
-import java.util.function.Function;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.IntFunction;
 
 import aliceinnets.python.jyplot.JyPlot;
 
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		//		run();
+		//		demoDoubleParts();
+
+//		demoStraightWireSegmentAlongRhoP0();
+//		demoStraightWireSegmentAlongZP01();
 
 		demoMcGreivy();
 //		demoFiniteCoil();
@@ -22,7 +27,7 @@ public class DemoABSCAB {
 //		dumpInternalResultsCircularWireLoop();
 	}
 
-	public static void run() {
+	public static void demoDoubleParts() {
 		int s = 0;
 		int E = 127;
 		int M = 1432344328;
@@ -36,6 +41,109 @@ public class DemoABSCAB {
 		System.out.printf("s: %d =?= %d\n", s, fParts[0]);
 		System.out.printf("E: %d =?= %d =?= %d\n", E, fParts[1], exponent);
 		System.out.printf("M: %d =?= %d\n", M, fParts[2]);
+	}
+
+	public static void demoStraightWireSegmentAlongRhoP0() {
+
+		// load set of test points
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+
+		int numCases = testPointsRp.length;
+
+		// load reference data
+		double[] ref_A_z   = Util.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
+
+		List<Double> sws_A_z_refLst = new LinkedList<>();
+		List<Double> sws_A_z_2aLst = new LinkedList<>();
+		List<Double> sws_A_z_2bLst = new LinkedList<>();
+
+		// compute B_phi at test points and compare against reference
+		for (int i=0; i<numCases; ++i) {
+			double rhoP = testPointsRp[i];
+			double zP   = testPointsZp[i];
+
+			if (rhoP == 0.0) {
+				sws_A_z_refLst.add(ref_A_z[i]);
+
+				sws_A_z_2aLst.add(ABSCAB.A_z_2a(rhoP, zP));
+				sws_A_z_2bLst.add(ABSCAB.A_z_2b(rhoP, zP));
+			}
+		}
+
+		int numCasesAlongRhoP0 = sws_A_z_refLst.size();
+		double[] sws_A_z_2a_err = new double[numCasesAlongRhoP0];
+		double[] sws_A_z_2b_err = new double[numCasesAlongRhoP0];
+		for (int i=0; i<numCasesAlongRhoP0; ++i) {
+			sws_A_z_2a_err[i] = Util.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2aLst.get(i));
+			sws_A_z_2b_err[i] = Util.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2bLst.get(i));
+		}
+
+		JyPlot plt = new JyPlot();
+
+		plt.figure("figsize=(6,2.5)");
+		plt.plot(sws_A_z_2a_err, "r.-", "label='A_z_2'");
+		plt.plot(sws_A_z_2b_err, "bx--", "label='A_z_2b'");
+		plt.xlabel("test cases along $\\rho^{\\prime} = 0$");
+		plt.ylabel("$log_{10}$(rel. error)");
+		plt.grid(true);
+		plt.legend("loc='center right'");
+		plt.tight_layout();
+
+		plt.show();
+		plt.exec();
+	}
+
+	public static void demoStraightWireSegmentAlongZP01() {
+
+		// load set of test points
+		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+
+		int numCases = testPointsRp.length;
+
+		// load reference data
+		double[] ref_A_z   = Util.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
+
+		List<Double> sws_A_z_refLst = new LinkedList<>();
+		List<Double> sws_A_z_3aLst = new LinkedList<>();
+		List<Double> sws_A_z_3bLst = new LinkedList<>();
+
+		// compute B_phi at test points and compare against reference
+		for (int i=0; i<numCases; ++i) {
+			double rhoP = testPointsRp[i];
+			double zP   = testPointsZp[i];
+
+			if (zP == 0.0) {
+				sws_A_z_refLst.add(ref_A_z[i]);
+
+				sws_A_z_3aLst.add(ABSCAB.A_z_3a(rhoP, zP));
+				sws_A_z_3bLst.add(ABSCAB.A_z_3b(rhoP, zP));
+			}
+		}
+
+		int numCasesAlongRhoP0 = sws_A_z_refLst.size();
+		double[] sws_A_z_3a_err = new double[numCasesAlongRhoP0];
+		double[] sws_A_z_3b_err = new double[numCasesAlongRhoP0];
+		for (int i=0; i<numCasesAlongRhoP0; ++i) {
+			sws_A_z_3a_err[i] = Util.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3aLst.get(i));
+			sws_A_z_3b_err[i] = Util.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3bLst.get(i));
+		}
+
+		JyPlot plt = new JyPlot();
+
+		plt.figure("figsize=(6,2.5)");
+		plt.plot(sws_A_z_3a_err, "r.-", "label='A_z_3'");
+		plt.plot(sws_A_z_3b_err, "bx--", "label='A_z_3b'");
+		plt.xlabel("test cases along $z^{\\prime} = 0$");
+		plt.ylabel("$log_{10}$(rel. error)");
+		plt.grid(true);
+		plt.legend("loc='center right'");
+		plt.tight_layout();
+
+		plt.show();
+		plt.exec();
+
 	}
 
 	public static void demoMcGreivy() {
@@ -87,7 +195,7 @@ public class DemoABSCAB {
 			System.out.printf("numPhi = %d\n", numPhi);
 
 			double omega = 2.0*Math.PI / (numPhi-1);
-			Function<Integer, double[]> vertexSupplierStd = idxVertex -> {
+			IntFunction<double[]> vertexSupplierStd = idxVertex -> {
 				double phi = omega * idxVertex;
 				double x = radius * Math.cos(phi);
 				double y = radius * Math.sin(phi);
@@ -112,7 +220,7 @@ public class DemoABSCAB {
 			//double rCorr = radius * (1.0 + 4 * Math.PI * Math.PI * dPhi*dPhi/ 12);
 			double rCorr = radius * (1.0 + dPhi*dPhi/ 12);
 
-			Function<Integer, double[]> vertexSupplierMcGreivy = idxVertex -> {
+			IntFunction<double[]> vertexSupplierMcGreivy = idxVertex -> {
 				double phi = omega * idxVertex;
 				double x = rCorr * Math.cos(phi);
 				double y = rCorr * Math.sin(phi);
@@ -155,17 +263,17 @@ public class DemoABSCAB {
 		plt.exec();
 	}
 
-//	private static double[][] polygonCircleAround0(double radius, int numPhi) {
-//		double[][] ret = new double[3][numPhi];
-//		double omega = 2.0*Math.PI / (numPhi-1);
-//		for (int i=0; i<numPhi; ++i) {
-//			double phi = omega * i;
-//			ret[0][i] = radius * Math.cos(phi);
-//			ret[1][i] = radius * Math.sin(phi);
-//		}
-//
-//		return ret;
-//	}
+	static double[][] polygonCircleAround0(double radius, int numPhi) {
+		double[][] ret = new double[3][numPhi];
+		double omega = 2.0*Math.PI / (numPhi-1);
+		for (int i=0; i<numPhi; ++i) {
+			double phi = omega * i;
+			ret[0][i] = radius * Math.cos(phi);
+			ret[1][i] = radius * Math.sin(phi);
+		}
+
+		return ret;
+	}
 
 	public static void demoFiniteCoil() {
 		// Demtroeder 2, Sec. 3.2.6d ("Magnetic field of a cylindrical coil")

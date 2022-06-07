@@ -145,16 +145,16 @@ public class Util {
 		final long signMask     = 0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
 		final long exponentMask = 0b0111_1111_1111_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000L;
 		final long mantissaMask = 0b0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111L;
-		
+
 		long bits = Double.doubleToRawLongBits(f);
 
 		long sign     = (bits &     signMask) >>> 63;
 		long exponent = (bits & exponentMask) >>> 52;
 		long mantissa = (bits & mantissaMask);
-		
+
 		return new long[] {sign, exponent, mantissa};
 	}
-	
+
 	/**
 	 * Load columns of data from a text file.
 	 *
@@ -245,5 +245,21 @@ public class Util {
 		}
 
 		return data;
+	}
+
+	public static double errorMetric(double ref, double act) {
+
+		double bad = 0.0;
+		double good = -16.0;
+
+		if (Math.abs(ref) > 0.0) {
+			if (act != ref) {
+				return Math.log10(Math.min(Math.pow(10, bad), Math.abs((act-ref)/ref)));
+			} else {
+				return good;
+			}
+		} else {
+			return ((Math.abs(act) > 0.0) ? bad : good);
+		}
 	}
 }

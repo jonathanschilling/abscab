@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.IntFunction;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -62,7 +62,7 @@ public class ABSCAB {
 	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos) {
 		int numProcessors = Runtime.getRuntime().availableProcessors();
@@ -104,7 +104,7 @@ public class ABSCAB {
 	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos) {
 		int numProcessors = Runtime.getRuntime().availableProcessors();
@@ -149,7 +149,7 @@ public class ABSCAB {
 	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			int numProcessors) {
@@ -193,7 +193,7 @@ public class ABSCAB {
 	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			int numProcessors) {
@@ -242,7 +242,7 @@ public class ABSCAB {
 	 */
 	public static double[][] vectorPotentialPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			int numProcessors,
@@ -292,7 +292,7 @@ public class ABSCAB {
 	 */
 	public static double[][] magneticFieldPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			int numProcessors,
@@ -521,7 +521,7 @@ public class ABSCAB {
 	 */
 	public static void vectorPotentialPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			double[][] vectorPotential,
@@ -926,7 +926,7 @@ public class ABSCAB {
 	 */
 	public static void magneticFieldPolygonFilament(
 			int numVertices,
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			double[][] magneticField,
@@ -1271,7 +1271,7 @@ public class ABSCAB {
 	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
 	 */
 	private static void kernelVectorPotentialPolygonFilament(
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			double[][] vectorPotential,
@@ -1570,7 +1570,7 @@ public class ABSCAB {
 	 *                                of the contributions from the polygon vertices; otherwise, use standard += summation
 	 */
 	private static void kernelMagneticFieldPolygonFilament(
-			Function<Integer, double[]> vertexSupplier,
+			IntFunction<double[]> vertexSupplier,
 			double current,
 			double[][] evalPos,
 			double[][] magneticField,
@@ -2120,7 +2120,7 @@ public class ABSCAB {
 	 */
 	static double A_z_along_rhoP_0(double rhoP, double zP) {
 		if (zP < -1 || zP > 2) {
-			return A_z_2(rhoP, zP);
+			return A_z_2a(rhoP, zP);
 		} else {
 			return A_z_2b(rhoP, zP);
 		}
@@ -2133,7 +2133,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	static double A_z_2(double rhoP, double zP) {
+	static double A_z_2a(double rhoP, double zP) {
 		return FastMath.atanh(1.0 / (Math.abs(zP) + Math.abs(1 - zP)));
 	}
 
@@ -2157,7 +2157,7 @@ public class ABSCAB {
 	 */
 	static double A_z_along_zP_0_or_1(double rhoP, double zP) {
 		if (rhoP > 1.0) {
-			return A_z_3(rhoP, 0.0);
+			return A_z_3a(rhoP, 0.0);
 		} else {
 			// rhoP <= 1
 			return A_z_3b(rhoP, 0.0);
@@ -2171,7 +2171,7 @@ public class ABSCAB {
 	 * @param zP
 	 * @return
 	 */
-	static double A_z_3(double rhoP, double zP) {
+	static double A_z_3a(double rhoP, double zP) {
 		return FastMath.atanh(1.0 / (rhoP + Math.sqrt(rhoP * rhoP + 1)));
 	}
 
@@ -2262,8 +2262,11 @@ public class ABSCAB {
 	// straight-forward implementation; good for far-field
 	static double B_phi_4(double rhoP, double zP) {
 
-		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, 1 - zP);
+//		double Ri = Math.hypot(rhoP, zP);
+//		double Rf = Math.hypot(rhoP, 1 - zP);
+
+		double Ri = Math.sqrt(rhoP * rhoP + zP*zP);
+		double Rf = Math.sqrt(rhoP * rhoP + (1.0 - zP)*(1.0 - zP));
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
 
