@@ -69,7 +69,7 @@ if __name__ == "__main__":
     
     for i in range(numCases):
         ref[idxZp[i], idxRp[i]] = ref1d[i]
-        act[idxZp[i], idxRp[i]] = act1d[i]
+        act[idxZp[i], idxRp[i]] = act1d[i] #* 2.0
     
     # compute rel. error between ref and act
     bad  =   0
