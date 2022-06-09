@@ -157,13 +157,13 @@ public class TestABSCAB {
 		final double tolerance = 1.0e-15;
 
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_A_z = Util.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
+		double[] ref_A_z = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
 
 		// compute A_z at test points and compare against reference
 		for (int i=0; i<numCases; ++i) {
@@ -191,13 +191,13 @@ public class TestABSCAB {
 		final double tolerance = 1.0e-15;
 
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_B_phi = Util.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_B_phi_ref.dat")[0];
+		double[] ref_B_phi = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_B_phi_ref.dat")[0];
 
 		// compute B_phi at test points and compare against reference
 		for (int i=0; i<numCases; ++i) {
@@ -225,13 +225,13 @@ public class TestABSCAB {
 		final double tolerance = 1.0e-15;
 
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_A_phi = Util.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_A_phi_ref.dat")[0];
+		double[] ref_A_phi = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_A_phi_ref.dat")[0];
 
 		// compute A_phi at test points and compare against reference
 		for (int i=0; i<numCases; ++i) {
@@ -259,13 +259,13 @@ public class TestABSCAB {
 		final double tolerance = 1.0e-13;
 
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_B_rho = Util.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_B_rho_ref.dat")[0];
+		double[] ref_B_rho = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_B_rho_ref.dat")[0];
 
 		// compute B_rho at test points and compare against reference
 		for (int i=0; i<numCases; ++i) {
@@ -293,13 +293,13 @@ public class TestABSCAB {
 		final double tolerance = 1.0e-14;
 
 		// load set of test points
-		double[] testPointsRp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = Util.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_B_z = Util.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_B_z_ref.dat")[0];
+		double[] ref_B_z = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/CircularWireLoop_B_z_ref.dat")[0];
 
 		// compute B_z at test points and compare against reference
 		for (int i=0; i<numCases; ++i) {
