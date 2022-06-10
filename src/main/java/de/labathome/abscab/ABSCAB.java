@@ -1968,13 +1968,7 @@ public class ABSCAB {
 			return A_z_along_zP_0_or_1(rhoP, zP);
 		} else if (-1 < zP && zP <= 2.0 && rhoP < 1.0) {
 			// near-field
-			if (zP >= 1.0 || rhoP / (1 - zP) >= 1.0) {
-				return A_z_6a(rhoP, zP);
-			} else if (zP >= 0.0 && rhoP / zP <= 1.0) {
-				return A_z_6b(rhoP, zP);
-			} else {
-				return A_z_6c(rhoP, zP);
-			}
+			return A_z_6(rhoP, zP);
 		} else {
 			return A_z_1(rhoP, zP);
 		}
@@ -2171,57 +2165,23 @@ public class ABSCAB {
 		return Math.log(num / den) / 2;
 	}
 
-	// (1): rho' < 1e-15, |z'|>=1
-	static double A_z_6a(double rhoP, double zP) {
-
-		double alpha = Math.atan2(rhoP, zP);
-		double cosAlpha = Math.cos(alpha);
-		double sinAlphaHalf = Math.sin(alpha / 2);
-
-		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
-		double Ri_zP = zP * 2 * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
-
-		double zpM1 = zP - 1;
-		double Rf = Math.sqrt(rhoP * rhoP + zpM1 * zpM1);
-
-		double n = Ri_zP + Rf + zpM1;
-
-		return (Math.log(2 + n) - Math.log(n)) / 2;
-	}
-
-	static double A_z_6b(double rhoP, double zP) {
-
-		double alpha = Math.atan2(rhoP, zP);
-		double cosAlpha = Math.cos(alpha);
-		double sinAlphaHalf = Math.sin(alpha / 2);
-
-		// nutritious zero: R_i - 1 == (R_i - z') + (z' - 1)
-		double Ri_zP = 2 * zP * sinAlphaHalf * sinAlphaHalf / cosAlpha; // R_i - z'
-
+	// near-field of straight wire segment
+	static double A_z_6(double rhoP, double zP) {
 		double omz = 1 - zP;
-		double beta = Math.atan2(rhoP, omz);
-		double cosBeta = Math.cos(beta);
-		double sinBetaHalf = Math.sin(beta / 2);
-
-		double Rf_p_zM1 = 2 * omz * sinBetaHalf * sinBetaHalf / cosBeta; // R_f - 1 + z'
-
-		double n = Ri_zP + Rf_p_zM1;
-
-		return (Math.log(2 + n) - Math.log(n)) / 2;
-	}
-
-	static double A_z_6c(double rhoP, double zP) {
-		double omz = 1.0 - zP;
-
-		double beta = Math.atan2(rhoP, omz);
-		double sinBetaHalf = Math.sin(beta / 2);
 
 		double R_i = Math.hypot(rhoP, zP);
 		double R_f = Math.hypot(rhoP, omz);
 
-		double Rf_m_1 = 2 * R_f * sinBetaHalf * sinBetaHalf - zP;
+		double alpha = Math.atan2(rhoP, zP);
+		double sinAlphaHalf = Math.sin(alpha / 2);
 
-		double n = R_i + Rf_m_1;
+		double beta = Math.atan2(rhoP, omz);
+		double sinBetaHalf = Math.sin(beta / 2);
+
+		double Ri_zP = 2 * R_i * sinAlphaHalf * sinAlphaHalf; // R_i - z'
+		double Rf_p_zM1 = 2 * R_f * sinBetaHalf * sinBetaHalf; // R_f - 1 + z'
+
+		double n = Ri_zP + Rf_p_zM1;
 
 		return (Math.log(2 + n) - Math.log(n)) / 2;
 	}
