@@ -20,10 +20,10 @@ public class DemoABSCAB {
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 
-		demoStraightWireSegment();
+//		demoStraightWireSegment();
 //		demoCircularWireLoop();
 //
-//		dumpInternalResultsStraightWireSegment();
+		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
 	}
 
@@ -586,9 +586,7 @@ public class DemoABSCAB {
 		// compute A_z and B_phi at test points
 		double[] A_z_along_rhoP_0    = new double[numCases];
 		double[] A_z_along_zP_0_or_1 = new double[numCases];
-//		double[] A_z_6a              = new double[numCases];
-		double[] A_z_6b              = new double[numCases];
-//		double[] A_z_6c              = new double[numCases];
+		double[] A_z_6              = new double[numCases];
 		double[] A_z_1               = new double[numCases];
 
 		double[] B_phi_3 = new double[numCases];
@@ -601,9 +599,7 @@ public class DemoABSCAB {
 
 			A_z_along_rhoP_0[i]    = ABSCAB.A_z_along_rhoP_0(rhoP, zP);
 			A_z_along_zP_0_or_1[i] = ABSCAB.A_z_along_zP_0_or_1(rhoP, zP);
-//			A_z_6a[i]              = ABSCAB.A_z_6a(rhoP, zP);
-			A_z_6b[i]              = ABSCAB.A_z_6(rhoP, zP);
-//			A_z_6c[i]              = ABSCAB.A_z_6c(rhoP, zP);
+			A_z_6[i]               = ABSCAB.A_z_6(rhoP, zP);
 			A_z_1[i]               = ABSCAB.A_z_1(rhoP, zP);
 
 			B_phi_3[i] = ABSCAB.B_phi_3(rhoP, zP);
@@ -614,9 +610,7 @@ public class DemoABSCAB {
 		// write to output file
 		TestABSCABUtils.dumpToFile(A_z_along_rhoP_0,    "data/StraightWireSegment_A_z_along_rhoP_0_Java.dat");
 		TestABSCABUtils.dumpToFile(A_z_along_zP_0_or_1, "data/StraightWireSegment_A_z_along_zP_0_or_1_Java.dat");
-//		TestABSCABUtils.dumpToFile(A_z_6a,              "data/StraightWireSegment_A_z_6a_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_6b,              "data/StraightWireSegment_A_z_6b_Java.dat");
-//		TestABSCABUtils.dumpToFile(A_z_6c,              "data/StraightWireSegment_A_z_6c_Java.dat");
+		TestABSCABUtils.dumpToFile(A_z_6,               "data/StraightWireSegment_A_z_6_Java.dat");
 		TestABSCABUtils.dumpToFile(A_z_1,               "data/StraightWireSegment_A_z_1_Java.dat");
 
 		TestABSCABUtils.dumpToFile(B_phi_3, "data/StraightWireSegment_B_phi_3_Java.dat");

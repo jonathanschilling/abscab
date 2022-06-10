@@ -2201,38 +2201,38 @@ public class ABSCAB {
 
 	// straight-forward implementation; good for far-field
 	static double B_phi_4(double rhoP, double zP) {
+		double omz = 1 - zP;
 
 		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, 1 - zP);
+		double Rf = Math.hypot(rhoP, omz);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
 
-		double den = rhoP * rhoP + zP * (zP - 1) + Ri * Rf;
+		double den = rhoP * rhoP - zP * omz + Ri * Rf;
 
 		return t1 / den;
 	}
 
-	// near-field: zP approx 1
+	// full-field solution, but maybe too slow for general-purpose use
 	static double B_phi_5(double rhoP, double zP) {
+		double omz = 1 - zP;
 
 		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, 1 - zP);
+		double Rf = Math.hypot(rhoP, omz);
 
 		double t1 = rhoP * (1/Ri + 1/Rf);
 
 		double alpha = Math.atan2(rhoP, zP);
-		double cosAlpha = Math.cos(alpha);
 		double sinAlphaHalf = Math.sin(alpha / 2);
 
-		double beta = Math.atan2(rhoP, 1 - zP);
-		double cosBeta = Math.cos(beta);
+		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
 		// (a*b - 1)
-		double abm1 = 2 / cosAlpha * (sinBetaHalf * sinBetaHalf / cosBeta + sinAlphaHalf * sinAlphaHalf);
+		double abm1 = Rf * sinBetaHalf * sinBetaHalf + omz * sinAlphaHalf * sinAlphaHalf;
 
 		// R_i*R_f - zP*(1-zP) == zP*(1-zP) * (a*b - 1)
-		double den = rhoP * rhoP + zP * (1 - zP) * abm1;
+		double den = rhoP * rhoP + 2 * Ri * abm1;
 
 		return t1 / den;
 	}

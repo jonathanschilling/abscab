@@ -16,9 +16,7 @@ pushd ../src/test/python || exit -1
 
 for i in A_z_along_rhoP_0 \
          A_z_along_zP_0_or_1 \
-         A_z_6a \
-         A_z_6b \
-         A_z_6c \
+         A_z_6 \
          A_z_1
 do
   ./plotStraightWireSegmentVsRef.py \
