@@ -2146,7 +2146,7 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double A_z_3a(double rhoP, double zP) {
-		return FastMath.atanh(1 / (rhoP + Math.sqrt(rhoP * rhoP + 1)));
+		return FastMath.atanh(1 / (rhoP + Math.hypot(rhoP, 1)));
 	}
 
 	/**
@@ -2158,10 +2158,11 @@ public class ABSCAB {
 	 */
 	static double A_z_3b(double rhoP, double zP) {
 		// a little bit more robust --> around rho'=1 +/- one test point we have 15 digits
-		double cat = 1 / Math.sqrt(rhoP * rhoP + 1); // cos(atan(...))
+		double cat = 1 / Math.hypot(rhoP, 1); // cos(atan(...))
 		double sat = Math.sin(Math.atan(rhoP) / 2); // sin(atan(...)/2)
-		double num = rhoP * cat + 1 + cat;
-		double den = rhoP * cat + 2 * sat * sat;
+		double rc = rhoP * cat;
+		double num = rc + 1 + cat;
+		double den = rc + 2 * sat * sat;
 		return Math.log(num / den) / 2;
 	}
 
