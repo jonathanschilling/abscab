@@ -2119,7 +2119,7 @@ public class ABSCAB {
 	 * @return
 	 */
 	static double A_z_2b(double rhoP, double zP) {
-		return Math.signum(zP) * Math.log(Math.abs(zP / (1 - zP))) / 2;
+		return Math.signum(zP) * Math.log(zP / (zP - 1)) / 2;
 	}
 
 	/**
