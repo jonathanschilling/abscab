@@ -5,17 +5,17 @@ The derivations of the starting point formulas presented in Sec.~\ref{sec:method
 \subsection{Straight Wire Segment}
 The following geometric quantities with $\mathbf{x}_f \equiv \mathbf{x}_{i+1}$ are defined to ease the rest of the derivation:
 \begin{align}
- L                   & \equiv | \mathbf{x}_f - \mathbf{x}_i | \quad , \\
- \hat{\mathbf{e}}    & \equiv \left(\mathbf{x}_f - \mathbf{x}_i\right) / L \quad , \\
- \mathbf{R}_i        & \equiv \mathbf{x} - \mathbf{x}_i \quad , \\
- \mathbf{R}_f        & \equiv \mathbf{x} - \mathbf{x}_f \quad , \\
- R_i                 & \equiv | \mathbf{R}_i | = | \mathbf{x} - \mathbf{x}_i | \quad , \\
- R_f                 & \equiv | \mathbf{R}_f | = | \mathbf{x} - \mathbf{x}_f | \quad , \\
- R_{i ||}            & \equiv \hat{\mathbf{e}} \cdot \mathbf{R}_i \quad , \\
- R_{f ||}            & \equiv \hat{\mathbf{e}} \cdot \mathbf{R}_f \quad , \\
- \mathbf{R}_\perp    & \equiv \mathbf{R}_i - R_{i ||} \hat{\mathbf{e}} \quad , \\
+ L                   & \equiv | \mathbf{x}_f - \mathbf{x}_i | \, , \\
+ \hat{\mathbf{e}}    & \equiv \left(\mathbf{x}_f - \mathbf{x}_i\right) / L \, , \\
+ \mathbf{R}_i        & \equiv \mathbf{x} - \mathbf{x}_i \, , \\
+ \mathbf{R}_f        & \equiv \mathbf{x} - \mathbf{x}_f \, , \\
+ R_i                 & \equiv | \mathbf{R}_i | = | \mathbf{x} - \mathbf{x}_i | \, , \\
+ R_f                 & \equiv | \mathbf{R}_f | = | \mathbf{x} - \mathbf{x}_f | \, , \\
+ R_{i ||}            & \equiv \hat{\mathbf{e}} \cdot \mathbf{R}_i \, , \\
+ R_{f ||}            & \equiv \hat{\mathbf{e}} \cdot \mathbf{R}_f \, , \\
+ \mathbf{R}_\perp    & \equiv \mathbf{R}_i - R_{i ||} \hat{\mathbf{e}} \, , \\
  R_\perp             & \equiv | \mathbf{R}_\perp | \quad \mathrm{and} \\
- \mathbf{c}(\lambda) & \equiv \mathbf{x}_i + \lambda \left(\mathbf{x}_f - \mathbf{x}_i\right) \quad \mathrm{for} \quad 0 \leq \lambda \leq 1 \quad .
+ \mathbf{c}(\lambda) & \equiv \mathbf{x}_i + \lambda \left(\mathbf{x}_f - \mathbf{x}_i\right) \quad \mathrm{for} \quad 0 \leq \lambda \leq 1 \, .
 \end{align}
 The following relations are also needed:
 \begin{align}
@@ -28,12 +28,12 @@ The following relations are also needed:
 \subsubsection{Magnetic Vector Potential}
 The law of Biot and Savart for the magnetic vector potential of a current density distribution $\mathbf{j}(\mathbf{x})$ is as follows~\cite{jackson}:
 \begin{equation}
- \mathbf{A}(\mathbf{x}) = \frac{\mu_0}{4 \pi} \int \frac{\mathbf{j}(\mathbf{x}')}{|\mathbf{x} - \mathbf{x}'|} \mathrm{d}\mathbf{x}' \quad .
+ \mathbf{A}(\mathbf{x}) = \frac{\mu_0}{4 \pi} \int \frac{\mathbf{j}(\mathbf{x}')}{|\mathbf{x} - \mathbf{x}'|} \mathrm{d}\mathbf{x}' \, .
 \end{equation}
 The parametrization of points on the line segment $\mathbf{c}(\lambda)$ can be used to apply this to the given geometry of a wire segment:
 \begin{align}
  \mathbf{A}(\mathbf{x}) & = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{|\mathbf{x} - \mathbf{c}(\lambda)|} \\
-        ~               & = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{|\mathbf{x} - \mathbf{x}_i - \lambda L \hat{\mathbf{e}}|} \quad .
+        ~               & = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{|\mathbf{x} - \mathbf{x}_i - \lambda L \hat{\mathbf{e}}|} \, .
 \end{align}
 A little bit of geometric intuition is needed to simplify the denominator of the integral:
 \begin{align}
@@ -41,7 +41,7 @@ A little bit of geometric intuition is needed to simplify the denominator of the
    & = \mathbf{R}_i - \lambda L \hat{\mathbf{e}} \\
  ~ & = \mathbf{R}_i - R_{i ||} \hat{\mathbf{e}} + R_{i ||} \hat{\mathbf{e}} - \lambda L \hat{\mathbf{e}} \\
  ~ & = \mathbf{R}_i - R_{i ||} \hat{\mathbf{e}} + \left( R_{i ||} - \lambda L \right) \hat{\mathbf{e}} \\
- ~ & = \mathbf{R}_\perp + \left( R_{i ||} - \lambda L \right) \hat{\mathbf{e}} \quad .
+ ~ & = \mathbf{R}_\perp + \left( R_{i ||} - \lambda L \right) \hat{\mathbf{e}} \, .
 \end{align}
 Note that, in particular, $\mathbf{R}_\perp \perp \hat{\mathbf{e}}$ and thus (since $|\hat{\mathbf{e}}|$ = 1) due to Pythagoras:
 \begin{equation}
@@ -51,27 +51,28 @@ and finally with $R_\perp^2 = R_i^2 - R_{i ||}^2$ (also due to Pythagoras):
 \begin{align}
  | \mathbf{x} - \mathbf{x}_i - \lambda L \hat{\mathbf{e}} |^2
    & = R_i^2 - R_{i ||}^2 + R_{i ||}^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2 \\
- ~ & = R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2 \quad .
+ ~ & = R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2 \, .
 \end{align}
 It follows:
 \begin{equation}
  \mathbf{A}(\mathbf{x})
- = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \quad . \label{eqn:A_integral}
+ = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \, . \label{eqn:A_integral}
 \end{equation}
 For $X = a x^2 + b x + c$ with $a>0$ the following relation holds~\cite{bronstein}:
 \begin{equation}
- \int \frac{\mathrm{d}x}{\sqrt{X}} = \frac{1}{\sqrt{a}} \log \left( 2 \sqrt{a X} + 2 a x + b \right) \quad .
+ \int \frac{\mathrm{d}x}{\sqrt{X}} = \frac{1}{\sqrt{a}} \log \left( 2 \sqrt{a X} + 2 a x + b \right) \, .
 \end{equation}
 Here, $x = \lambda$, $a = L^2$, $b=-2 L R_{i ||}$ and $c=R_i^2$.
 The corresponding antiderivative of the integrand in \eqn{A_integral} is:
-\begin{equation}
-   \int\frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}}
- = \frac{1}{L} \log \left( 2 \sqrt{L^2\left( L^2 \lambda^2 - 2 L R_{i ||} \lambda + R_i^2 \right)} + 2 L^2 \lambda - 2 L R_{i ||} \right) \quad .
-\end{equation}
+\begin{align}
+ \int&\frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \nonumber \\
+ =&\, \frac{1}{L} \log \left( 2 \sqrt{L^2\left( L^2 \lambda^2 - 2 L R_{i ||} \lambda + R_i^2 \right)} + 2 L^2 \lambda - 2 L R_{i ||} \right) \, .
+\end{align}
 The definite integral in \eqn{A_integral} is therefore solved by the following expression:
 \begin{align}
  ~ & \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \\
- = & \frac{1}{L} \left[ \log \left( 2 \sqrt{L^2\left( L^2 - 2 L R_{i ||} + R_i^2 \right)} + 2 L^2 - 2 L R_{i ||} \right) - \log \left( 2 \sqrt{L^2 R_i^2 } - 2 L R_{i ||} \right) \right] \\
+ = & \frac{1}{L} \Biggl[\phantom{-}\, \log \left( 2 \sqrt{L^2\left( L^2 - 2 L R_{i ||} + R_i^2 \right)} + 2 L^2 - 2 L R_{i ||} \right) \nonumber \\
+ ~ & \phantom{\frac{1}{L} \Biggl[} - \log \left( 2 \sqrt{L^2 R_i^2 } - 2 L R_{i ||} \right) \Biggr] \\
  = & \frac{1}{L} \log \left( \frac{ \bcancel{2 L} \sqrt{L^2 - 2 L R_{i ||} + R_i^2} + \bcancel{2} L^{\bcancel{2}} - \bcancel{2 L} R_{i ||} }{ \bcancel{2 L} R_i - \bcancel{2 L} R_{i ||} } \right)
 \end{align}
 Note that
@@ -81,18 +82,18 @@ Note that
 \Rightarrow -2 L R_{i ||} + L^2  & = - \bcancel{2} L R_{i ||}  + \bcancel{L R_{i ||}} - L R_{f ||} \\
                               ~  & = -L (R_{i ||} + R_{f ||} ) \\
                               ~  & = R_f^2 - R_i^2 \\
-\Rightarrow                R_f^2 & = R_i^2 -2 L R_{i ||} + L^2 \quad .
+\Rightarrow                R_f^2 & = R_i^2 -2 L R_{i ||} + L^2 \, .
 \end{align}
 Therefore:
 \begin{equation}
  \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}}
- = \frac{1}{L} \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i  \,\mathrm{d}\varphi||} } \right) \quad .
+ = \frac{1}{L} \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i  \,\mathrm{d}\varphi||} } \right) \, .
 \end{equation}
 Inserting this into \eqn{A_integral} leads to the first intermediate result:
 \begin{equation}
    \mathbf{A}(\mathbf{x})
  = \frac{\mu_0 I}{4 \pi} \bcancel{L} \bcancel{\frac{1}{L}} \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i ||} } \right) \hat{\mathbf{e}}
- = \frac{\mu_0 I}{4 \pi}                                   \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i ||} } \right) \hat{\mathbf{e}} \quad . \label{eqn:A_first}
+ = \frac{\mu_0 I}{4 \pi}                                   \log \left( \frac{ R_f - R_{f ||} }{ R_i - R_{i ||} } \right) \hat{\mathbf{e}} \, . \label{eqn:A_first}
 \end{equation}
 However, if the point $\mathbf{x}$ is located on the line extension of the wire segment, $R_i = R_{i ||}$ and $R_f = R_{f ||}$,
 which leads to a $0/0$ division if this formula is directly evaluated.
@@ -106,37 +107,34 @@ A second look resolves this:
  = & \frac{ 2 L R_f - R_i^2 + R_f^2 + L^2 }{ 2 L R_i - R_i^2 + R_f^2 - L^2 } \\
  = & \frac{ 2 L R_f - R_i^2 + R_f^2 + L^2 + L R_i - L R_i + R_i R_f - R_i R_f}{ 2 L R_i - R_i^2 + R_f^2 - L^2 + L R_f - L R_f + R_i R_f - R_i R_f } \\
  = & \frac{\bcancel{(L + R_f - R_i)}(R_f + R_i + L)}{\bcancel{(L + R_f - R_i)}(R_f + R_i - L)}
- =   \frac{R_f + R_i + L}{R_f + R_i - L} \quad .
+ =   \frac{R_f + R_i + L}{R_f + R_i - L} \, .
 \end{align}
 It follows for the vector potential expression:
 \begin{equation}
- \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \log \left( \frac{R_f + R_i + L}{R_f + R_i - L} \right) \hat{\mathbf{e}} \quad . \label{eqn:A_second}
+ \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \log \left( \frac{R_f + R_i + L}{R_f + R_i - L} \right) \hat{\mathbf{e}} \, . \label{eqn:A_second}
 \end{equation}
 The authors of Ref.~\cite{hanson_hirshman_2002} suggest to normalize the length of the wire segment:
 \begin{equation}
- \frac{R_f + R_i + L}{R_f + R_i - L} = \frac{1 + \epsilon}{1 - \epsilon} \quad \mathrm{with} ~ \epsilon \equiv \frac{L}{R_i + R_f} \quad ,
+ \frac{R_f + R_i + L}{R_f + R_i - L} = \frac{1 + \epsilon}{1 - \epsilon} \quad \mathrm{with} ~ \epsilon \equiv \frac{L}{R_i + R_f} \, ,
 \end{equation}
 leading to
 \begin{equation}
- \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \log\left(\frac{1 + \epsilon}{1 - \epsilon} \right) \hat{\mathbf{e}} \quad . \label{eqn:A_log_eps}
+ \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \log\left(\frac{1 + \epsilon}{1 - \epsilon} \right) \hat{\mathbf{e}} \, . \label{eqn:A_log_eps}
 \end{equation}
 This is the result for the magnetic vector potential of a filamentary wire segment presented in Ref.~\cite{hanson_hirshman_2002}.
-However, for $\epsilon \rightarrow 0$, the numerical evaluation of this expression is problematic.
-It is therefore suggested to use the following expression, which works for points extremely close to,
-extremely far away from and all in-between locations with respect to the wire segment.
 Note that
 \begin{equation}
- \mathrm{artanh}\left( \epsilon \right) = \frac{1}{2} \log\left(\frac{1 + \epsilon}{1 - \epsilon} \right) \quad ,
+ \mathrm{artanh}\left( \epsilon \right) = \frac{1}{2} \log\left(\frac{1 + \epsilon}{1 - \epsilon} \right) \, ,
 \end{equation}
 leading to
 \begin{equation}
- \boxed{\mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}}} \quad . \label{eqn:A_artanh}
+ \boxed{\mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}}} \, . \label{eqn:A_artanh}
 \end{equation}
 
 \subsubsection{Magnetic Field}
 The law of Biot and Savart for the magnetic field of a current density distribution $\mathbf{j}(\mathbf{x})$ is as follows~\cite{jackson}:
 \begin{equation}
- \mathbf{B}(\mathbf{x}) = \frac{\mu_0}{4 \pi} \int \mathbf{j}(\mathbf{x}') \times \frac{\mathbf{x} - \mathbf{x}'~}{|\mathbf{x} - \mathbf{x}'|^3} \mathrm{d}\mathbf{x}' \quad .
+ \mathbf{B}(\mathbf{x}) = \frac{\mu_0}{4 \pi} \int \mathbf{j}(\mathbf{x}') \times \frac{\mathbf{x} - \mathbf{x}'~}{|\mathbf{x} - \mathbf{x}'|^3} \mathrm{d}\mathbf{x}' \, .
 \end{equation}
 The magnetic field $\mathbf{B}(\mathbf{x})$ is computed from $\mathbf{B} = \nabla \times \mathbf{A}$, applied to \eqn{A_log_eps}.
 Define
@@ -148,35 +146,35 @@ and it follows:
   \frac{4 \pi}{\mu_0 I} \mathbf{B}
  = \nabla \times \left( f(\epsilon) \hat{\mathbf{e}} \right)
  = \nabla f(\epsilon) \times \hat{\mathbf{e}} + f(\epsilon) \underbrace{\nabla \times \hat{\mathbf{e}}}_{=0}
- = f'(\epsilon) \nabla \epsilon \times \hat{\mathbf{e}} \quad .
+ = f'(\epsilon) \nabla \epsilon \times \hat{\mathbf{e}} \, .
 \end{equation}
 Note that
-\begin{equation}
+\begin{align}
    \nabla \epsilon
- = \nabla \left( \frac{L}{R_i + R_f} \right)
- = \frac{-L}{(R_i + R_f)^2}\left( \nabla R_i + \nabla R_f \right)
- = \frac{-L}{(R_i + R_f)^2}\left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \quad .
-\end{equation}
+ =&\, \nabla \left( \frac{L}{R_i + R_f} \right)
+ = \frac{-L}{(R_i + R_f)^2}\left( \nabla R_i + \nabla R_f \right) \nonumber \\
+ =&\, \frac{-L}{(R_i + R_f)^2}\left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \, .
+\end{align}
 It follows:
 \begin{align}
    \frac{4 \pi}{\mu_0 I} \mathbf{B}
  = & f'(\epsilon) \frac{-L}{(R_i + R_f)^2} \left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \times \hat{\mathbf{e}} \\
  = & f'(\epsilon) \frac{L}{(R_i + R_f)^2} \, \hat{\mathbf{e}} \times \left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \\
- = & f'(\epsilon) \frac{\epsilon^2}{L}    \, \hat{\mathbf{e}} \times \left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \quad . \label{eqn:B_intermediate}
+ = & f'(\epsilon) \frac{\epsilon^2}{L}    \, \hat{\mathbf{e}} \times \left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right) \, . \label{eqn:B_intermediate}
 \end{align}
 Also:
 \begin{align}
    \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f}
- = & \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_i - L \hat{\mathbf{e}} }{R_f}
- =   \frac{R_f \mathbf{R}_i + R_i (\mathbf{R}_i - L \hat{\mathbf{e}}) }{R_i R_f}
- =   \frac{(R_f+R_i) \mathbf{R}_i + R_i L \hat{\mathbf{e}} }{R_i R_f} \\
- = & \frac{R_f+R_i}{R_i R_f} \mathbf{R}_i + \frac{R_i L}{R_i R_f} \, \hat{\mathbf{e}}
+ =&\, \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_i - L \hat{\mathbf{e}} }{R_f}
+ =   \frac{R_f \mathbf{R}_i + R_i (\mathbf{R}_i - L \hat{\mathbf{e}}) }{R_i R_f} \nonumber \\
+ =&\,   \frac{(R_f+R_i) \mathbf{R}_i + R_i L \hat{\mathbf{e}} }{R_i R_f}
+ = \frac{R_f+R_i}{R_i R_f} \mathbf{R}_i + \frac{R_i L}{R_i R_f} \, \hat{\mathbf{e}}
 \end{align}
 and therefore:
 \begin{equation}
    \hat{\mathbf{e}} \times \left( \frac{\mathbf{R}_i}{R_i} + \frac{\mathbf{R}_f}{R_f} \right)
  = \hat{\mathbf{e}} \times \left( \frac{R_f+R_i}{R_i R_f} \mathbf{R}_i + \frac{R_i L}{R_i R_f} \, \hat{\mathbf{e}} \right)
- = \frac{R_f+R_i}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \quad ,
+ = \frac{R_f+R_i}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, ,
 \end{equation}
 since $\hat{\mathbf{e}} \times \hat{\mathbf{e}} = 0$.
 Inserting this into \eqn{B_intermediate} leads to:
@@ -196,11 +194,11 @@ and insert this into \eqn{B_intermediate_2}:
 \begin{align}
    \frac{4 \pi}{\mu_0 I} \mathbf{B}
  = & \frac{2 \epsilon}{1 - \epsilon^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \\
- = & \frac{2 L}{\bcancel{R_i + R_f}} \cdot \frac{(R_i + R_f)^{\bcancel{2}}}{(R_i + R_f)^2 - L^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \quad .
+ = & \frac{2 L}{\bcancel{R_i + R_f}} \cdot \frac{(R_i + R_f)^{\bcancel{2}}}{(R_i + R_f)^2 - L^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, .
 \end{align}
 This results in the final expression for the magnetic field:
 \begin{equation}
- \boxed{\mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i } \quad .
+ \boxed{\mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i } \, .
 \end{equation}
 
 \subsection{Circular Wire Loop}
@@ -503,10 +501,10 @@ with
 Starting from \eqn{a_phi_general} it is noted that the partial derivatives only act on the denominator of the integrand.
 Therefore, consider first:
 \begin{align}
-  \frac{\partial}{\partial z} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}}
+  \frac{\partial}{\partial z}& \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}} \nonumber \\
   ~ &= - \bcancel{\frac{1}{2}} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{3}{2}} \left( \bcancel{2} z \right) \nonumber \\
   ~ &= \frac{- z}{\left[ a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right]^{\frac{3}{2}}} \\
-  \frac{\partial}{\partial \rho} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}}
+  \frac{\partial}{\partial \rho}& \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}} \nonumber \\
   ~ &= - \bcancel{\frac{1}{2}} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{3}{2}} \left( \bcancel{2} \rho - \bcancel{2} a \cos(\varphi) \right) \nonumber \\
   ~ &= \frac{-(\rho - a \cos(\varphi))}{\left[ a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right]^{\frac{3}{2}}} \, .
 \end{align}
@@ -617,19 +615,22 @@ This leads to:
 \begin{align}
   B_z
  =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \,\mathrm{cel}(k_c, 1, -1, 1) - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
+      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
+ ~&\, \,\mathrm{cel}(k_c, 1, -1, 1) - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2}
           \int\limits_0^{\pi/2}
           \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
                {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \nonumber \\
  =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right) \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
+      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
+ ~&\, \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right) \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2}
           \int\limits_0^{\pi/2}
           \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
                {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \nonumber \\
  =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right)
+      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
+ ~&\, \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right)
       \int\limits_0^{\pi/2}
         \frac{\sin^2(\varphi) - \cos^2(\varphi)}
              {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
@@ -648,15 +649,15 @@ A nutritious one needs to be included in the first integrand:
         \frac{\sin^2(\varphi) - \cos^2(\varphi)}
              {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}} \nonumber \\
  \Biggl\{ &\left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \right)
-            \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]
-          + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi)
+            \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
+ ~&\,     + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi)
         \Biggr\} \, .
 \end{align}
 Consider for now only the part inside the $\{\}$ of above equation:
 \begin{align}
  ~&\,   \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \right)
-        \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]
-      + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi) \nonumber \\
+        \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
+ ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi) \nonumber \\
  =&\, \frac{1}{z'^2 + (1 + \rho')^2} \Biggl\{
         \left[ z'^2 + (1 + \rho')^2 - \rho' (1+\rho') \right] \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
  ~&\, \phantom{\frac{1}{z'^2 + (1 + \rho')^2} \Biggl\{}
@@ -668,26 +669,25 @@ and in there also only the part inside the $\{\}$:
  ~&\, + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
  =&\, \left[ z'^2 + (1 + \rho')^2 - \rho' (1+\rho') \right] \left[ \cos^2(\varphi) + \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \sin^2(\varphi) \right] \nonumber \\
  ~&\, + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
- =&\, \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi)                                        & \Bigr\} \equiv (*)~\, \nonumber \\
- ~&\, - \rho' (1+\rho') \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \, . & \Bigr\} \equiv (**) \label{eqn:starStar}
+ =&\, \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi)                                      \nonumber \\
+ ~&\, - \rho' (1+\rho') \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \, . \label{eqn:starStar}
 \end{align}
 The two contributions are simplified separately:
 \begin{align}
- (*)
+ ~&\, \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
  =&\, \left[ z'^2 + 1 + 2 \rho' + \rho'^2 \right] \cos^2(\varphi) + \left[ z'^2 + 1 - 2 \rho' + \rho'^2  \right] \sin^2(\varphi) \nonumber \\
- =&\, z'^2 + 1 + \rho'^2 + 2 \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]
+ =&\, z'^2 + 1 + \rho'^2 + 2 \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \label{eqn:intermediate1}
 \end{align}
 as well as:
 \begin{align}
-  (**)
+ ~&\, - \rho' (1+\rho') \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
  =&\, - \rho' \cos^2(\varphi) - \rho'^2 \cos^2(\varphi) \cancel{- \rho' k_c^2 \sin^2(\varphi)}                           \bcancel{- \rho'^2 k_c^2 \sin^2(\varphi)} \nonumber \\
  ~&\, + \rho' \sin^2(\varphi)                           \cancel{+ \rho' k_c^2 \sin^2(\varphi)} - \rho'^2 \sin^2(\varphi) \bcancel{+ \rho'^2 k_c^2 \sin^2(\varphi)} \nonumber \\
- =&\, - \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] - \rho'^2 \underbrace{\left[ \cos^2(\varphi) + \sin^2(\varphi) \right]}_{=1}
+ =&\, - \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] - \rho'^2 \underbrace{\left[ \cos^2(\varphi) + \sin^2(\varphi) \right]}_{=1} \label{eqn:intermediate2}
 \end{align}
-Combining them to form \eqn{starStar} leads to:
+Combining the results from~\eqn{intermediate1} and~\eqn{intermediate2} to form \eqn{starStar} leads to:
 \begin{align}
-  (*) + (**)
- =&\, z'^2 + 1 \bcancel{+ \rho'^2} + \cancel{2} \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \cancel{- \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]} \bcancel{- \rho'^2} \nonumber \\
+ ~&\, z'^2 + 1 \bcancel{+ \rho'^2} + \cancel{2} \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \cancel{- \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]} \bcancel{- \rho'^2} \nonumber \\
  =&\, z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \, .
 \end{align}
 The full form of $B_z$ is assembled again now based on the recent findings to remind ourselves of the state of things:
@@ -698,10 +698,10 @@ The full form of $B_z$ is assembled again now based on the recent findings to re
  ~&\, \int\limits_0^{\pi/2}
         \frac{\sin^2(\varphi) - \cos^2(\varphi)}
              {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}
-        \frac{1}{z'^2 + (1 + \rho')^2}
-        \left\{ z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \right\} \,\mathrm{d}\varphi \, . \label{eqn:B_z_core}
+        \frac{z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]}{z'^2 + (1 + \rho')^2}
+        \,\mathrm{d}\varphi \, . \label{eqn:B_z_core}
 \end{align}
-The term in $\{\}$ in above integrand is now restructured :
+The numerator of the second term in above integrand is now restructured :
 \begin{align}
  ~&\, z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \nonumber \\
  =&\, \frac{1}{2} z'^2 + \frac{1}{2} \left( z'^2 + 1 - \rho'^2 \right) + \frac{1}{2} \left\{ 1 + \rho'^2 + 2 \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \right\} \nonumber \\
@@ -710,8 +710,8 @@ The term in $\{\}$ in above integrand is now restructured :
       + \frac{1}{2} \left( z'^2 + 1 - \rho'^2 \right) \nonumber \\
  ~&\, + \frac{1}{2} \Bigl[   \underbrace{\left( 1 + 2 \rho' + \rho'^2 \right)}_{=(1+\rho')^2} \cos^2(\varphi)
                            + \underbrace{\left( 1 - 2 \rho' + \rho'^2 \right)}_{=(1-\rho')^2} \sin^2(\varphi) \Bigr] \nonumber \\
- =&\,   \frac{1}{2} \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \frac{1}{2} \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi)
-      + \underbrace{\frac{1}{2} \left( z'^2 + 1 + \rho'^2 \right)}_{(*)} \underbrace{- \rho'^2}_{(**)} \label{eqn:bZCore} \, .
+ =&\,   \frac{1}{2} \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \frac{1}{2} \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
+ ~&\, + \underbrace{\frac{1}{2} \left( z'^2 + 1 + \rho'^2 \right)}_{(*)} \underbrace{- \rho'^2}_{(**)} \label{eqn:bZCore} \, .
 \end{align}
 Consider $(*)$ and $(**)$ separately:
 \begin{align}
@@ -765,17 +765,15 @@ The integral can be split up back again into two integrals:
 \end{align}
 This concludes the derivation of the expression for $B_z$ of a circular wire loop
 and here is the final result as published in Ref.~\cite{teal}:
-\begin{equation}
-\boxed{
+\begin{align}
  B_z(\rho', z')
- = \frac{\mu_0 I}{2 \pi a}
+ =&\, \frac{\mu_0 I}{2 \pi a}
    \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
-   \left[
-       \textrm{cel}(k_c, 1, -1, 1)
+   \Bigl[ \nonumber \\
+ ~&\, \textrm{cel}(k_c, 1, -1, 1)
      + \frac{1 + k_c^2 - \left( 1 - k_c^2 \right) \rho'}{2} \textrm{cel}(k_c, k_c^2, -1, 1)
-   \right]
-}
-\end{equation}
+   \Bigr]
+\end{align}
 
 \section{Derivation of Special Case Formulations}
 \label{apx:derivation_of_special_case_formulations}
