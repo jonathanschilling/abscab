@@ -359,7 +359,7 @@ with
   \tilde{B}_\rho(\rho', z')
   =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}} \,\mathrm{cel}(k_c, k_c^2, -1, 1) \, .
 \end{align}
-The overall switching between the methods introduced above is done as follows:
+One of several formulations is chosen depending on the evaluation location~$(\rho', z')$:
 \begin{equation}
   \tilde{B}_\rho(\rho', z')
   = \begin{cases}
@@ -403,8 +403,7 @@ with
 \begin{equation}
   k_c^2 = \frac{1}{1 + 4/{z'}^2} \, .
 \end{equation}
-
-The vertical component~$B_z$ is given by:
+The vertical component~$B_z$ of the magnetic field of a circular wire loop is given by:
 \begin{align}
  B_z(\rho', z')
  =&\, \frac{\mu_0 I}{2 \pi a}
@@ -414,6 +413,22 @@ The vertical component~$B_z$ is given by:
      + \frac{1 + k_c^2 - \left( 1 - k_c^2 \right) \rho'}{2} \textrm{cel}(k_c, k_c^2, -1, 1)
    \right]
 \end{align}
+One of several formulations is selected depending on the evaluation location~$(\rho', z')$:
+\begin{equation}
+  \tilde{B}_z(\rho', z')
+  = \begin{cases}
+      \tilde{B}_{z,1} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } (\rho' < 2 \textrm{ and } z' \geq 1) \\
+      \tilde{B}_{z,2} (\rho', z') &:\, \rho' \geq 2 \\
+      \tilde{B}_{z,4} (\rho', z') &:\, \rho' = 1 \\
+      \tilde{B}_{z,5} (\rho', z') &:\, z' \neq 0 \\
+      \tilde{B}_{z,6} (\rho', z') &:\, \textrm{else}
+    \end{cases} \, .
+\end{equation}
+
+
+
+
+
 
 {\color{red}
 TODO: There is a factor of 2 too much in the denominator of $B_z$!
@@ -496,17 +511,7 @@ with
 %
 % total assembly of B_z for circular wire loop
 %
-The overall switching between the methods introduced above is done as follows:
-\begin{equation}
-  \tilde{B}_z(\rho', z')
-  = \begin{cases}
-      \tilde{B}_{z,1} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } (\rho' < 2 \textrm{ and } z' \geq 1) \\
-      \tilde{B}_{z,2} (\rho', z') &:\, \rho' \geq 2 \\
-      \tilde{B}_{z,4} (\rho', z') &:\, \rho' = 1 \\
-      \tilde{B}_{z,5} (\rho', z') &:\, z' \neq 0 \\
-      \tilde{B}_{z,6} (\rho', z') &:\, \textrm{else}
-    \end{cases} \, .
-\end{equation}
+
 
 
 

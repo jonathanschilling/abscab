@@ -655,7 +655,7 @@ public class DemoABSCAB {
 
 			B_z_1[i] = ABSCAB.B_z_1(rhoP, zP);
 			B_z_2[i] = ABSCAB.B_z_2(rhoP, zP);
-			B_z_4[i] = ABSCAB.B_z_4(rhoP, zP);
+			B_z_4[i] = ABSCAB.B_z_4(zP);
 			B_z_5[i] = ABSCAB.B_z_5(rhoP, zP);
 			B_z_6[i] = ABSCAB.B_z_6(rhoP, zP);
 		}

@@ -2053,7 +2053,7 @@ public class ABSCAB {
 		} else if (rhoP > 2) {
 			return B_z_2(rhoP, zP);
 		} else if (rhoP == 1.0) {
-			return B_z_4(rhoP, zP);
+			return B_z_4(zP);
 		} else if (zP != 0.0) {
 			return B_z_5(rhoP, zP);
 		} else {
@@ -2417,13 +2417,12 @@ public class ABSCAB {
 	static double B_z_1(double rhoP, double zP) {
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
-		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
-
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
-		double k = 2 * Math.sqrt(rhoP) / sqrt_kCSqDen;
-		double kSq = k * k;
-		double kCSq = 1 - kSq;
+		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
+		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+
+		double kCSq = kCSqNum / kCSqDen;
 		double kC = Math.sqrt(kCSq);
 
 		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
@@ -2438,38 +2437,37 @@ public class ABSCAB {
 	}
 
 	static double B_z_2(double rhoP, double zP) {
-		// large rho'
 
+		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
-		double k = 2 * Math.sqrt(rhoP) / sqrt_kCSqDen;
-		double kSq = k * k;
-		double kCSq = 1 - kSq;
+
+		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
+		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+
+		double kCSq = kCSqNum / kCSqDen;
 		double kC = Math.sqrt(kCSq);
 
-		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
-		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
+		double t1 = (zP * zP + 1) / (rhoP * rhoP) + 1;
+		double t2 = 2 / rhoP;
+		double a = t1 + t2;
+		double b = t1 - t2;
+		double prefac = 1 / (Math.sqrt(a) * b * rhoP * rhoP * rhoP);
 
-		double zp2_1 = zP * zP + 1;
-		double r6 = zp2_1 * zp2_1 * zp2_1;
-		double r5 = r6 / rhoP - 2 * zp2_1 * zp2_1;
-		double r4 = r5 / rhoP + 3 * zp2_1 * zp2_1 - 4 * zp2_1;
-		double r3 = r4 / rhoP - 4 * zP * zP + 4;
-		double r2 = r3 / rhoP + 3 * zP * zP - 1;
-		double r1 = r2 / rhoP - 2;
-		double r0 = r1 / rhoP + 1;
+		double cdScale = 1 + (2 + (zP * zP + 1) / rhoP) / rhoP;
 
-		// use C-D for (2D-E)/kSq: this finally works without expansion !!!
 		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
 		double a2d = 1 + kC;
 		double arg2 = 2 / (a2d * a2d * a2d);
 		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
 
-		double cdScale = 1 + (2 + (zP * zP + 1) / rhoP) / rhoP;
+		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
+		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 
-		return 1 / (Math.sqrt(r0) * rhoP * rhoP * rhoP) * (E + 4 * (C - D) / cdScale);
+		// use C - D for (2 * D - E)/kSq
+		return prefac * (4 * (C - D) / cdScale + E);
 	}
 
-	static double B_z_4(double rhoP, double zP) {
+	static double B_z_4(double zP) {
 		// special case for rhoP=1, zp->0
 
 		double kCSq = zP * zP / (4 + zP * zP);

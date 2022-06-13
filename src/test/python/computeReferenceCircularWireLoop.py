@@ -86,7 +86,7 @@ def ieee754_to_arb(s, E, M):
         sign = -one
 
     # compute exact representation of double precision variable
-    return sign * mp.power(two, E - exponentBias) * (one + M/mantissaScale)
+    return sign * mp.power(two, E - exponentBias) * (one + M / mantissaScale)
     
 if __name__ == "__main__":
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
         numLines = len(lines)
         
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
 
             # skip comment lines
             if line[0] == "#":
