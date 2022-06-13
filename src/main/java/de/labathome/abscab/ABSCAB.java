@@ -2028,11 +2028,11 @@ public class ABSCAB {
 		if (rhoP == 0.0 || zP == 0.0) {
 			return 0.0;
 		} else if (zP >= 1.0 || rhoP < 0.5 || rhoP > 2.0) {
-			return B_rho_3(rhoP, zP);
+			return cwl_B_rho_f(rhoP, zP);
 		} else if (rhoP != 1.0) {
-			return B_rho_1(rhoP, zP);
+			return cwl_B_rho_n(rhoP, zP);
 		} else {
-			return B_rho_4(rhoP, zP);
+			return cwl_B_rho_v(rhoP, zP);
 		}
 	}
 
@@ -2306,10 +2306,10 @@ public class ABSCAB {
 		double m = 1 + 2 / (rhoP - 1);
 		double den = n * n + m * m;
 		double num = n * n + 1;
-		double kcsq = num / den;
+		double kCSq = num / den;
 
 		double prefac = 1 / (Math.abs(rhoP - 1) * Math.sqrt(den));
-		double celPart = CompleteEllipticIntegral.cel(Math.sqrt(kcsq), 1, -1, 1);
+		double celPart = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), 1, -1, 1);
 		return prefac * celPart;
 	}
 
@@ -2321,13 +2321,54 @@ public class ABSCAB {
 	 * @return normalized tangential component of magnetic vector potential
 	 */
 	static double cwl_A_phi_v(double zP) {
-		double kc = Math.sqrt(4 + zP * zP) / Math.abs(zP);
-		return CompleteEllipticIntegral.cel(kc, 1, 1, -1) / Math.abs(zP);
+		double kC = Math.sqrt(4 + zP * zP) / Math.abs(zP);
+		return CompleteEllipticIntegral.cel(kC, 1, 1, -1) / Math.abs(zP);
 	}
 
 	//////// B_rho of circular wire loop
 
-	static double B_rho_1(double rhoP, double zP) {
+	/**
+	 * Compute the normalized radial component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for points away from the wire ("far-field")
+	 * at rhoP < 1/2 or rhoP > 2 or |zP| >= 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized radial component of magnetic field
+	 */
+	static double cwl_B_rho_f(double rhoP, double zP) {
+
+		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
+		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
+
+		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
+		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+
+		double kCSq = kCSqNum / kCSqDen;
+		double kC = Math.sqrt(kCSq);
+
+		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
+
+		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
+		double a2d = 1 + kC;
+		double arg2 = 2 / (a2d * a2d * a2d);
+		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
+
+		double prefac = 4 * rhoP * zP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
+
+		return prefac * (D - C);
+	}
+
+	/**
+	 * Compute the normalized radial component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for points close to the wire ("near-field")
+	 * at 1/2 <= rhoP <= 2 and |zP| < 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized radial component of magnetic field
+	 */
+	static double cwl_B_rho_n(double rhoP, double zP) {
 		double n = zP / (rhoP - 1);
 		double m = 1 + 2 / (rhoP - 1);
 		double den = n * n + m * m;
@@ -2351,29 +2392,14 @@ public class ABSCAB {
 		return fac1 * (D - C) / (den * Math.sqrt(den) * num);
 	}
 
-	static double B_rho_3(double rhoP, double zP) {
-
-		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
-		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
-		double k = 2 * Math.sqrt(rhoP) / sqrt_kCSqDen;
-		double kSq = k * k;
-		double kCSq = 1 - kSq;
-		double kC = Math.sqrt(kCSq);
-
-		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
-
-		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
-		double a2d = 1 + kC;
-		double arg2 = 2 / (a2d * a2d * a2d);
-		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
-
-		double prefac = 4 * rhoP * zP / (sqrt_kCSqDen * sqrt_kCSqDen * sqrt_kCSqDen * sqrt_kCSqNum * sqrt_kCSqNum);
-
-		return prefac * (D - C);
-	}
-
-	/** special case for rhoP=1, zP --> 0 */
-	static double B_rho_4(double rhoP, double zP) {
+	/**
+	 * Compute the normalized radial component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for points along rhoP=1 with |zP| < 1.
+	 *
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized radial component of magnetic field
+	 */
+	static double cwl_B_rho_v(double rhoP, double zP) {
 
 		double zPSq = zP * zP;
 		double pfd = 1 + 4 / zPSq;

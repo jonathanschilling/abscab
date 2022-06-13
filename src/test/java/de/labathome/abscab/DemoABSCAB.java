@@ -23,8 +23,8 @@ public class DemoABSCAB {
 //		demoStraightWireSegment();
 //		demoCircularWireLoop();
 //
-		dumpInternalResultsStraightWireSegment();
-//		dumpInternalResultsCircularWireLoop();
+//		dumpInternalResultsStraightWireSegment();
+		dumpInternalResultsCircularWireLoop();
 	}
 
 	public static void demoDoubleParts() {
@@ -649,9 +649,9 @@ public class DemoABSCAB {
 			A_phi_6[i] = ABSCAB.cwl_A_phi_n(rhoP, zP);
 			A_phi_5[i] = ABSCAB.cwl_A_phi_v(zP);
 
-			B_rho_3[i] = ABSCAB.B_rho_3(rhoP, zP);
-			B_rho_1[i] = ABSCAB.B_rho_1(rhoP, zP);
-			B_rho_4[i] = ABSCAB.B_rho_4(rhoP, zP);
+			B_rho_3[i] = ABSCAB.cwl_B_rho_f(rhoP, zP);
+			B_rho_1[i] = ABSCAB.cwl_B_rho_n(rhoP, zP);
+			B_rho_4[i] = ABSCAB.cwl_B_rho_v(rhoP, zP);
 
 			B_z_1[i] = ABSCAB.B_z_1(rhoP, zP);
 			B_z_2[i] = ABSCAB.B_z_2(rhoP, zP);

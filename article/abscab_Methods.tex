@@ -359,18 +359,32 @@ with
   \tilde{B}_\rho(\rho', z')
   =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}} \,\mathrm{cel}(k_c, k_c^2, -1, 1) \, .
 \end{align}
-At~$\rho'=0$ (any $z'$) and at $z'=0$ (any $\rho'$)
-the radial component of the magnetic field of a circular wire loop vanishes exactly:~$\tilde{B}_\rho(\rho'=0 \textrm{ or } z'=0) = 0$.
-The following method works for evaluation locations not too close to the wire loop:
+The overall switching between the methods introduced above is done as follows:
 \begin{equation}
-  \tilde{B}_{\rho, 3} (\rho', z')
-  = \frac{4 \rho' z' \left[ \,\mathcal{D}(k_c) - \,\mathcal{C}(k_c) \right]}
-         {\left[{z'}^2 + (1 + \rho')^2 \right]^{3/2} \left[{z'}^2 + (1 - \rho')^2 \right] } \, .
+  \tilde{B}_\rho(\rho', z')
+  = \begin{cases}
+      0                                 &:\, \rho' = 0, \textrm{ any } z' \\
+                    ~                   &\, ~\textrm{ or any } \rho', z' = 0 \\
+      \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
+      \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
+      \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else} \, .
+    \end{cases}
 \end{equation}
-For points close to the wire loop but with~$\rho' \neq 1$,
-the following formulation is used:
+The following formulation is implemented for evaluation locations away from to the wire loop:
+\begin{equation}
+  \tilde{B}_{\rho,\mathrm{f}} (\rho', z')
+  = \frac{4 \rho' z' \left[ \,\mathcal{D}(k_c) - \,\mathcal{C}(k_c) \right]}
+         {\left[{z'}^2 + (1 + \rho')^2 \right]^{3/2} \left[{z'}^2 + (1 - \rho')^2 \right] }
+\end{equation}
+with
+\begin{equation}
+  \mathcal{D}(k_c)
+  = \frac{\mathcal{K}(k_c) - \,\mathcal{E}(k_c)}{k^2}
+  = \,\mathrm{cel}(k_c, 1, 0, 1) \, . \label{eqn:elliptic_d}
+\end{equation}
+For points close to the wire loop, but with~$\rho' \neq 1$, the following formulation is used:
 \begin{align}
-  \tilde{B}_{\rho, 1}& (\rho', z')
+  \tilde{B}_{\rho,\mathrm{n}}& (\rho', z')
   = \frac{4 \rho' \left[ \,\mathcal{D}(k_c) - \,\mathcal{C}(k_c) \right]}
          {(\rho' - 1)^4 \left| \frac{z'}{\rho' - 1} \right|} \nonumber \\
   ~& \left\{
@@ -378,29 +392,16 @@ the following formulation is used:
       \left[ \left( \frac{z'}{\rho'-1} \right)^2 + 1 \right]
     \right\}^{-1}
 \end{align}
-For $\rho'=1$ the following formulation is used:
-\begin{align}
-  \tilde{B}_{\rho, 4} (\rho'=1, z')
-  =&\, \frac{1}{2 \sqrt{1 + 4/{z'}^2}} \nonumber \\
-  ~& \left[  \frac{\mathcal{E}(k_c)}{1 + 4/{z'}^2} \left( 1 + \frac{1}{{z'}^2} \left( 6 + \frac{8}{{z'}^2} \right) \right)
+Finally, for $\rho'=1$ and~$|z'| < 1$, the following formulation is used:
+\begin{equation}
+  \tilde{B}_{\rho,\mathrm{v}} (z')
+  = \frac{1}{2 \sqrt{1 + 4/{z'}^2}}
+    \left[  \frac{\mathcal{E}(k_c)}{1 + 4/{z'}^2} \left( 1 + \frac{1}{{z'}^2} \left( 6 + \frac{8}{{z'}^2} \right) \right)
             - \mathcal{K}(k_c) \right]
-\end{align}
+\end{equation}
 with
 \begin{equation}
   k_c^2 = \frac{1}{1 + 4/{z'}^2} \, .
-\end{equation}
-%
-% total assembly of B_rho for circular wire loop
-%
-The overall switching between the methods introduced above is done as follows:
-\begin{equation}
-  \tilde{B}_\rho(\rho', z')
-  = \begin{cases}
-      0                                 &:\, \rho' = 0 \textrm{ or } z' = 0 \\
-      \tilde{B}_{\rho,3} (\rho', z') &:\, z' \geq 1 \textrm{ or } \rho' \notin [1/2, 2] \\
-      \tilde{B}_{\rho,1} (\rho', z') &:\, \rho' \neq 1         \\
-      \tilde{B}_{\rho,4} (\rho', z') &:\, \textrm{else}
-    \end{cases} \, .
 \end{equation}
 
 The vertical component~$B_z$ is given by:
