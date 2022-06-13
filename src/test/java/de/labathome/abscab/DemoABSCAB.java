@@ -599,7 +599,7 @@ public class DemoABSCAB {
 
 			A_z_along_rhoP_0[i]    = ABSCAB.sws_A_z_ax(zP);
 			A_z_along_zP_0_or_1[i] = ABSCAB.sws_A_z_rad(rhoP);
-			A_z_6[i]               = ABSCAB.A_z_6(rhoP, zP);
+			A_z_6[i]               = ABSCAB.sws_A_z_n(rhoP, zP);
 			A_z_1[i]               = ABSCAB.sws_A_z_f(rhoP, zP);
 
 			B_phi_3[i] = ABSCAB.B_phi_3(rhoP, zP);

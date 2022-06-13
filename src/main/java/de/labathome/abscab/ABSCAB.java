@@ -1952,14 +1952,12 @@ public class ABSCAB {
 		return len;
 	}
 
-
 	/**
-	 * Full-field magnetic vector potential of straight wire segment; only A_z
-	 * component is present.
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized axial component of magnetic vector potential
 	 */
 	public static double straightWireSegment_A_z(double rhoP, double zP) {
 		if (rhoP == 0.0) {
@@ -1967,11 +1965,9 @@ public class ABSCAB {
 		} else if (zP == 0.0 || zP == 1.0) {
 			return sws_A_z_rad(rhoP);
 		} else if (rhoP >= 1.0 || zP <= -1.0 || zP > 2.0) {
-			// far-field
 			return sws_A_z_f(rhoP, zP);
 		} else {
-			// near-field
-			return A_z_6(rhoP, zP);
+			return sws_A_z_n(rhoP, zP);
 		}
 	}
 
@@ -2182,7 +2178,7 @@ public class ABSCAB {
 	 * @param zP normalized axial coordinate of evaluation location
 	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_6(double rhoP, double zP) {
+	static double sws_A_z_n(double rhoP, double zP) {
 		double omz = 1 - zP;
 
 		double r_i = Math.hypot(rhoP, zP);
