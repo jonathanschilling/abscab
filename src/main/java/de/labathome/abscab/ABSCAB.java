@@ -1963,14 +1963,15 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_A_z(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return A_z_along_rhoP_0(rhoP, zP);
+			return sws_A_z_ax(zP);
 		} else if (zP == 0.0 || zP == 1.0) {
-			return A_z_along_zP_0_or_1(rhoP, zP);
-		} else if (-1 < zP && zP <= 2.0 && rhoP < 1.0) {
+			return sws_A_z_rad(rhoP);
+		} else if (rhoP >= 1.0 || zP <= -1.0 || zP > 2.0) {
+			// far-field
+			return sws_A_z_f(rhoP, zP);
+		} else {
 			// near-field
 			return A_z_6(rhoP, zP);
-		} else {
-			return A_z_1(rhoP, zP);
 		}
 	}
 
@@ -2073,92 +2074,81 @@ public class ABSCAB {
 	/////// A_z of straight wire segment
 
 	/**
-	 * Straight-forward implementation of A_z for straight wire segment.
-	 * Useful for far-field.
-	 * @param rhoP
-	 * @param zP
-	 * @return
-	 */
-	static double A_z_1(double rhoP, double zP) {
-		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, 1 - zP);
-		return FastMath.atanh(1 / (Ri + Rf));
-	}
-
-	/**
-	 * combined solution for rhoP=0
+	 * Compute the normalized axial component of magnetic vector potential of straight wire segment,
+	 * evaluated along axis of wire segment (rho = 0).
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param zP normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_along_rhoP_0(double rhoP, double zP) {
-		if (zP < -1 || zP > 2) {
-			return A_z_2a(rhoP, zP);
+	static double sws_A_z_ax(double zP) {
+		if (zP < -1 || zP >= 2) {
+			return sws_A_z_ax_f(zP);
 		} else {
-			return A_z_2b(rhoP, zP);
+			return sws_A_z_ax_n(zP);
 		}
 	}
 
 	/**
-	 * special case for rho'=0
+	 * Compute the normalized axial component of magnetic vector potential of straight wire segment,
+	 * evaluated along axis of wire segment (rho = 0).
+	 * This is a special case for points away from the wire ("far-field") for zP < -1 or zP >= 2.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param zP normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_2a(double rhoP, double zP) {
+	static double sws_A_z_ax_f(double zP) {
 		return FastMath.atanh(1 / (Math.abs(zP) + Math.abs(1 - zP)));
 	}
 
 	/**
-	 * special case for rho'=0; near-field (excluding wire)
+	 * Compute the normalized axial component of magnetic vector potential of straight wire segment,
+	 * evaluated along axis of wire segment (rhoP = 0).
+	 * This is a special case for points close to the wire ("near-field") for -1 <= zP < 2.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param zP normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_2b(double rhoP, double zP) {
+	static double sws_A_z_ax_n(double zP) {
 		return Math.signum(zP) * Math.log(zP / (zP - 1)) / 2;
 	}
 
 	/**
-	 * combined solution for zP=0 or zP = 1
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location; must not be zero (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_along_zP_0_or_1(double rhoP, double zP) {
+	static double sws_A_z_rad(double rhoP) {
 		if (rhoP > 1) {
-			return A_z_3a(rhoP, 0);
+			return sws_A_z_rad_f(rhoP);
 		} else {
-			// rhoP <= 1
-			return A_z_3b(rhoP, 0);
+			return sws_A_z_rad_n(rhoP);
 		}
 	}
 
 	/**
-	 * special case for z'=0
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * This is a special case for points away from the wire ("far-field") for rhoP > 1.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location; must not be zero (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_3a(double rhoP, double zP) {
+	static double sws_A_z_rad_f(double rhoP) {
 		return FastMath.atanh(1 / (rhoP + Math.hypot(rhoP, 1)));
 	}
 
 	/**
-	 * special case for z'=0
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * This is a special case for points close to the wire ("near-field") for rhoP <= 1.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location; must not be zero (on wire segment)
+	 * @return normalized axial component of magnetic vector potential
 	 */
-	static double A_z_3b(double rhoP, double zP) {
-		// a little bit more robust --> around rho'=1 +/- one test point we have 15 digits
-		double cat = 1 / Math.hypot(rhoP, 1); // cos(atan(...))
+	static double sws_A_z_rad_n(double rhoP) {
+		double cat = 1 / Math.hypot(rhoP, 1);       // cos(atan(...))
 		double sat = Math.sin(Math.atan(rhoP) / 2); // sin(atan(...)/2)
 		double rc = rhoP * cat;
 		double num = rc + 1 + cat;
@@ -2166,12 +2156,37 @@ public class ABSCAB {
 		return Math.log(num / den) / 2;
 	}
 
-	// near-field of straight wire segment
+	/**
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * This formulation is useful for points away from the wire ("far-field")
+	 * at rhoP >= 1 or zP <= -1 or zP > 2.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized axial component of magnetic vector potential
+	 */
+	static double sws_A_z_f(double rhoP, double zP) {
+		double r_i = Math.hypot(rhoP, zP);
+		double r_f = Math.hypot(rhoP, 1 - zP);
+		return FastMath.atanh(1 / (r_i + r_f));
+	}
+
+	/**
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * This formulation is useful for points close to the wire ("near-field")
+	 * at rhoP < 1 and -1 < zP <= 2.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized axial component of magnetic vector potential
+	 */
 	static double A_z_6(double rhoP, double zP) {
 		double omz = 1 - zP;
 
-		double R_i = Math.hypot(rhoP, zP);
-		double R_f = Math.hypot(rhoP, omz);
+		double r_i = Math.hypot(rhoP, zP);
+		double r_f = Math.hypot(rhoP, omz);
 
 		double alpha = Math.atan2(rhoP, zP);
 		double sinAlphaHalf = Math.sin(alpha / 2);
@@ -2179,8 +2194,8 @@ public class ABSCAB {
 		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
-		double Ri_zP = 2 * R_i * sinAlphaHalf * sinAlphaHalf; // R_i - z'
-		double Rf_p_zM1 = 2 * R_f * sinBetaHalf * sinBetaHalf; // R_f - 1 + z'
+		double Ri_zP    = 2 * r_i * sinAlphaHalf * sinAlphaHalf; // r_i - z'
+		double Rf_p_zM1 = 2 * r_f * sinBetaHalf  * sinBetaHalf;  // r_f - (1 - z')
 
 		double n = Ri_zP + Rf_p_zM1;
 

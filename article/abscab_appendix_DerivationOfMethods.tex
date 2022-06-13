@@ -779,3 +779,23 @@ and here is the final result as published in Ref.~\cite{teal}:
 
 \section{Derivation of Special Case Formulations}
 \label{apx:derivation_of_special_case_formulations}
+
+
+The parameter~$\epsilon$ approaches a value of~$1$ as the location of the evaluation point comes closer to the wire segment.
+Thus, the denominator in \eqn{A_z_tilde} vanishes, leading to a logarithmic singularity in~$\tilde{A}_z$
+as the evaluation point~$(\rho', z')$ gets nearer to the wire segment.
+It is therefore favorable to formulate the near-field method in terms of~$(1-\epsilon)$:
+\begin{align}
+  1-\epsilon =&\, 1 - \frac{1}{r_i + r_f} = \frac{r_i + r_f - 1}{r_i + r_f} = \frac{r_i + r_f - 1}{(r_i + r_f - 1) + 1} = \frac{n}{n + 1}
+\end{align}
+with~$n \equiv r_i + r_f - 1$ approaching~$0$ as the evaluation point approaches the wire segment.
+Inserting this formulation for~$1-\epsilon$ into \eqn{A_z_tilde} leads to:
+\begin{align}
+  \tilde{A}_{z,\mathrm{nf}} (\rho', z')
+  =&\, \frac{1}{2}  \left[ \ln\left(2 - (1-\epsilon)        \right) - \ln \left(1 - \epsilon    \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(2 - \frac{n}{n + 1}     \right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(\frac{2(n+1) - n}{n + 1}\right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) \cancel{- \ln\left(n + 1 \right)} - \ln \left( n \right) \cancel{+ \ln \left( n + 1 \right)} \right] \nonumber \\
+  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) - \ln \left( n \right) \right] \, .
+\end{align}
+

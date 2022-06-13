@@ -66,8 +66,8 @@ public class DemoABSCAB {
 			if (rhoP == 0.0) {
 				sws_A_z_refLst.add(ref_A_z[i]);
 
-				sws_A_z_2aLst.add(ABSCAB.A_z_2a(rhoP, zP));
-				sws_A_z_2bLst.add(ABSCAB.A_z_2b(rhoP, zP));
+				sws_A_z_2aLst.add(ABSCAB.sws_A_z_ax_f(zP));
+				sws_A_z_2bLst.add(ABSCAB.sws_A_z_ax_n(zP));
 			}
 		}
 
@@ -117,8 +117,8 @@ public class DemoABSCAB {
 			if (zP == 0.0) {
 				sws_A_z_refLst.add(ref_A_z[i]);
 
-				sws_A_z_3aLst.add(ABSCAB.A_z_3a(rhoP, zP));
-				sws_A_z_3bLst.add(ABSCAB.A_z_3b(rhoP, zP));
+				sws_A_z_3aLst.add(ABSCAB.sws_A_z_rad_f(rhoP));
+				sws_A_z_3bLst.add(ABSCAB.sws_A_z_rad_n(rhoP));
 			}
 		}
 
@@ -597,10 +597,10 @@ public class DemoABSCAB {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			A_z_along_rhoP_0[i]    = ABSCAB.A_z_along_rhoP_0(rhoP, zP);
-			A_z_along_zP_0_or_1[i] = ABSCAB.A_z_along_zP_0_or_1(rhoP, zP);
+			A_z_along_rhoP_0[i]    = ABSCAB.sws_A_z_ax(zP);
+			A_z_along_zP_0_or_1[i] = ABSCAB.sws_A_z_rad(rhoP);
 			A_z_6[i]               = ABSCAB.A_z_6(rhoP, zP);
-			A_z_1[i]               = ABSCAB.A_z_1(rhoP, zP);
+			A_z_1[i]               = ABSCAB.sws_A_z_f(rhoP, zP);
 
 			B_phi_3[i] = ABSCAB.B_phi_3(rhoP, zP);
 			B_phi_4[i] = ABSCAB.B_phi_4(rhoP, zP);
