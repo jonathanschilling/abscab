@@ -9,12 +9,12 @@ The main article on this software can be found here: [abscab_main.pdf](article/a
 Various implementations are provided in this repository.
 Here is an overview:
 
-|  Language  |            main `abscab` file               |
-| ---------- | ------------------------------------------- |
-| C99        | [`abscab.h`](src/main/c/abscab.h)           |
-| Java 8     | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java)  |
-| Python 3   | [`abscab.py`](abscab/abscab.py)             |
-| Fortran 90 | [`abscab.f90`](src/main/fortran/abscab.f90) |
+|   Language   |            main `abscab` file                                  |
+| ------------ | -------------------------------------------------------------- |
+| C99          | [`abscab.h`](src/main/c/abscab.h)                              |
+| Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) |
+| Python 3     | [`abscab.py`](abscab/abscab.py)                                |
+| Fortran 2008 | [`abscab.f08`](src/main/fortran/abscab.f08)                    |
 
 ## Reference Outputs
 
