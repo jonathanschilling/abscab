@@ -1972,26 +1972,21 @@ public class ABSCAB {
 	}
 
 	/**
-	 * Full-field magnetic field of straight wire segment; only B_phi component is
-	 * present.
+	 * Compute the normalized tangential component of the magnetic field of a straight wire segment.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic field
 	 */
 	public static double straightWireSegment_B_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			// line along rho'=0: exactly 0
 			return 0.0;
 		} else if (zP == 0.0 || zP == 1.0) {
-			// line along z'=0 or z'=1
-			return B_phi_3(rhoP, zP);
+			return sws_B_phi_rad(rhoP);
 		} else if (zP >= 1.0 || zP <= 0.0 || rhoP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
-			// far-field
-			return B_phi_4(rhoP, zP);
+			return sws_B_phi_f(rhoP, zP);
 		} else {
-			// near field between z'=0 and z'=1
-			return B_phi_5(rhoP, zP);
+			return sws_B_phi_n(rhoP, zP);
 		}
 	}
 
@@ -2144,7 +2139,7 @@ public class ABSCAB {
 	 * @return normalized axial component of magnetic vector potential
 	 */
 	static double sws_A_z_rad_n(double rhoP) {
-		double cat = 1 / Math.hypot(rhoP, 1);       // cos(atan(...))
+		double cat = 1 / Math.hypot(rhoP, 1);       // cos(atan(...)  )
 		double sat = Math.sin(Math.atan(rhoP) / 2); // sin(atan(...)/2)
 		double rc = rhoP * cat;
 		double num = rc + 1 + cat;
@@ -2201,38 +2196,53 @@ public class ABSCAB {
 	/////// B_phi of straight wire segment
 
 	/**
-	 * special case for zP=0 or zP=1
+	 * Compute the normalized tangential component of the magnetic field of a straight wire segment,
+	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic field
 	 */
-	static double B_phi_3(double rhoP, double zP) {
+	static double sws_B_phi_rad(double rhoP) {
 		return 1 / (rhoP * Math.hypot(rhoP, 1));
 	}
 
-	// straight-forward implementation; good for far-field
-	static double B_phi_4(double rhoP, double zP) {
+	/**
+	 * Compute the normalized tangential component of the magnetic field of a straight wire segment.
+	 * This formulation is useful for points away from the wire ("far-field")
+	 * at rhoP >= 1 or zP <= 0 or zP >= 1 or rhoP/(1-zP) >= 1 or rhoP/zP >= 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic field
+	 */
+	static double sws_B_phi_f(double rhoP, double zP) {
 		double omz = 1 - zP;
 
-		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, omz);
+		double r_i = Math.hypot(rhoP, zP);
+		double r_f = Math.hypot(rhoP, omz);
 
-		double t1 = rhoP * (1/Ri + 1/Rf);
+		double num = rhoP * (1/r_i + 1/r_f);
+		double den = rhoP * rhoP - zP * omz + r_i * r_f;
 
-		double den = rhoP * rhoP - zP * omz + Ri * Rf;
-
-		return t1 / den;
+		return num / den;
 	}
 
-	// full-field solution, but maybe too slow for general-purpose use
-	static double B_phi_5(double rhoP, double zP) {
+	/**
+	 * Compute the normalized tangential component of the magnetic field of a straight wire segment.
+	 * This formulation is useful for points close to the wire ("near-field")
+	 * at rhoP < 1 and 0 < zP < 1 and rhoP/(1-zP) < 1 and rhoP/zP < 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic field
+	 */
+	static double sws_B_phi_n(double rhoP, double zP) {
 		double omz = 1 - zP;
 
-		double Ri = Math.hypot(rhoP, zP);
-		double Rf = Math.hypot(rhoP, omz);
+		double r_i = Math.hypot(rhoP, zP);
+		double r_f = Math.hypot(rhoP, omz);
 
-		double t1 = rhoP * (1/Ri + 1/Rf);
+		double num = rhoP * (1/r_i + 1/r_f);
 
 		double alpha = Math.atan2(rhoP, zP);
 		double sinAlphaHalf = Math.sin(alpha / 2);
@@ -2240,13 +2250,19 @@ public class ABSCAB {
 		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
-		// (a*b - 1)
-		double abm1 = Rf * sinBetaHalf * sinBetaHalf + omz * sinAlphaHalf * sinAlphaHalf;
+		// r_f * sin^2(beta/2) + (1 - z') * sin^2(alpha/2)
+		double rfb_omza = r_f * sinBetaHalf * sinBetaHalf + omz * sinAlphaHalf * sinAlphaHalf;
 
-		// R_i*R_f - zP*(1-zP) == zP*(1-zP) * (a*b - 1)
-		double den = rhoP * rhoP + 2 * Ri * abm1;
+		//     r_i * r_f - z' * (1 - z')
+		// =   r_i * r_f - r_i * (1 - z') + r_i * (1 - z') - z' * (1 - z')
+		// =   r_i * r_f - r_i * r_f * cos(beta)
+		//   + r_i * (1 - z') + (1 - z') * r_i * cos(alpha)
+		// =   r_i *    r_f   * (1 - cos(beta))
+		//   + r_i * (1 - z') * (1 - cos(alpha))
+		// = 2 * r_i * [ r_f * sin^2(beta) + (1 - z') * sin^2(alpha) ]
+		double den = rhoP * rhoP + 2 * r_i * rfb_omza;
 
-		return t1 / den;
+		return num / den;
 	}
 
 	///// A_phi of circular wire loop

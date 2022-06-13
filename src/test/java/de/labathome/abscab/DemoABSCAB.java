@@ -602,9 +602,9 @@ public class DemoABSCAB {
 			A_z_6[i]               = ABSCAB.sws_A_z_n(rhoP, zP);
 			A_z_1[i]               = ABSCAB.sws_A_z_f(rhoP, zP);
 
-			B_phi_3[i] = ABSCAB.B_phi_3(rhoP, zP);
-			B_phi_4[i] = ABSCAB.B_phi_4(rhoP, zP);
-			B_phi_5[i] = ABSCAB.B_phi_5(rhoP, zP);
+			B_phi_3[i] = ABSCAB.sws_B_phi_rad(rhoP);
+			B_phi_4[i] = ABSCAB.sws_B_phi_f(rhoP, zP);
+			B_phi_5[i] = ABSCAB.sws_B_phi_n(rhoP, zP);
 		}
 
 		// write to output file
