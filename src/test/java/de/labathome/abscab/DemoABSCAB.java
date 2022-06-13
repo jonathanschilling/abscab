@@ -645,9 +645,9 @@ public class DemoABSCAB {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			A_phi_1[i] = ABSCAB.A_phi_1(rhoP, zP);
-			A_phi_6[i] = ABSCAB.A_phi_6(rhoP, zP);
-			A_phi_5[i] = ABSCAB.A_phi_5(rhoP, zP);
+			A_phi_1[i] = ABSCAB.cwl_A_phi_f(rhoP, zP);
+			A_phi_6[i] = ABSCAB.cwl_A_phi_n(rhoP, zP);
+			A_phi_5[i] = ABSCAB.cwl_A_phi_v(zP);
 
 			B_rho_3[i] = ABSCAB.B_rho_3(rhoP, zP);
 			B_rho_1[i] = ABSCAB.B_rho_1(rhoP, zP);

@@ -2004,13 +2004,12 @@ public class ABSCAB {
 	public static double circularWireLoop_A_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
 			return 0.0;
-		} else if (zP >= 1.0 || rhoP < 0.5 || rhoP > 2.0) {
-			return A_phi_1(rhoP, zP);
+		} else if (rhoP < 0.5 || rhoP > 2.0 || zP >= 1.0) {
+			return cwl_A_phi_f(rhoP, zP);
 		} else if (rhoP != 1.0) {
-			return A_phi_6(rhoP, zP);
+			return cwl_A_phi_n(rhoP, zP);
 		} else {
-			// rhoP == 1, zP < 1
-			return A_phi_5(rhoP, zP);
+			return cwl_A_phi_v(zP);
 		}
 	}
 
@@ -2267,19 +2266,22 @@ public class ABSCAB {
 
 	///// A_phi of circular wire loop
 
-	static double A_phi_1(double rhoP, double zP) {
-		// complementary modulus k_c
-		double t = zP * zP + 1 + rhoP * rhoP;
-		double kCSqNum = t - 2 * rhoP;
-		double kCSqDen = t + 2 * rhoP;
+	/**
+	 * Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
+	 * This formulation is useful for points away from the wire ("far-field")
+	 * at rhoP < 1/2 or rhoP > 2 or |zP| >= 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic vector potential
+	 */
+	static double cwl_A_phi_f(double rhoP, double zP) {
 
-		double sqrt_kCSqNum = Math.sqrt(kCSqNum);
-		double sqrt_kCSqDen = Math.sqrt(kCSqDen);
+		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
+		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 
-		double kSq = 4 * rhoP / kCSqDen;
-
-		double celPrefactor = 1 / sqrt_kCSqDen;
+		double kSq = 4 * rhoP / (sqrt_kCSqDen * sqrt_kCSqDen);
 
 		// Walstrom
 		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
@@ -2287,28 +2289,19 @@ public class ABSCAB {
 		double arg2 = 2 / (a2d * a2d * a2d);
 		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
 
-		return celPrefactor * kSq * C;
+		return kSq/sqrt_kCSqDen * C;
 	}
 
 	/**
-	 * special case for rho'=1 and z' close to 0
+	 * Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
+	 * This formulation is useful for points close to the wire ("near-field")
+	 * at 1/2 <= rhoP <= 2 and |zP| < 1.
 	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic vector potential
 	 */
-	static double A_phi_5(double rhoP, double zP) {
-		double kc = Math.sqrt(4 + zP * zP) / zP;
-		return CompleteEllipticIntegral.cel(kc, 1, 1, -1) / zP;
-	}
-
-	/**
-	 *
-	 * @param rhoP
-	 * @param zP
-	 * @return
-	 */
-	static double A_phi_6(double rhoP, double zP) {
+	static double cwl_A_phi_n(double rhoP, double zP) {
 		double n = zP / (rhoP - 1);
 		double m = 1 + 2 / (rhoP - 1);
 		double den = n * n + m * m;
@@ -2318,6 +2311,18 @@ public class ABSCAB {
 		double prefac = 1 / (Math.abs(rhoP - 1) * Math.sqrt(den));
 		double celPart = CompleteEllipticIntegral.cel(Math.sqrt(kcsq), 1, -1, 1);
 		return prefac * celPart;
+	}
+
+	/**
+	 * Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
+	 * This formulation is useful for points along rhoP=1 with |zP| < 1.
+	 *
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized tangential component of magnetic vector potential
+	 */
+	static double cwl_A_phi_v(double zP) {
+		double kc = Math.sqrt(4 + zP * zP) / Math.abs(zP);
+		return CompleteEllipticIntegral.cel(kc, 1, 1, -1) / Math.abs(zP);
 	}
 
 	//////// B_rho of circular wire loop

@@ -416,73 +416,7 @@ Putting above results together, we arrive at the following expression for $A_\va
                                \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
                                \,\mathrm{cel}(k_c, 1, -1, 1)} \, . \label{eqn:A_phi_final}
 \end{equation}
-In Eqn.~(5.37) of Ref.~\cite{jackson} the tangential component is given by:
-\begin{align}
-  A_\varphi(r, \theta) &= \frac{\mu_0}{4 \pi}
-                          \frac{4 I a}{\sqrt{a^2 + r^2 + 2 a r \sin(\theta)}}
-                          \left[
-                            \frac{(2 - k^2)K(k) - 2 E(k)}{k^2}
-                          \right] \label{eqn:aphi_initial}
-\end{align}
-with
-\begin{equation}
-  k^2 = \frac{4 a r \sin(\theta)}{a^2 + r^2 + 2 a r \sin(\theta)} \, .
-\end{equation}
-Here, $K(k)$ and $E(k)$ are the complete elliptic integrals of the first and second kind, respectively.
-Spherical coordinates are used with $r \sin(\theta) = \rho$ and $r^2 = \rho^2 + z^2$.
-In order to bring this to the form in \eqn{A_phi_final},
-an expression for the linear combination of $K(k)$ and $E(k)$ from Ref.~\cite{bulirsch_3} is used:
-\begin{equation}
-  \lambda K(k) + \mu E(k) = \,\mathrm{cel}(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2)
-\end{equation}
-where
-\begin{equation}
-  k^2 + k_\mathrm{c}^2 = 1 \, .
-\end{equation}
-The argument of the elliptic integrals is considered first:
-\begin{align}
-  k^2 &= \frac{4 a r \sin(\theta)}{a^2 + r^2 + 2 a r \sin(\theta)}
-       = \frac{4 a \rho}{a^2 + r^2 + 2 a \rho}
-       = \frac{4 \bcancel{a} \rho}{a^{\bcancel{2}} \left(1 + \frac{r^2}{a^2} + 2 \frac{\rho}{a} \right)} \nonumber \\
-  ~   &= \frac{4 \rho'}{1 + \frac{r^2}{a^2} + 2 \rho'}
-       = 4 \rho' \left( 1 + \frac{\rho^2 + z^2}{a^2} + 2 \rho' \right)^{-1}
-       = 4 \rho' \left( 1 + \rho'^{2} + z'^{2} + 2 \rho' \right)^{-1} \nonumber \\
-  ~   &= \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \, .
-\end{align}
-Thus, $k^2$ from Ref.~\cite{jackson} is equivalent to $k^2$ in \eqn{my_k_sq}.
-Inserting this into \eqn{aphi_initial} leads to:
-\begin{align}
-  A_\varphi(r, \theta) &= \frac{\mu_0 I}{\bcancel{2} \pi}
-                          \frac{\bcancel{2}}{\sqrt{z'^2 + (1 + \rho')^2}}
-                          \left[
-                            \frac{(2 - k^2)K(k) - 2 E(k)}{k^2}
-                          \right] \nonumber \\
-           ~           &= \frac{\mu_0 I}{\pi}
-                          \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-                          \left[
-                            \frac{(2 - k^2)K(k) - 2 E(k)}{k^2}
-                          \right] \, .
-\end{align}
-The coefficients of the elliptic integrals are given as follows:
-\begin{align}
-  \lambda &= \frac{2 - k^2}{k^2} = \frac{2}{k^2} - 1 \\
-  \mu     &= -\frac{2}{k^2}
-\end{align}
-and their combinations are as follows:
-\begin{align}
-  \lambda + \mu       &= \frac{2}{k^2} - 1 - \frac{2}{k^2}     = -1 \\
-  \lambda + \mu k_c^2 &= \frac{2}{k^2} - 1 - \frac{2}{k^2} (1 - k^2) \nonumber \\
-          ~           &= \frac{2}{k^2} - 1 - \frac{2}{k^2} + 2 =  1 \, .
-\end{align}
-Putting above results together, we arrive at the following expression for $A_\varphi$:
-\begin{equation}
- \boxed{A_\varphi(r, \theta) = \frac{\mu_0 I}{\pi}
-                            \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1)}
-\end{equation}
-with $\rho' = r/a \sin(\theta)$, $z' = \sqrt{r^2 - \rho^2}/a$ and $k_c$ given by \eqn{k_c_final}).
-It is favorable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{A_phi_final}
-where the linear combination of the complete elliptic integrals is embedded in the parameters of $\mathrm{cel}(k_c, p, a, b)$
-and no precautions need to be taken to deal with cancellations in \eqn{aphi_initial}.
+
 
 \subsubsection{Magnetic Field}
 The magnetic field is computed using $\mathbf{B} = \nabla \times \mathbf{A}$.
@@ -814,4 +748,22 @@ This is now reformulated to use normalized quantities
  =&\, \frac{\mu_0 I}{4 \pi L}
       \left(\frac{1}{r_f} + \frac{1}{r_i} \right)
       \frac{2 \rho'}{\left(r_i + r_f\right)^2 - 1} \, .
+\end{align}
+
+$A_\varphi$ of circular wire loop:
+\begin{equation}
+  \mathcal{C}(k_c)
+  = \frac{2 \,\mathcal{D}(k_c) - \mathcal{K}(k_c)}{k^2}
+  = \,\mathrm{cel} \left( \frac{2 \sqrt{k_c}}{1 + k_c}, 1, 0, \frac{2}{(1 + k_c)^3} \right) \, .
+\end{equation}
+In there:
+\begin{equation}
+  \mathcal{D}(k_c)
+  = \frac{\mathcal{K}(k_c) - \,\mathcal{E}(k_c)}{k^2}
+  = \,\mathrm{cel}(k_c, 1, 0, 1) \label{eqn:elliptic_d}
+\end{equation}
+and
+\begin{align}
+  \mathcal{K}(k_c) =&\, \mathrm{cel}(k_c, 1, 1, 1)          \label{eqn:elliptic_k} \\
+  \mathcal{E}(k_c) =&\, \mathrm{cel}(k_c, 1, 1, k_c^2) \, . \label{eqn:elliptic_e}
 \end{align}
