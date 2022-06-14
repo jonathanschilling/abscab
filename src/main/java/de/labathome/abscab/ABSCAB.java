@@ -2004,7 +2004,7 @@ public class ABSCAB {
 	public static double circularWireLoop_A_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
 			return 0.0;
-		} else if (rhoP < 0.5 || rhoP > 2.0 || zP >= 1.0) {
+		} else if (rhoP < 0.5 || rhoP > 2.0 || Math.abs(zP) >= 1.0) {
 			return cwl_A_phi_f(rhoP, zP);
 		} else if (rhoP != 1.0) {
 			return cwl_A_phi_n(rhoP, zP);
@@ -2027,7 +2027,7 @@ public class ABSCAB {
 	public static double circularWireLoop_B_rho(double rhoP, double zP) {
 		if (rhoP == 0.0 || zP == 0.0) {
 			return 0.0;
-		} else if (zP >= 1.0 || rhoP < 0.5 || rhoP > 2.0) {
+		} else if (rhoP < 0.5 || rhoP > 2.0 || Math.abs(zP) >= 1.0) {
 			return cwl_B_rho_f(rhoP, zP);
 		} else if (rhoP != 1.0) {
 			return cwl_B_rho_n(rhoP, zP);
@@ -2284,9 +2284,9 @@ public class ABSCAB {
 		double kSq = 4 * rhoP / (sqrt_kCSqDen * sqrt_kCSqDen);
 
 		// Walstrom
-		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
-		double a2d = 1 + kC;
-		double arg2 = 2 / (a2d * a2d * a2d);
+		double kCp1 = 1 + kC;
+		double arg1 = 2 * Math.sqrt(kC) / kCp1;
+		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
 		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
 
 		return kSq/sqrt_kCSqDen * C;
@@ -2321,8 +2321,9 @@ public class ABSCAB {
 	 * @return normalized tangential component of magnetic vector potential
 	 */
 	static double cwl_A_phi_v(double zP) {
-		double kC = Math.sqrt(4 + zP * zP) / Math.abs(zP);
-		return CompleteEllipticIntegral.cel(kC, 1, 1, -1) / Math.abs(zP);
+		double absZp = Math.abs(zP);
+		double kC = Math.sqrt(4 + zP * zP) / absZp;
+		return CompleteEllipticIntegral.cel(kC, 1, 1, -1) / absZp;
 	}
 
 	//////// B_rho of circular wire loop
@@ -2349,14 +2350,14 @@ public class ABSCAB {
 
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
-		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
-		double a2d = 1 + kC;
-		double arg2 = 2 / (a2d * a2d * a2d);
+		double kCp1 = 1 + kC;
+		double arg1 = 2 * Math.sqrt(kC) / kCp1;
+		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
 		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
 
-		double prefac = 4 * rhoP * zP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
+		double prefac = 4 * rhoP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
 
-		return prefac * (D - C);
+		return prefac * zP * (D - C);
 	}
 
 	/**
@@ -2369,27 +2370,32 @@ public class ABSCAB {
 	 * @return normalized radial component of magnetic field
 	 */
 	static double cwl_B_rho_n(double rhoP, double zP) {
-		double n = zP / (rhoP - 1);
-		double m = 1 + 2 / (rhoP - 1);
-		double den = n * n + m * m;
-		double num = n * n + 1;
-		double kCSq = num / den;
+		double rhoP_m_1 = rhoP - 1;
+		double rd2 = rhoP_m_1 * rhoP_m_1;
 
-		double kC = Math.sqrt(kCSq);
+		double n = zP / rhoP_m_1;
+		double m = 1 + 2 / rhoP_m_1;
+
+		double sqrt_kCSqNum = Math.hypot(n, 1);
+		double sqrt_kCSqDen = Math.hypot(n, m);
+
+		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
+		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+
+		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
-		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
-		double a2d = 1 + kC;
-		double arg2 = 2 / (a2d * a2d * a2d);
-		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
+		double kCp1 = 1 + kC;
+		double arg1 = 2 * Math.sqrt(kC) / kCp1;
+		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
+		double C = arg2 * CompleteEllipticIntegral.cel(arg1, 1, 0, 1);
 
-		double rd = rhoP - 1;
-		double rd2 = rd * rd;
+		double zP_again = Math.abs(n) / (rd2 * rd2);
 
-		double fac1 = 4 * rhoP / (rd2 * rd2) * Math.abs(n);
+		double prefac = 4 * rhoP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
 
-		return fac1 * (D - C) / (den * Math.sqrt(den) * num);
+		return prefac * zP_again * (D - C);
 	}
 
 	/**

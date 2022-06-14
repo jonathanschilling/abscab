@@ -21,7 +21,7 @@ public class DemoABSCAB {
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 
 //		demoStraightWireSegment();
-//		demoCircularWireLoop();
+		demoCircularWireLoop();
 //
 //		dumpInternalResultsStraightWireSegment();
 		dumpInternalResultsCircularWireLoop();
