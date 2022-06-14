@@ -2391,11 +2391,12 @@ public class ABSCAB {
 		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
 		double C = arg2 * CompleteEllipticIntegral.cel(arg1, 1, 0, 1);
 
-		double zP_again = Math.abs(n) / (rd2 * rd2);
+		// |z'| / (rho' - 1)^5
+		double zP_rd5 = Math.abs(n) / (rd2 * rd2);
 
 		double prefac = 4 * rhoP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
 
-		return prefac * zP_again * (D - C);
+		return prefac * zP_rd5 * (D - C);
 	}
 
 	/**
@@ -2406,16 +2407,14 @@ public class ABSCAB {
 	 * @return normalized radial component of magnetic field
 	 */
 	static double cwl_B_rho_v(double rhoP, double zP) {
-
 		double zPSq = zP * zP;
-		double pfd = 1 + 4 / zPSq;
-		double kCSq = 1 / pfd;
+		double kCSq = 1 / (1 + 4 / zPSq);
 		double kC = Math.sqrt(kCSq);
 
 		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
 
-		return 1 / (2 * Math.sqrt(pfd)) * (E / pfd * (1 + (6 + 8 / zPSq) / zPSq) - K);
+		return kC / 2 * ((2 / zPSq + 1) * E - K);
 	}
 
 	////// B_z of circular wire loop
