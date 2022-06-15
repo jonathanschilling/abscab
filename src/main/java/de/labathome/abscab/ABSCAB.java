@@ -2054,10 +2054,8 @@ public class ABSCAB {
 			return B_z_2(rhoP, zP);
 		} else if (rhoP == 1.0) {
 			return B_z_4(zP);
-		} else if (zP != 0.0) {
-			return B_z_5(rhoP, zP);
 		} else {
-			return B_z_6(rhoP, zP);
+			return B_z_5(rhoP, zP);
 		}
 	}
 
@@ -2491,7 +2489,7 @@ public class ABSCAB {
 	}
 
 	static double B_z_5(double rhoP, double zP) {
-		// special case for near-field: rhoP->1, zP->0; but not rhoP=1 or zP=0
+		// special case for near-field: rhoP->1, zP->0; but not rhoP = 1
 
 		double rp1 = rhoP - 1;
 
@@ -2501,26 +2499,12 @@ public class ABSCAB {
 		double num = n * n + 1;
 		double kCSq = num / den;
 
-		double prefac = Math.abs(n) / (rp1 * rp1 * den * Math.sqrt(den));
-
-		double ca1 = (1 + rhoP) / zP;
-		double ca2 = (1 - rhoP) / zP;
-		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, ca1, ca2);
-
-		return prefac * cp;
-	}
-
-	static double B_z_6(double rhoP, double zP) {
-
-		double rp = rhoP + 1;
-
-		double kC = (1 - rhoP) / rp;
-		double kCSq = kC * kC;
+		double prefac = 1 / (Math.abs(rp1) * rp1 * rp1 * den * Math.sqrt(den));
 
 		double ca1 = 1 + rhoP;
 		double ca2 = 1 - rhoP;
 		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, ca1, ca2);
 
-		return 1 / Math.abs(rp * rp * rp) * cp;
+		return prefac * cp;
 	}
 }

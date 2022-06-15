@@ -639,7 +639,6 @@ public class DemoABSCAB {
 		double[] B_z_2 = new double[numCases];
 		double[] B_z_4 = new double[numCases];
 		double[] B_z_5 = new double[numCases];
-		double[] B_z_6 = new double[numCases];
 
 		for (int i=0; i<numCases; ++i) {
 			double rhoP = testPointsRp[i];
@@ -657,7 +656,6 @@ public class DemoABSCAB {
 			B_z_2[i] = ABSCAB.B_z_2(rhoP, zP);
 			B_z_4[i] = ABSCAB.B_z_4(zP);
 			B_z_5[i] = ABSCAB.B_z_5(rhoP, zP);
-			B_z_6[i] = ABSCAB.B_z_6(rhoP, zP);
 		}
 
 		// write to output file
@@ -673,6 +671,5 @@ public class DemoABSCAB {
 		TestABSCABUtils.dumpToFile(B_z_2,   "data/CircularWireLoop_B_z_2_Java.dat");
 		TestABSCABUtils.dumpToFile(B_z_4,   "data/CircularWireLoop_B_z_4_Java.dat");
 		TestABSCABUtils.dumpToFile(B_z_5,   "data/CircularWireLoop_B_z_5_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_6,   "data/CircularWireLoop_B_z_6_Java.dat");
 	}
 }
