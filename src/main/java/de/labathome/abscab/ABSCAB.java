@@ -2048,7 +2048,7 @@ public class ABSCAB {
 	 *         mu0*I/(pi*a) factor included)
 	 */
 	public static double circularWireLoop_B_z(double rhoP, double zP) {
-		if (rhoP < 0.5 || (rhoP <= 2 && zP > 1)) {
+		if (rhoP < 0.5 || (rhoP <= 2 && Math.abs(zP) > 1)) {
 			return B_z_1(rhoP, zP);
 		} else if (rhoP > 2) {
 			return B_z_2(rhoP, zP);
@@ -2425,18 +2425,17 @@ public class ABSCAB {
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
 		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
-		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+//		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
 
-		double kCSq = kCSqNum / kCSqDen;
-		double kC = Math.sqrt(kCSq);
+		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
+		double kCSq = kC * kC;
 
 		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
-		double comb = (E - 2 * K + 2 * D);
-
 		double prefac = 1 / (sqrt_kCSqDen * kCSqNum);
+		double comb = (E - 2 * K + 2 * D);
 
 		return prefac * (E + rhoP * comb);
 	}
@@ -2446,30 +2445,37 @@ public class ABSCAB {
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
-		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
-		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
+		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
+		double kCSq = kC * kC;
 
-		double kCSq = kCSqNum / kCSqDen;
-		double kC = Math.sqrt(kCSq);
-
-		double t1 = (zP * zP + 1) / (rhoP * rhoP) + 1;
+		double zPSqP1 = zP * zP + 1;
+		double t1 = zPSqP1 / (rhoP * rhoP) + 1;
 		double t2 = 2 / rhoP;
+
+		// a is sqrt_kCSqDen normalized to rho'^2
+		// b is sqrt_kCSqNum normalized to rho'^2
+		// a == (z'^2 + (1 + rho')^2) / rho'^2
+		// b == (z'^2 + (1 - rho')^2) / rho'^2
 		double a = t1 + t2;
 		double b = t1 - t2;
+
+		// 1/prefac = sqrt((z'^2 + (1 + rho')^2) / rho'^2) * (z'^2 + (1 - rho')^2) / rho'^2 * rho'^3
+		//          = sqrt( z'^2 + (1 + rho')^2)           * (z'^2 + (1 - rho')^2)
 		double prefac = 1 / (Math.sqrt(a) * b * rhoP * rhoP * rhoP);
 
-		double cdScale = 1 + (2 + (zP * zP + 1) / rhoP) / rhoP;
 
-		double arg1 = 2 * Math.sqrt(kC) / (1 + kC);
-		double a2d = 1 + kC;
-		double arg2 = 2 / (a2d * a2d * a2d);
-		double C = CompleteEllipticIntegral.cel(arg1, 1, 0, arg2);
+		double cdScale = 1 + (2 + zPSqP1 / rhoP) / rhoP;
+
+		double kCP1 = 1 + kC;
+		double arg1 = 2 * Math.sqrt(kC) / kCP1;
+		double arg2 = 2 / (kCP1 * kCP1 * kCP1);
+		double C = arg2 * CompleteEllipticIntegral.cel(arg1, 1, 0, 1);
 
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 
 		// use C - D for (2 * D - E)/kSq
-		return prefac * (4 * (C - D) / cdScale + E);
+		return prefac * (E + 4 * (C - D) / cdScale);
 	}
 
 	static double B_z_4(double zP) {
