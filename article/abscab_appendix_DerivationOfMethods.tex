@@ -201,571 +201,62 @@ This results in the final expression for the magnetic field:
  \boxed{\mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i } \, .
 \end{equation}
 
-\subsection{Circular Wire Loop}
-The current density of the wire loop can be expressed as follows:
-\begin{equation}
-  \mathbf{j}(\mathbf{x}') = I \delta(\rho' - a) \delta(z') \,\hat{\mathbf{e}}_{\varphi'} \, .
-\end{equation}
-
-\subsubsection{Magnetic Vector Potential}
-The Biot-Savart law for the magnetic vector potential reads:
-\begin{align}
-  \mathbf{A}(\mathbf{x}) &= \frac{\mu_0  }{4 \pi}
-                            \int_{\realnumbers^3}
-                              \frac{\mathbf{j}(\mathbf{x}')}{|\mathbf{x} - \mathbf{x}'|} \,\mathrm{d}^3\mathbf{x}' \nonumber \\
-             ~           &= \frac{\mu_0 I}{4 \pi}
-                            \int_{\realnumbers^3}
-                              \frac{\delta(\rho' - a) \delta(z')}{|\mathbf{x} - \mathbf{x}'|} \,\hat{\mathbf{e}}_{\varphi'}
-                              \,\mathrm{d}^3\mathbf{x}' \nonumber \\
-             ~           &= \frac{\mu_0 I}{4 \pi}
-                            \int\limits_{-\infty}^{\infty} \int\limits_{0}^{2 \pi} \int\limits_{0}^{\infty}
-                              \frac{\delta(\rho' - a) \delta(z')}{|\mathbf{x} - \mathbf{x}'|} \,\hat{\mathbf{e}}_{\varphi'}
-                              \rho' \,\mathrm{d} \rho' \,\mathrm{d} \varphi'  \,\mathrm{d} z' \label{eqn:vecpot_loop_general}
-\end{align}
-where a change of variables from Cartesian coordinates to cylindrical coordinates was performed in the integral.
-The differential volume element was adjusted according to
-$\,\mathrm{d}^3\mathbf{x}' = \rho' \,\mathrm{d} \rho' \,\mathrm{d} \varphi'  \,\mathrm{d} z'$.
-The coordinate system is rotated around the $z$ axis to yield $\varphi=0$ for the evaluation location $\mathbf{x}$
-which is generally acceptable due to the rotational symmetry of the circular wire loop.
-Then, $\mathbf{x} = (x, y, z)$ in Cartesian coordinates with
-\begin{align}
-  x &= \rho \cos(\varphi) = \rho \\
-  y &= \rho \sin(\varphi) = 0    \, .
-\end{align}
-The distance $|\mathbf{x} - \mathbf{x}'|$ is then:
-\begin{align}
-  |\mathbf{x} - \mathbf{x}'| &= \sqrt{(\rho - \rho' \cos(\varphi'))^2 + \rho'^2 \sin^2(\varphi') + (z - z')^2} \nonumber \\
-              ~              &= \sqrt{ \rho^2 + \rho'^2 (\cos(\varphi'))^2 + \sin^2(\varphi')) - 2 \rho \rho' \cos(\varphi') + (z - z')^2} \nonumber \\
-              ~              &= \sqrt{ \rho^2 + \rho'^2 + (z - z')^2 - 2 \rho \rho' \cos(\varphi')} \, .
-\end{align}
-Inserting this into \eqn{vecpot_loop_general} leads to:
-\begin{equation}
-  \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \int\limits_{-\infty}^{\infty} \int\limits_{0}^{2 \pi} \int\limits_{0}^{\infty}
-                                                             \frac{\delta(\rho' - a) \delta(z')}{\sqrt{ \rho^2 + \rho'^2 + (z - z')^2 - 2 \rho \rho' \cos(\varphi')}}
-                                                             \,\hat{\mathbf{e}}_{\varphi'}
-                                                             \rho' \,\mathrm{d} \rho' \,\mathrm{d} \varphi'  \,\mathrm{d} z'
-\end{equation}
-and the integrals over $\rho'$ and $z'$ can be evaluated already:
-\begin{equation}
-  \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I a}{4 \pi}
-                           \int\limits_{0}^{2 \pi}
-                             \frac{\hat{\mathbf{e}}_{\varphi'} \,\mathrm{d} \varphi'}{\sqrt{ \rho^2 + a^2 + z^2 - 2 \rho a \cos(\varphi')}} \, . \label{eqn:vecpot_loop_phiprime}
-\end{equation}
-The cylindrical components of the magnetic vector potential~$\mathbf{A}$ are obtained
-by dotting above result with the cylindrical unit vector at the evaluation location~$\mathbf{x}$:
-\begin{equation}
-  \mathbf{A}(\mathbf{x}) =   A_\rho    \,\hat{\mathbf{e}}_\rho
-                           + A_\varphi \,\hat{\mathbf{e}}_\varphi
-                           + A_z       \,\hat{\mathbf{e}}_z
-\end{equation}
-with
-\begin{align}
-  A_\rho    &= \mathbf{A}(\mathbf{x}) \cdot \,\hat{\mathbf{e}}_\rho    \\
-  A_\varphi &= \mathbf{A}(\mathbf{x}) \cdot \,\hat{\mathbf{e}}_\varphi \\
-  A_z       &= \mathbf{A}(\mathbf{x}) \cdot \,\hat{\mathbf{e}}_z       \, .
-\end{align}
-The dot products of the cylindrical unit vectors are:
-\begin{align}
-  \hat{\mathbf{e}}_{\varphi'} \cdot \,\hat{\mathbf{e}}_\rho    &= \begin{pmatrix} -\sin(\varphi') \\ \cos(\varphi') \\ 0 \end{pmatrix}
-                                                                  \cdot
-                                                                  \begin{pmatrix}  \cos(\varphi ) \\ \sin(\varphi ) \\ 0 \end{pmatrix}
-                                                                = \begin{pmatrix} -\sin(\varphi') \\ \cos(\varphi') \\ 0 \end{pmatrix}
-                                                                  \cdot
-                                                                  \begin{pmatrix}  1 \\ 0 \\ 0 \end{pmatrix}
-                                                                = -\sin(\varphi') \\
-  \hat{\mathbf{e}}_{\varphi'} \cdot \,\hat{\mathbf{e}}_\varphi &= \begin{pmatrix} -\sin(\varphi') \\ \cos(\varphi') \\ 0 \end{pmatrix}
-                                                                  \cdot
-                                                                  \begin{pmatrix} -\sin(\varphi ) \\ \cos(\varphi ) \\ 0 \end{pmatrix}
-                                                                = \begin{pmatrix} -\sin(\varphi') \\ \cos(\varphi') \\ 0 \end{pmatrix}
-                                                                  \cdot
-                                                                  \begin{pmatrix}  0 \\ 1 \\ 0 \end{pmatrix}
-                                                                =  \cos(\varphi') \\
-  \hat{\mathbf{e}}_{\varphi'} \cdot \,\hat{\mathbf{e}}_z       &= \begin{pmatrix} -\sin(\varphi') \\ \cos(\varphi') \\ 0 \end{pmatrix}
-                                                                  \cdot
-                                                                  \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
-                                                                = 0 \, . \label{eqn:e_phiprime_dot_ez}
-\end{align}
-The expression from \eqn{vecpot_loop_phiprime} is inserted into above expressions.
-The vertical component~$A_z$ vanishes trivially since the unit vectors are orthogonal,
-as can be seen from \eqn{e_phiprime_dot_ez}.
-For the radial component $A_\rho$ it follows:
-\begin{equation}
-  A_\rho = \frac{\mu_0 I a}{4 \pi}
-           \int\limits_{0}^{2 \pi}
-             \frac{-\sin(\varphi') \,\mathrm{d} \varphi'}{\sqrt{ \rho^2 + a^2 + z^2 - 2 \rho a \cos(\varphi')}} = 0 \, ,
-\end{equation}
-since the integrand is an odd function of $\varphi'$.
-The tangential component $A_\varphi$ is non-zero because the integrand is an even function of $\varphi'$.
-It is given by:
-\begin{equation}
-  A_\varphi(\rho, z) = \frac{\mu_0 I a}{4 \pi}
-                       \int\limits_{0}^{2 \pi}
-                         \frac{\cos(\varphi') \,\mathrm{d} \varphi'}{\sqrt{ \rho^2 + a^2 + z^2 - 2 \rho a \cos(\varphi')}} \, , \label{eqn:a_phi_general}
-\end{equation}
-leading to
-\begin{equation}
-  \mathbf{A}(\mathbf{x}) = A_\varphi(\rho, z) \,\hat{\mathbf{e}}_\varphi \, . \label{eqn:a_cwl_components}
-\end{equation}
-A change of variables from $\varphi'$ to $\beta$ is performed in order to solve \eqn{a_phi_general}:
-\begin{equation}
- \varphi' = 2 \beta + \pi
-\end{equation}
-which implies
-\begin{align}
- \frac{\mathrm{d}\varphi'}{\mathrm{d}\beta} = 2     &\Rightarrow \mathrm{d}\varphi' = 2 \mathrm{d}\beta \\
-                                 \varphi'_0 = 0     &\Rightarrow           \beta_0 = - \frac{\pi}{2}   \\
-                                 \varphi'_1 = 2 \pi &\Rightarrow           \beta_1 =   \frac{\pi}{2}   \, .
-\end{align}
-It follows for \eqn{a_phi_general}:
-\begin{equation}
- A_\varphi(\rho, z) = \frac{\mu_0 I a}{4 \pi}
-                       \int\limits_{-\pi/2}^{\pi/2}
-                         \frac{2 \cos(2 \beta + \pi) \,\mathrm{d}\beta}
-                              {\sqrt{\rho^2 + a^2 + z^2 - 2 \rho a \cos(2 \beta + \pi)}} \, .
-\end{equation}
-Note that $\cos(2 \beta + \pi) = - \cos(2 \beta)$:
-\begin{equation}
- A_\varphi(\rho, z) = \frac{\mu_0 I a}{2 \pi}
-                       \int\limits_{-\pi/2}^{\pi/2}
-                         \frac{-\cos(2 \beta) \,\mathrm{d}\beta}
-                              {\sqrt{\rho^2 + a^2 + z^2 + 2 \rho a \cos(2 \beta)}} \, . \label{eqn:a_phi_progress}
-\end{equation}
-In the numerator of the integrand it follows:
-\begin{equation}
- -\cos(2 \beta) = -\left(\cos^2(\beta) - \sin^2(\beta) \right) = \sin^2(\beta) - \cos^2(\beta) \, .
-\end{equation}
-The denominator of the integrand can be reformulated by introducing normalized coordinates
-$\rho' = \rho/a$ and $z' = z/a$ as follows:
-\begin{align}
- ~ & \rho^2 + a^2 + z^2 + 2 \rho a \cos(2 \beta) \nonumber \\
- ~ &= a^2 \left[z'^2 +      \rho'^2 + 1        + 2 \rho' \cos(2 \beta)         \right] \nonumber \\
- ~ &= a^2 \left[z'^2 + (1 + \rho')^2 - 2 \rho' + 2 \rho' \cos(2 \beta)         \right] \nonumber \\
- ~ &= a^2 \left[z'^2 + (1 + \rho')^2 - 2 \rho' \left(1 - \cos(2 \beta) \right) \right] \nonumber \\
- ~ &= a^2 \left[z'^2 + (1 + \rho')^2 - 2 \rho' \left(1 + \sin^2(\beta) - \cos^2(\beta) \right) \right] \nonumber \\
- ~ &= a^2 \left[z'^2 + (1 + \rho')^2 - 2 \rho' \left(\bcancel{\cos^2(\beta)} + \sin^2(\beta) + \sin^2(\beta) \bcancel{- \cos^2(\beta)} \right) \right] \nonumber \\
- ~ &= a^2 \left[z'^2 + (1 + \rho')^2 - 4 \rho' \sin^2(\beta) \right] \nonumber \\
- ~ &= a^2 \left( z'^2 + (1 + \rho')^2 \right) \Biggl[1 - \underbrace{\frac{4 \rho'}{z'^2 + (1 + \rho')^2}}_{\equiv k^2} \sin^2(\beta) \Biggr] \nonumber \\
- ~ &= a^2 \left( z'^2 + (1 + \rho')^2 \right) \left [1 - k^2 \sin^2(\beta) \right] \label{eqn:a_phi_denom_refactor_start}
-\end{align}
-with
-\begin{equation}
- k^2 = \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \, . \label{eqn:my_k_sq}
-\end{equation}
-Inserting this into \eqn{a_phi_progress} leads to:
-\begin{equation}
- A_\varphi(\rho', z') = \frac{\mu_0 I}
-                           {2 \pi}
-                      \frac{1}
-                           {\sqrt{z'^2 + (1 + \rho')^2}}
-                      \int\limits_{-\pi/2}^{\pi/2}
-                        \frac{\sin^2(\beta) - \cos^2(\beta)}
-                             {\sqrt{1 - k^2 \sin^2(\beta)}}
-                        \,\mathrm{d}\beta \, .
-\end{equation}
-Focusing again on the denominator of the integrand:
-\begin{align}
- 1 - k^2 \sin^2(\beta)
-   &= \cos^2(\beta) + \sin^2(\beta) - \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \sin^2(\beta) \nonumber \\
- ~ &= \cos^2(\beta) + \left(1 - \frac{4 \rho'}{z'^2 + (1 + \rho')^2}\right) \sin^2(\beta) \nonumber \\
- ~ &= \cos^2(\beta) + \frac{z'^2 + (1 + \rho')^2 - 4 \rho'}{z'^2 + (1 + \rho')^2} \sin^2(\beta) \nonumber \\
- ~ &= \cos^2(\beta) + \underbrace{\frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2}}_{\equiv k_c^2} \sin^2(\beta) \nonumber \\
- ~ &= \cos^2(\beta) + k_c^2 \sin^2(\beta) \label{eqn:a_phi_denom_refactor_done}
-\end{align}
-with
-\begin{equation}
- k_c^2 = \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \, , \label{eqn:k_c_final}
-\end{equation}
-leading to:
-\begin{equation}
- A_\varphi(\rho', z') = \frac{\mu_0 I}
-                           {2 \pi}
-                      \frac{1}
-                           {\sqrt{z'^2 + (1 + \rho')^2}}
-                      \int\limits_{-\pi/2}^{\pi/2}
-                        \frac{\sin^2(\beta) - \cos^2(\beta)}
-                             {\sqrt{\cos^2(\beta) + k_c^2 \sin^2(\beta)}}
-                        \,\mathrm{d}\beta \, .
-\end{equation}
-The integrand is symmetric about $0$ and therefore the integration domain can be halved if a factor of $2$ is included:
-\begin{equation}
- A_\varphi(\rho', z') = \frac{\mu_0 I}
-                           {\pi}
-                      \frac{1}
-                           {\sqrt{z'^2 + (1 + \rho')^2}}
-                      \int\limits_{0}^{\pi/2}
-                        \frac{\sin^2(\beta) - \cos^2(\beta)}
-                             {\sqrt{\cos^2(\beta) + k_c^2 \sin^2(\beta)}}
-                        \,\mathrm{d}\beta \, .
-\end{equation}
-The remaining integral is a complete elliptic integral which can be expressed using the form
-introduced by Bulirsch~\cite{bulirsch_3}:
-\begin{equation}
-  \mathrm{cel}(k_c, p, a, b)
-= \int\limits_{0}^{\pi/2}
-   \frac{a \cos^2(\varphi) + b \sin^2(\varphi)}
-        {  \cos^2(\varphi) + p \sin^2(\varphi)}
-   \frac{\mathrm{d}\varphi}
-        {\sqrt{\cos^2(\varphi) + k_\mathrm{c}^2 \sin^2(\varphi)}} \, .
-\end{equation}
-Note that the parameter $a$ of $\mathrm{cel}(k_c, p, a, b)$ is not to be confused with the radius of the wire loop.
-A numerical implementation of the general complete elliptic integral $\mathrm{cel}(k_c, p, a, b)$ is provided in the cited article.
-The use of this particular implementation is inspired by Ref.~\cite{teal}.
-Putting above results together, we arrive at the following expression for $A_\varphi$:
-\begin{equation}
- \boxed{A_\varphi(\rho', z') = \frac{\mu_0 I}{\pi}
-                               \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-                               \,\mathrm{cel}(k_c, 1, -1, 1)} \, . \label{eqn:A_phi_final}
-\end{equation}
-
-
-\subsubsection{Magnetic Field}
-The magnetic field is computed using $\mathbf{B} = \nabla \times \mathbf{A}$.
-In cylindrical coordinates with the form of the magnetic vector potential from \eqn{a_cwl_components}
-the curl is given as follows:
-\begin{equation}
-  \mathbf{B}(\mathbf{x})
-= B_\rho \hat{\mathbf{e}}_\rho + B_z \hat{\mathbf{e}}_z
-\end{equation}
-with
-\begin{align}
-  B_\rho &= -                \frac{\partial       A_\varphi }{\partial z   }  \label{eqn:b_rho_start} \\
-  B_z    &=   \frac{1}{\rho} \frac{\partial (\rho A_\varphi)}{\partial \rho}
-          = \frac{A_\varphi}{\rho} + \frac{\partial A_\varphi}{\partial \rho} \label{eqn:b_z_start} \, .
-\end{align}
-Starting from \eqn{a_phi_general} it is noted that the partial derivatives only act on the denominator of the integrand.
-Therefore, consider first:
-\begin{align}
-  \frac{\partial}{\partial z}& \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}} \nonumber \\
-  ~ &= - \bcancel{\frac{1}{2}} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{3}{2}} \left( \bcancel{2} z \right) \nonumber \\
-  ~ &= \frac{- z}{\left[ a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right]^{\frac{3}{2}}} \\
-  \frac{\partial}{\partial \rho}& \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{1}{2}} \nonumber \\
-  ~ &= - \bcancel{\frac{1}{2}} \left( a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right)^{-\frac{3}{2}} \left( \bcancel{2} \rho - \bcancel{2} a \cos(\varphi) \right) \nonumber \\
-  ~ &= \frac{-(\rho - a \cos(\varphi))}{\left[ a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi) \right]^{\frac{3}{2}}} \, .
-\end{align}
-These expressions are used to formulate \eqn{b_rho_start} and
-a change of variables from $\varphi$ to $\beta$ analogously to the step from \eqn{a_phi_general} to \eqn{a_phi_progress} is performed.
-Finally, normalized coordinates are introduced in the integrand similar to the steps from \eqn{a_phi_denom_refactor_start} to \eqn{a_phi_denom_refactor_done}:
-\begin{align}
-  B_\rho &= \frac{\partial}{\partial z} \left(
-             \frac{\mu_0 I a}{4 \pi}
-             \int\limits_{0}^{2 \pi}
-               \frac{\cos(\varphi') \,\mathrm{d} \varphi'}{\sqrt{ \rho^2 + a^2 + z^2 - 2 \rho a \cos(\varphi')}} \right) \nonumber \\
-    ~    &= - \frac{\mu_0 I a z}{4 \pi}
-              \int\limits_{0}^{2 \pi}
-                \frac{\cos(\varphi') \,\mathrm{d} \varphi'}
-                     {\left[a^2 + z^2 + \rho^2 - 2 a \rho \cos(\varphi') \right]^{\frac{3}{2}}} \nonumber \\
-    ~    &=   \frac{\mu_0 I a z}{2 \pi}
-              \int\limits_{-\pi/2}^{\pi/2}
-                \frac{\cos(2 \beta) \,\mathrm{d}\beta}
-                     {\left[a^2 + z^2 + \rho^2 + 2 a \rho \cos(2 \beta) \right]^{\frac{3}{2}}} \nonumber \\
-     ~    &=  \frac{\mu_0 I}{2 \pi}
-              \frac{\cancel{a^2} z'}{a^{\bcancel{3}} \left( z'^2 + (1 + \rho')^2 \right)^{\frac{3}{2}}}
-              \int\limits_{-\pi/2}^{\pi/2}
-                \frac{\sin^2(\beta) - \cos^2(\beta)}
-                     { \left[\cos^2(\beta) + k_c^2 \sin^2(\beta) \right]^{\frac{3}{2}} }
-                \,\mathrm{d}\beta \label{eqn:B_rho_almost}
-\end{align}
-This integrand is also symmetric about $0$, which can be used to express \eqn{B_rho_almost} in terms of the general complete elliptic integral:
-\begin{equation}
-  \boxed{B_\rho(\rho', z') =
-    \frac{\mu_0 I}{\pi a}
-    \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}}
-    \,\mathrm{cel}(k_c, k_c^2, -1, 1) } \, . \label{eqn:B_rho_final}
-\end{equation}
-Regarding $B_z$ the first term in \eqn{b_z_start} can already be written down using $\rho = a \rho'$ and $A_\varphi$ from \eqn{A_phi_final}:
-\begin{equation}
-  B_z = \frac{\mu_0 I}{\pi a}
-        \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
-        \,\mathrm{cel}(k_c, 1, -1, 1)
-        + \frac{\partial A_\varphi}{\partial \rho} \label{eqn:B_z_intermediate}
-\end{equation}
-The second term is considered next:
-\begin{align}
-      \frac{\partial A_\varphi}{\partial \rho}
- =&\, \frac{\partial A_\varphi}{\partial \rho'} \frac{\partial \rho'}{\partial \rho}
- =    \frac{1}{a} \frac{\partial A_\varphi}{\partial \rho'} \nonumber \\
- =&\, \frac{1}{a} \frac{\partial}{\partial \rho'} \left[
-                               \frac{\mu_0 I}{\pi}
-                               \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-                               \,\mathrm{cel}(k_c, 1, -1, 1) \right] \nonumber \\
- =&\, \frac{\mu_0 I}{\pi a} \frac{\partial}{\partial \rho'} \left[
-        \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1) \right] \nonumber \\
- =&\,          \frac{\mu_0 I}{\pi a} \Biggl\{ \phantom{+}
-        \frac{\partial}{\partial \rho'} \left[ \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right] \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, \phantom{\frac{\mu_0 I}{\pi a} \Biggl\{}         +
-        \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \frac{\partial}{\partial \rho'} \,\mathrm{cel}(k_c, 1, -1, 1) \Biggr\} \nonumber \\
- =&\,          \frac{\mu_0 I}{\pi a} \Biggl\{ \phantom{+}
-        \frac{-(1+\rho')}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}\,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, \phantom{\frac{\mu_0 I}{\pi a} \Biggl\{}         +
-        \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \frac{\partial (k_c^2)}{\partial \rho'}
-        \frac{\partial}{\partial (k_c^2)} \,\mathrm{cel}(k_c, 1, -1, 1)\, \Biggr\} \label{eqn:dAphiDrho} \, .
-\end{align}
-Consider the remaining derivatives:
-\begin{align}
-      \frac{\partial (k_c^2)}{\partial \rho'}
- =&\, \frac{\partial}{\partial \rho'} \left( \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \right) \nonumber \\
- =&\, \frac{1}{z'^2 + (1 + \rho')^2} \left(-2(1 - \rho') - k_c^2 \, 2 (1 + \rho') \right) \nonumber \\
- =&\, \frac{-2}{z'^2 + (1 + \rho')^2} \left(1 - \rho' + k_c^2 (1 + \rho') \right) \nonumber \\
- =&\, \frac{-2}{z'^2 + (1 + \rho')^2} \left(1 + k_c^2 - (1 - k_c^2) \rho' \right)
-\end{align}
-as well as:
-\begin{align}
- \frac{\partial}{\partial (k_c^2)}& \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- =&\, \frac{\partial}{\partial (k_c^2)} \int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                                                   {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
- =&\, \int\limits_0^{\pi/2} \left[ \sin^2(\varphi) - \cos^2(\varphi) \right]
-        \frac{\partial}{\partial (k_c^2)} \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{-1/2} \,\mathrm{d}\varphi \nonumber \\
- =&\, \int\limits_0^{\pi/2} \left[ \sin^2(\varphi) - \cos^2(\varphi) \right]
-        \left(-\frac{1}{2}\right) \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{-3/2} \sin^2(\varphi) \,\mathrm{d}\varphi \nonumber \\
- =&\, -\frac{1}{2} \int\limits_0^{\pi/2} \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-                                              {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \, .
-\end{align}
-These terms are now inserted into \eqn{dAphiDrho}:
-\begin{align}
-      \frac{\partial A_\varphi}{\partial \rho}
- =&\, \frac{\mu_0 I}{\pi a} \Biggl\{ \phantom{+}
-        \frac{-(1+\rho')}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, \phantom{\frac{\mu_0 I}{\pi a} \Biggl\{}         +
-        \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-        \frac{\bcancel{-2}}{z'^2 + (1 + \rho')^2} \left(1 + k_c^2 - (1 - k_c^2) \rho' \right) \nonumber \\
- ~&\, \phantom{\frac{\mu_0 I}{\pi a} \Biggl\{ +}
-        \bcancel{\left(-\frac{1}{2} \right)}
-        \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \, \Biggr\} \nonumber \\
- =&\, \frac{\mu_0 I}{\pi a} \Biggl\{
-      \phantom{+}\,
-      \frac{-(1 + \rho')}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
-      \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, \phantom{\frac{\mu_0 I}{\pi a} \Biggl\{}
-      + \frac{1 + k_c^2 - (1 - k_c^2) \rho'}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
-        \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \, .
-\end{align}
-This form of $\partial A_\varphi / \partial \rho$ is now inserted into \eqn{B_z_intermediate}.
-$\partial A_\varphi / \partial \rho$ has to be multiplied by a factor of $\rho'$ in order to factor out a common prefactor $1/\rho'$.
-This leads to:
-\begin{align}
-  B_z
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
- ~&\, \,\mathrm{cel}(k_c, 1, -1, 1) - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2}
-          \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \nonumber \\
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
- ~&\, \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right) \,\mathrm{cel}(k_c, 1, -1, 1) \nonumber \\
- ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2}
-          \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \nonumber \\
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{ \nonumber \\
- ~&\, \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2}\right)
-      \int\limits_0^{\pi/2}
-        \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-             {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
- ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2}
-          \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2(\varphi) - \cos^2(\varphi) \right] \sin^2(\varphi)}
-               {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}  \,\mathrm{d}\varphi \Biggr\} \, .
-\end{align}
-The integrand of the two integrals can be combined.
-A nutritious one needs to be included in the first integrand:
-\begin{align}
-  B_z
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
-      \int\limits_0^{\pi/2} \,\mathrm{d}\varphi\,
-        \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-             {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}} \nonumber \\
- \Biggl\{ &\left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \right)
-            \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
- ~&\,     + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi)
-        \Biggr\} \, .
-\end{align}
-Consider for now only the part inside the $\{\}$ of above equation:
-\begin{align}
- ~&\,   \left( 1 - \frac{\rho' (1+\rho')}{z'^2 + (1 + \rho')^2} \right)
-        \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
- ~&\, + \frac{\rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right]}{z'^2 + (1 + \rho')^2} \sin^2(\varphi) \nonumber \\
- =&\, \frac{1}{z'^2 + (1 + \rho')^2} \Biggl\{
-        \left[ z'^2 + (1 + \rho')^2 - \rho' (1+\rho') \right] \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
- ~&\, \phantom{\frac{1}{z'^2 + (1 + \rho')^2} \Biggl\{}
-      + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \Biggr\}
-\end{align}
-and in there also only the part inside the $\{\}$:
-\begin{align}
- ~&\, \left[ z'^2 + (1 + \rho')^2 - \rho' (1+\rho') \right] \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] \nonumber \\
- ~&\, + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
- =&\, \left[ z'^2 + (1 + \rho')^2 - \rho' (1+\rho') \right] \left[ \cos^2(\varphi) + \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \sin^2(\varphi) \right] \nonumber \\
- ~&\, + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
- =&\, \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi)                                      \nonumber \\
- ~&\, - \rho' (1+\rho') \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \, . \label{eqn:starStar}
-\end{align}
-The two contributions are simplified separately:
-\begin{align}
- ~&\, \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
- =&\, \left[ z'^2 + 1 + 2 \rho' + \rho'^2 \right] \cos^2(\varphi) + \left[ z'^2 + 1 - 2 \rho' + \rho'^2  \right] \sin^2(\varphi) \nonumber \\
- =&\, z'^2 + 1 + \rho'^2 + 2 \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \label{eqn:intermediate1}
-\end{align}
-as well as:
-\begin{align}
- ~&\, - \rho' (1+\rho') \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right] + \rho' \left[1 + k_c^2 - (1 - k_c^2) \rho'\right] \sin^2(\varphi) \nonumber \\
- =&\, - \rho' \cos^2(\varphi) - \rho'^2 \cos^2(\varphi) \cancel{- \rho' k_c^2 \sin^2(\varphi)}                           \bcancel{- \rho'^2 k_c^2 \sin^2(\varphi)} \nonumber \\
- ~&\, + \rho' \sin^2(\varphi)                           \cancel{+ \rho' k_c^2 \sin^2(\varphi)} - \rho'^2 \sin^2(\varphi) \bcancel{+ \rho'^2 k_c^2 \sin^2(\varphi)} \nonumber \\
- =&\, - \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] - \rho'^2 \underbrace{\left[ \cos^2(\varphi) + \sin^2(\varphi) \right]}_{=1} \label{eqn:intermediate2}
-\end{align}
-Combining the results from~\eqn{intermediate1} and~\eqn{intermediate2} to form \eqn{starStar} leads to:
-\begin{align}
- ~&\, z'^2 + 1 \bcancel{+ \rho'^2} + \cancel{2} \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \cancel{- \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]} \bcancel{- \rho'^2} \nonumber \\
- =&\, z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \, .
-\end{align}
-The full form of $B_z$ is assembled again now based on the recent findings to remind ourselves of the state of things:
-\begin{align}
- B_z
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \nonumber \\
- ~&\, \int\limits_0^{\pi/2}
-        \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-             {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}}
-        \frac{z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right]}{z'^2 + (1 + \rho')^2}
-        \,\mathrm{d}\varphi \, . \label{eqn:B_z_core}
-\end{align}
-The numerator of the second term in above integrand is now restructured :
-\begin{align}
- ~&\, z'^2 + 1 + \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \nonumber \\
- =&\, \frac{1}{2} z'^2 + \frac{1}{2} \left( z'^2 + 1 - \rho'^2 \right) + \frac{1}{2} \left\{ 1 + \rho'^2 + 2 \rho' \left[ \cos^2(\varphi) - \sin^2(\varphi) \right] \right\} \nonumber \\
- =&\, \phantom{+}~
-        \frac{1}{2} z'^2 \left[ \cos^2(\varphi) + \sin^2(\varphi) \right]
-      + \frac{1}{2} \left( z'^2 + 1 - \rho'^2 \right) \nonumber \\
- ~&\, + \frac{1}{2} \Bigl[   \underbrace{\left( 1 + 2 \rho' + \rho'^2 \right)}_{=(1+\rho')^2} \cos^2(\varphi)
-                           + \underbrace{\left( 1 - 2 \rho' + \rho'^2 \right)}_{=(1-\rho')^2} \sin^2(\varphi) \Bigr] \nonumber \\
- =&\,   \frac{1}{2} \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \frac{1}{2} \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
- ~&\, + \underbrace{\frac{1}{2} \left( z'^2 + 1 + \rho'^2 \right)}_{(*)} \underbrace{- \rho'^2}_{(**)} \label{eqn:bZCore} \, .
-\end{align}
-Consider $(*)$ and $(**)$ separately:
-\begin{align}
- (*)
- =&\, \frac{1}{2} z'^2 + \frac{1}{4} \Bigl[ \underbrace{1 + 2 \rho' + \rho'^2}_{=(1+\rho')^2} + \underbrace{1 - 2 \rho' + \rho'^2}_{=(1-\rho')^2} \Bigr] \nonumber \\
- =&\, \frac{1}{4} \left[ z'^2 + (1 + \rho')^2 + z^2 + (1 - \rho')^2 \right] \nonumber \\
- =&\, \frac{1}{4} \left[ z'^2 + (1 + \rho')^2 \right] + \frac{1}{4} \left[ z^2 + (1 - \rho')^2 \right]
-\end{align}
-and
-\begin{align}
-  (**)
- =&\, \frac{1}{4} \rho' \left[ z'^2 + 1 - 2 \rho' + \rho'^2 - \left( z'^2 + 1 + 2 \rho' + \rho'^2 \right) \right] \nonumber \\
- =&\, \frac{1}{4} \rho' \left[ z'^2 + ( 1 - \rho')^2 \right] - \frac{1}{4} \rho' \left[ z'^2 + (1 + \rho')^2 \right] \, .
-\end{align}
-These expressions are now inserted into \eqn{bZCore}, leading to:
-\begin{align}
- ~&\, \phantom{+}~
-        \frac{1}{2} \left[ z'^2 + (1 + \rho')^2 \right] \cos^2(\varphi) + \frac{1}{2} \left[ z'^2 + (1 - \rho')^2 \right] \sin^2(\varphi) \nonumber \\
- ~&\, + \frac{1}{4} \left[ z'^2 + (1 + \rho')^2 \right] + \frac{1}{4} \left[ z^2 + (1 - \rho')^2 \right] \nonumber \\
- ~&\, + \frac{1}{4} \rho' \left[ z'^2 + ( 1 - \rho')^2 \right] - \frac{1}{4} \rho' \left[ z'^2 + (1 + \rho')^2 \right] \nonumber \\
- =&\, \left[ z'^2 + (1 + \rho')^2 \right] \Biggl\{
-        \frac{1}{2} \cos^2(\varphi) + \underbrace{\frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2}}_{=k_c^2} \sin^2(\varphi) \nonumber \\
- ~&\, \phantom{\left[ z'^2 + (1 + \rho')^2 \right] \Biggl\{}
-        + \frac{1}{4} \Biggl[ 1 + \underbrace{\frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2}}_{=k_c^2}
-                              - \Biggl( 1 - \underbrace{\frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2}}_{=k_c^2} \Biggr) \rho' \Biggr] \Biggr\} \nonumber \\
- =&\, \left[ z'^2 + (1 + \rho')^2 \right] \left\{
-          \frac{1}{2} \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]
-        + \frac{1}{4} \left[ 1 + k_c^2 - \left( 1 - k_c^2 \right) \rho' \right] \right\} \, .
-\end{align}
-This is now inserted back into \eqn{B_z_core}:
-\begin{align}
-  B_z
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
-      \int\limits_0^{\pi/2}
-        \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-             {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}} \nonumber \\
- ~&\,   \left\{   \frac{1}{2} \left[ \cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]
-                + \frac{1}{4} \left[ 1 + k_c^2 - \left( 1 - k_c^2 \right) \rho' \right] \right\} \,\mathrm{d}\varphi \, .
-\end{align}
-The integral can be split up back again into two integrals:
-\begin{align}
-  B_z
- =&\, \frac{\mu_0 I}{\pi a}
-      \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl[
-        \frac{1}{2} \underbrace{\int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                                           {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi}_{=\textrm{cel}(k_c, 1, -1, 1)} \nonumber \\
- ~&\, + \frac{1}{4} \left[ 1 + k_c^2 - \left( 1 - k_c^2 \right) \rho' \right]
-          \underbrace{\int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                                 {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi) \right]^{3/2}} \,\mathrm{d}\varphi}_{=\textrm{cel}(k_c, k_c^2, -1, 1)} \Biggr] \, .
-\end{align}
-This concludes the derivation of the expression for $B_z$ of a circular wire loop
-and here is the final result as published in Ref.~\cite{teal}:
-\begin{align}
- B_z(\rho', z')
- =&\, \frac{\mu_0 I}{2 \pi a}
-   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
-   \Bigl[ \nonumber \\
- ~&\, \textrm{cel}(k_c, 1, -1, 1)
-     + \frac{1 + k_c^2 - \left( 1 - k_c^2 \right) \rho'}{2} \textrm{cel}(k_c, k_c^2, -1, 1)
-   \Bigr]
-\end{align}
-
 \section{Derivation of Special Case Formulations}
 \label{apx:derivation_of_special_case_formulations}
-
-
-The parameter~$\epsilon$ approaches a value of~$1$ as the location of the evaluation point comes closer to the wire segment.
-Thus, the denominator in \eqn{A_z_tilde} vanishes, leading to a logarithmic singularity in~$\tilde{A}_z$
-as the evaluation point~$(\rho', z')$ gets nearer to the wire segment.
-It is therefore favorable to formulate the near-field method in terms of~$(1-\epsilon)$:
-\begin{align}
-  1-\epsilon =&\, 1 - \frac{1}{r_i + r_f} = \frac{r_i + r_f - 1}{r_i + r_f} = \frac{r_i + r_f - 1}{(r_i + r_f - 1) + 1} = \frac{n}{n + 1}
-\end{align}
-with~$n \equiv r_i + r_f - 1$ approaching~$0$ as the evaluation point approaches the wire segment.
-Inserting this formulation for~$1-\epsilon$ into \eqn{A_z_tilde} leads to:
-\begin{align}
-  \tilde{A}_{z,\mathrm{nf}} (\rho', z')
-  =&\, \frac{1}{2}  \left[ \ln\left(2 - (1-\epsilon)        \right) - \ln \left(1 - \epsilon    \right) \right] \nonumber \\
-  =&\, \frac{1}{2}  \left[ \ln\left(2 - \frac{n}{n + 1}     \right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
-  =&\, \frac{1}{2}  \left[ \ln\left(\frac{2(n+1) - n}{n + 1}\right) - \ln \left(\frac{n}{n + 1} \right) \right] \nonumber \\
-  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) \cancel{- \ln\left(n + 1 \right)} - \ln \left( n \right) \cancel{+ \ln \left( n + 1 \right)} \right] \nonumber \\
-  =&\, \frac{1}{2}  \left[ \ln\left(n + 2                   \right) - \ln \left( n \right) \right] \, .
-\end{align}
-
-
-
-
-This is now reformulated to use normalized quantities
-(as done above for the computation of the magnetic vector potential):
-\begin{align}
- B_\varphi
- =&\, \frac{\mu_0 I}{4 \pi}
-      \frac{\rho'}{r_i}
-      \left(\frac{R_i}{R_f} + 1 \right)
-      \frac{2 \bcancel{L}}{L^{\bcancel{2}} \left[ \left(r_i + r_f\right)^2 - 1\right]} \nonumber \\
- =&\, \frac{\mu_0 I}{4 \pi L}
-      \left(\frac{\bcancel{r_i}}{\bcancel{r_i} r_f} + \frac{1}{r_i} \right)
-      \frac{2 \rho'}{\left(r_i + r_f\right)^2 - 1} \nonumber \\
- =&\, \frac{\mu_0 I}{4 \pi L}
-      \left(\frac{1}{r_f} + \frac{1}{r_i} \right)
-      \frac{2 \rho'}{\left(r_i + r_f\right)^2 - 1} \, .
-\end{align}
-
-$A_\varphi$ of circular wire loop:
+The derivation of the circular wire loop formulas is considered first.
+It starts at the expression given by Jackson~\cite{jackson}
+and listed here in~\eqn{cwl_A_phi_Jackson}.
+Normalized coordinates~$(\rho', z')$ as introduced above
+are used to reformulate the expression given by Jackson into the following:
 \begin{equation}
-  \mathcal{C}(k_c)
-  = \frac{2 \,\mathcal{D}(k_c) - \mathcal{K}(k_c)}{k^2}
-  = \,\mathrm{cel} \left( \frac{2 \sqrt{k_c}}{1 + k_c}, 1, 0, \frac{2}{(1 + k_c)^3} \right) \, .
+ A_\varphi(\rho', z')
+   = \frac{\mu_0 I}{\pi}
+     \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+     \left[ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \right] \, .
 \end{equation}
-In there:
+According to~\eqn{norm_A_phi}, a normalizing prefactor is split off.
+The remaining term~$\tilde{A}_\varphi$ only depends on the geometry of the wire loop
+and the evalation location:
 \begin{equation}
-  \mathcal{D}(k_c)
-  = \frac{\mathcal{K}(k_c) - \,\mathcal{E}(k_c)}{k^2}
-  = \,\mathrm{cel}(k_c, 1, 0, 1)
+  \tilde{A}_\varphi(\rho', z')
+  = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+    \left[ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \right] \, . \label{eqn:aNormJackson}
 \end{equation}
-and
+This is a linear combination of the complete elliptic integrals
+of the first and second kind and can be handled by the \texttt{cel}~function
+introduced by Bulirsch~\cite{bulirsch_3}:
+\begin{equation}
+  \lambda \mathcal{K} (k) + \mu \mathcal{E} (k) = \textrm{cel}\,(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2) \, .
+\end{equation}
+Here, $\lambda = (2 - k^2)/k^2$ and $\mu = -2/k^2$,
+leading to:
 \begin{align}
-  \mathcal{K}(k_c) =&\, \mathrm{cel}(k_c, 1, 1, 1)          \label{eqn:elliptic_k} \\
-  \mathcal{E}(k_c) =&\, \mathrm{cel}(k_c, 1, 1, k_c^2) \, . \label{eqn:elliptic_e}
+  \lambda + \mu       =&\, \frac{2 - k^2}{k^2} - \frac{2}{k^2} \nonumber \\
+      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2}}{k^2} = -1 \nonumber \\
+  \lambda + \mu k_c^2 =&\, \frac{2 - k^2}{k^2} - \frac{2 (1 - k^2)}{k^2} \nonumber \\
+      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2} + 2 k^2}{k^2} = 1
 \end{align}
+Thus, $\tilde{A}_\varphi$~can be expressed as follows:
+\begin{equation}
+ \tilde{A}_\varphi
+ = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+   \textrm{cel}\,(k_c, 1, -1, 1) \, .
+\end{equation}
+This is equivalent to Eqn.~(3.2.1.6) in Ref.~\cite{teal}.
+Another form for~$\tilde{A}_\varphi$ can be found by employing
+formulas from Ref.~\cite{jahnke_emde} (Section V.B.11 on page 73 therein):
+\begin{align}
+                 \mathcal{K}(k) =&\, \mathcal{E}(k) + k^2 \mathcal{D}(k) \nonumber \\
+ \Leftrightarrow \mathcal{D}(k) =&\, \frac{\mathcal{K}(k) - \mathcal{E}(k)}{k^2} \\
+               2 \mathcal{D}(k) =&\, \mathcal{K}(k) + k^2 \mathcal{C}(k) \nonumber \\
+ \Leftrightarrow k^2 \mathcal{C}(k) =&\, 2 \mathcal{D}(k) - \mathcal{K}(k) \nonumber \\
+                     ~              =&\, 2 \left( \frac{\mathcal{K}(k) - \mathcal{E}(k)}{k^2} \right) - \mathcal{K}(k) \nonumber \\
+                     ~              =&\, \frac{(2 - k^2) \mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \, . \label{eqn:kSqC}
+\end{align}
+Application of~\eqn{kSqC} to~\eqn{aNormJackson} leads to:
+\begin{equation}
+  \tilde{A}_\varphi(\rho', z')
+  = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k)\, .
+\end{equation}
+This is the far-field method used in~\eqn{cwl_A_phi_f}.
 
-We also need Ref.~\cite{jahnke_emde} (Section V.B.11 on page 73 therein).

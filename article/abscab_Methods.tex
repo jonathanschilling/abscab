@@ -295,7 +295,7 @@ where the linear combination of the complete elliptic integrals is embedded in t
 and less precautions need to be taken to deal with cancellations in \eqn{cwl_A_phi_Jackson}.
 A physics-oriented prefactor is split off to be able to focus on geometry in the following:
 \begin{equation}
-  A_\varphi(\rho', z') = \frac{\mu_0 I}{\pi} \tilde{A}_\varphi(\rho',z')
+  A_\varphi(\rho', z') = \frac{\mu_0 I}{\pi} \tilde{A}_\varphi(\rho',z') \label{eqn:norm_A_phi}
 \end{equation}
 with
 \begin{equation}
@@ -310,12 +310,12 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
     \tilde{A}_{\varphi,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
     \tilde{A}_{\varphi,\mathrm{v}} (\rho', z') &:\, \textrm{else} \, .
-  \end{cases}
+  \end{cases} \label{eqn:A_phi_final}
 \end{equation}
 The following formula is implemented for evaluation locations away from the wire loop:
 \begin{equation}
   \tilde{A}_{\varphi,\mathrm{f}} (\rho',z')
-  = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k_c)
+  = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k_c) \label{eqn:cwl_A_phi_f}
 \end{equation}
 with $k^2$~from~\eqn{kSq} and
 \begin{equation}
@@ -746,7 +746,7 @@ for the circular wire loop:
      \frac{1}{\sqrt{{z'}^2 + \left(1 + \rho'\right)^2}}
                                  \int\limits_0^{\pi/2}
                                    \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                        {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \\
+                                        {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \label{eqn:A_phi_ref} \\
  \textrm{if } \rho' =&\, 0 \textrm{ or } z' = 0 : \tilde{B}_\rho = 0 ; \textrm{else:} \nonumber \\
  \tilde{B}_\rho \leftarrow&\,
     \frac{z'}{\left[{z'}^2 + \left(1 + \rho'\right)^2\right]^{3/2}}
