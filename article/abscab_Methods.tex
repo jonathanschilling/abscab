@@ -272,7 +272,7 @@ The argument of the elliptic integrals is considered first:
 \end{align}
 This implies:
 \begin{equation}
-  k_c^2 = \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \, .
+  k_c^2 = \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \, . \label{eqn:kCSq_general}
 \end{equation}
 The coefficients of the elliptic integrals are identified as follows:
 \begin{align}
@@ -335,11 +335,11 @@ with $k_c^2$ computed as follows:
 At~$\rho' = 1$, some further simplification can be carried out.
 This leads to the following formulation for~$\rho' = 1$ and~$|z'| < 1$:
 \begin{equation}
-  \tilde{A}_{\varphi,\mathrm{v}} (\rho'=1, z') = \frac{1}{|z'|} \,\mathrm{cel}(k_c, 1, 1, -1)
+  \tilde{A}_{\varphi,\mathrm{v}} (\rho'=1, z') = \frac{1}{|z'|} \,\mathrm{cel}\left(\frac{1}{k_c}, 1, 1, -1\right) \label{eqn:cwl_A_phi_v}
 \end{equation}
 with $k_c$ computed as follows:
 \begin{equation}
-  k_c = \frac{1}{|z'|} \sqrt{4 + {z'}^2} \, .
+  k_c = \frac{|z'|}{\sqrt{4 + {z'}^2}} \, .
 \end{equation}
 
 \subsubsection{Magnetic Field}
