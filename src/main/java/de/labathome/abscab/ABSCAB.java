@@ -2032,7 +2032,7 @@ public class ABSCAB {
 		} else if (rhoP != 1.0) {
 			return cwl_B_rho_n(rhoP, zP);
 		} else {
-			return cwl_B_rho_v(rhoP, zP);
+			return cwl_B_rho_v(zP);
 		}
 	}
 
@@ -2320,8 +2320,11 @@ public class ABSCAB {
 	 */
 	static double cwl_A_phi_v(double zP) {
 		double absZp = Math.abs(zP);
-		double kC = Math.sqrt(4 + zP * zP) / absZp;
-		return CompleteEllipticIntegral.cel(kC, 1, 1, -1) / absZp;
+
+		// 1/k_c
+		double kCInv = Math.sqrt(4 + zP * zP) / absZp;
+
+		return CompleteEllipticIntegral.cel(kCInv, 1, 1, -1) / absZp;
 	}
 
 	//////// B_rho of circular wire loop
@@ -2404,7 +2407,7 @@ public class ABSCAB {
 	 * @param zP normalized axial coordinate of evaluation location
 	 * @return normalized radial component of magnetic field
 	 */
-	static double cwl_B_rho_v(double rhoP, double zP) {
+	static double cwl_B_rho_v(double zP) {
 		double zPSq = zP * zP;
 		double kCSq = 1 / (1 + 4 / zPSq);
 		double kC = Math.sqrt(kCSq);
@@ -2418,12 +2421,10 @@ public class ABSCAB {
 	////// B_z of circular wire loop
 
 	static double B_z_1(double rhoP, double zP) {
+		// far-field up to rho'=2
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
-
-		double kCSqNum = sqrt_kCSqNum * sqrt_kCSqNum;
-//		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
 
 		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 		double kCSq = kC * kC;
@@ -2432,13 +2433,14 @@ public class ABSCAB {
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
-		double prefac = 1 / (sqrt_kCSqDen * kCSqNum);
+		double prefac = 1 / (sqrt_kCSqDen * sqrt_kCSqNum * sqrt_kCSqNum);
 		double comb = (E - 2 * K + 2 * D);
 
 		return prefac * (E + rhoP * comb);
 	}
 
 	static double B_z_2(double rhoP, double zP) {
+		// far-field from rho'=2 on
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
@@ -2460,7 +2462,6 @@ public class ABSCAB {
 		// 1/prefac = sqrt((z'^2 + (1 + rho')^2) / rho'^2) * (z'^2 + (1 - rho')^2) / rho'^2 * rho'^3
 		//          = sqrt( z'^2 + (1 + rho')^2)           * (z'^2 + (1 - rho')^2)
 		double prefac = 1 / (Math.sqrt(a) * b * rhoP * rhoP * rhoP);
-
 
 		double cdScale = 1 + (2 + zPSqP1 / rhoP) / rhoP;
 
