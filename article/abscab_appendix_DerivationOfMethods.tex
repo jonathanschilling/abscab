@@ -212,38 +212,18 @@ are used to reformulate the expression given by Jackson into the following:
  A_\varphi(\rho', z')
    = \frac{\mu_0 I}{\pi}
      \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-     \left[ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \right] \, .
+     \left[ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \right] \, . \label{eqn:cwl_A_phi_initial}
 \end{equation}
 According to~\eqn{norm_A_phi}, a normalizing prefactor is split off.
-The remaining term~$\tilde{A}_\varphi$ only depends on the geometry of the wire loop
+The remaining term~$\tilde{A}_\varphi(\rho',z')$ only depends on the geometry of the wire loop
 and the evalation location:
 \begin{equation}
   \tilde{A}_\varphi(\rho', z')
   = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
     \left[ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \right] \, . \label{eqn:aNormJackson}
 \end{equation}
-This is a linear combination of the complete elliptic integrals
-of the first and second kind and can be handled by the \texttt{cel}~function
-introduced by Bulirsch~\cite{bulirsch_3}:
-\begin{equation}
-  \lambda \mathcal{K} (k) + \mu \mathcal{E} (k) = \textrm{cel}\,(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2) \, .
-\end{equation}
-Here, $\lambda = (2 - k^2)/k^2$ and $\mu = -2/k^2$,
-leading to:
-\begin{align}
-  \lambda + \mu       =&\, \frac{2 - k^2}{k^2} - \frac{2}{k^2} \nonumber \\
-      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2}}{k^2} = -1 \nonumber \\
-  \lambda + \mu k_c^2 =&\, \frac{2 - k^2}{k^2} - \frac{2 (1 - k^2)}{k^2} \nonumber \\
-      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2} + 2 k^2}{k^2} = 1
-\end{align}
-Thus, $\tilde{A}_\varphi$~can be expressed as follows:
-\begin{equation}
- \tilde{A}_\varphi
- = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
-   \textrm{cel}\,(k_c, 1, -1, 1) \, .
-\end{equation}
-This is equivalent to Eqn.~(3.2.1.6) in Ref.~\cite{teal}.
-Another form for~$\tilde{A}_\varphi$ can be found by employing
+Cancellations can happen in the numerical evaluation of~\eqn{aNormJackson}~\cite{bulirsch_3}.
+Therefore, another form for~$\tilde{A}_\varphi(\rho',z')$ can be found by employing
 formulas from Ref.~\cite{jahnke_emde} (Section V.B.11 on page 73 therein):
 \begin{align}
                  \mathcal{K}(k) =&\, \mathcal{E}(k) + k^2 \mathcal{D}(k) \nonumber \\
@@ -259,4 +239,31 @@ Application of~\eqn{kSqC} to~\eqn{aNormJackson} leads to:
   = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k)\, .
 \end{equation}
 This is the far-field method used in~\eqn{cwl_A_phi_f}.
-
+Note that~$\mathcal{C}(k)$ can be evaluated as follows~\cite{bulirsch_1, bulirsch_3}:
+\begin{align}
+  \mathcal{C}(k) =&\, \textrm{cel2}\,\left(\frac{2 \sqrt{|k_c|}}{1+|k_c|},0,\frac{2}{(1+|k_c|)^3}\right) \nonumber \\
+       ~         =&\, \textrm{cel}\,\left(\frac{2 \sqrt{|k_c|}}{1+|k_c|},1,0,\frac{2}{(1+|k_c|)^3}\right) \, .
+\end{align}
+The absolute value around~$k_c$ is otherwise omitted in this work
+because~$k_c \geq 0$ always holds for the formulation of~$k_c$ used in this work.
+\eqn{cwl_A_phi_initial}~is a linear combination of the complete elliptic integrals
+of the first and second kind and can be handled by the \texttt{cel}~function
+introduced by Bulirsch~\cite{bulirsch_3}:
+\begin{equation}
+  \lambda \mathcal{K} (k) + \mu \mathcal{E} (k) = \textrm{cel}\,(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2) \, .
+\end{equation}
+Here, $\lambda = (2 - k^2)/k^2$ and $\mu = -2/k^2$,
+leading to:
+\begin{align}
+  \lambda + \mu       =&\, \frac{2 - k^2}{k^2} - \frac{2}{k^2} \nonumber \\
+      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2}}{k^2} = -1 \nonumber \\
+  \lambda + \mu k_c^2 =&\, \frac{2 - k^2}{k^2} - \frac{2 (1 - k^2)}{k^2} \nonumber \\
+      ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2} + 2 k^2}{k^2} = 1
+\end{align}
+Thus, $\tilde{A}_\varphi(\rho',z')$~can be expressed as follows:
+\begin{equation}
+ \tilde{A}_\varphi(\rho',z')
+ = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+   \textrm{cel}\,(k_c, 1, -1, 1) \, .
+\end{equation}
+This is equivalent to Eqn.~(3.2.1.6) in Ref.~\cite{teal}.
