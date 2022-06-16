@@ -267,3 +267,26 @@ Thus, $\tilde{A}_\varphi(\rho',z')$~can be expressed as follows:
    \textrm{cel}\,(k_c, 1, -1, 1) \, .
 \end{equation}
 This is equivalent to Eqn.~(3.2.1.6) in Ref.~\cite{teal}.
+The near-field (close to~$\rho' = 1$) is handled by factoring out~$|\rho'-1|$:
+\begin{equation}
+ \tilde{A}_\varphi(\rho',z')
+ = \frac{1}{|\rho'-1| \sqrt{\left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2}}
+   \textrm{cel}\,(k_c, 1, -1, 1) \label{eqn:cwl_A_phi_near}
+\end{equation}
+with
+\begin{equation}
+  k_c^2 =
+  \frac{\left(\frac{z'}{\rho'-1}\right)^2 + 1}
+       {\left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2} \, ,
+\end{equation}
+where the following was used:
+\begin{equation}
+    \frac{\rho' + 1}{\rho' - 1}
+  = \frac{\rho'-1 + 2}{\rho' - 1}
+  = 1 + \frac{2}{\rho' - 1} \, .
+\end{equation}
+The formulation presented in~\eqn{cwl_A_phi_near} is used in~\eqn{cwl_A_phi_n}.
+
+
+
+
