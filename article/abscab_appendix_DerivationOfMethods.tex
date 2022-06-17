@@ -450,13 +450,53 @@ First, $\tilde{B}_\rho$~is handled:
  =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \, .
 \end{align}
 This is the normalized form of the expression for~$B_\rho$ given in Eqn.~(3.2.2.4) in Ref.~\cite{teal}.
-
-
-
-
-
-
-
-
+It is now transformed into a different formulation, which forms the basis for the formulas for~$B_\rho$ presented in this work.
+It holds:
+\begin{equation}
+   \textrm{cel}\,(k_c, k_c^2, -1, 1)
+ =   \int\limits_0^{\pi/2} \frac{\sin^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi
+   - \int\limits_0^{\pi/2} \frac{\cos^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \, .
+\end{equation}
+The summands in this equation are reformulated separately.
+The first term is transformed using the integral~(2.584.40) from Ref.~\cite{gradshteyn_ryzhik}:
+\begin{equation}
+   \int\limits_0^{\pi/2} \frac{\sin^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi
+ = \frac{1}{k_c^2 k^2} \mathcal{E} - \frac{1}{k^2} \mathcal{K}
+\end{equation}
+with shorthand notations~$\mathcal{E} = \mathcal{E}(k)$ and~$\mathcal{K} = \mathcal{K}(k)$.
+The second term is transformed using the integral~(2.584.42) from Ref.~\cite{gradshteyn_ryzhik}:
+\begin{equation}
+   \int\limits_0^{\pi/2} \frac{\cos^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi
+ = \frac{1}{k^2} \mathcal{K} - \frac{1}{k^2} \mathcal{E} \, .
+\end{equation}
+It follows:
+\begin{align}
+   \textrm{cel}\,(k_c, k_c^2, -1, 1)
+ =&\,   \frac{1}{k_c^2 k^2} \mathcal{E} - \frac{1}{k^2} \mathcal{K}
+      - \frac{1}{k^2}       \mathcal{K} + \frac{1}{k^2} \mathcal{E} \nonumber \\
+ =&\, \frac{1}{k_c^2} \left[ \frac{1 + k_c^2}{k^2} \mathcal{E} - \frac{2 k_c^2}{k^2} \mathcal{K} \right] \nonumber \\
+ =&\, \frac{1}{k_c^2} \left[ \frac{2 - k^2}{k^2} \mathcal{E} - \frac{2 - 2 k^2}{k^2} \mathcal{K} \right] \nonumber \\
+ =&\, \frac{1}{k_c^2} \left[ \left(\frac{2}{k^2} - 1 \right) \mathcal{E} + \left(2 - \frac{2}{k^2} \right) \mathcal{K} \right] \nonumber \\
+ =&\, \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \frac{\mathcal{K} - \mathcal{E}}{k^2} \right] \nonumber \\
+ =&\, \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right]
+\end{align}
+with~$\mathcal{D} = \mathcal{D}(k)$.
+This allows to write~$\tilde{B}_\rho$ as follows:
+\begin{equation}
+  \tilde{B}_\rho = \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \, .
+\end{equation}
+Furthermore, it is noted that:
+\begin{align}
+      2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D}
+ =&\, k^2 \left[ \frac{\mathcal{K} - \mathcal{E}}{k^2} - \frac{2 \mathcal{D} - \mathcal{K}}{k^2} \right] \nonumber \\
+ =&\, k^2 \left(  \mathcal{D} - \mathcal{C} \right) \, .
+\end{align}
+This is used to write~$\tilde{B}_\rho$ as follows:
+\begin{align}
+  \tilde{B}_\rho
+ =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \frac{k^2}{k_c^2} \left(  \mathcal{D} - \mathcal{C} \right) \nonumber \\
+ =&\, \frac{4 \rho' z' \left(  \mathcal{D} - \mathcal{C} \right) }{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2} \left[ z'^2 + (1 - \rho')^2 \right]} \, .
+\end{align}
+This is the form of~$\tilde{B}_\rho$ used in \eqn{cwl_B_rho_f}.
 
 
