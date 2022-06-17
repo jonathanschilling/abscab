@@ -296,7 +296,7 @@ for the case of~$\rho'=1$:
 \begin{equation}
   \frac{1}{\sqrt{z'^2 + 4}} = \frac{k_c}{|z'|} \, .
 \end{equation}
-It follows:
+It follows~\cite{bulirsch_3}:
 \begin{align}
   \tilde{A}_\varphi(\rho'=1,z') =&\, \frac{k_c}{|z'|} \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
   ~ =&\, \frac{k_c}{|z'|} \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
@@ -374,9 +374,68 @@ This allows to define normalized components of the magnetic field:
 \end{align}
 with
 \begin{align}
-  \tilde{B}_\rho =&\, - \frac{\partial \tilde{A}_\varphi}{\partial z'} \\
-  \tilde{B}_z    =&\, \frac{\tilde{A}_\varphi}{\rho'} + \frac{\partial \tilde{A}_\varphi}{\partial \rho'} \, .
+  \tilde{B}_\rho =&\, - \frac{\partial \tilde{A}_\varphi}{\partial z'}                                    \label{eqn:cwl_norm_B_rho} \\
+  \tilde{B}_z    =&\, \frac{\tilde{A}_\varphi}{\rho'} + \frac{\partial \tilde{A}_\varphi}{\partial \rho'} \label{eqn:cwl_norm_B_z}   \, .
 \end{align}
+Five derivatives are required in order to formulate the expressions for~$B_\rho$ and~$B_z$.
+They originate from the chain rule and the product rule applied in~\eqn{cwl_norm_B_rho} and~\eqn{cwl_norm_B_z}
+to the formulation of $\tilde{A}_\varphi$ in \eqn{cwl_A_phi_using_cel}.
+First, consider the partial derivatives of the factor in front of~\texttt{cel}:
+\begin{align}
+      \frac{\partial}{\partial z'} \left( \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right)
+ =&\, \frac{\partial}{\partial z'} \left[ z'^2 + (1 + \rho')^2 \right]^{-1/2} \nonumber \\
+ =&\, - \bcancel{\frac{1}{2}} \left[ z'^2 + (1 + \rho')^2 \right]^{-3/2} \bcancel{2} z' \nonumber \\
+ =&\, \frac{- z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{-3/2} }
+\end{align}
+and
+\begin{align}
+      \frac{\partial}{\partial \rho'} \left( \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right)
+ =&\, \frac{\partial}{\partial \rho'} \left[ z'^2 + (1 + \rho')^2 \right]^{-1/2} \nonumber \\
+ =&\, - \bcancel{\frac{1}{2}} \left[ z'^2 + (1 + \rho')^2 \right]^{-3/2} \bcancel{2} (1 + \rho') \nonumber \\
+ =&\, \frac{- (1 + \rho')}{\left[ z'^2 + (1 + \rho')^2 \right]^{-3/2} } \, .
+\end{align}
+The denominator of the integrand in~$\textrm{cel}\,(k_c, 1, -1, 1)$ is reformulated:
+\begin{align}
+  \textrm{cel}\,(k_c, 1, -1, 1)
+ =&\, \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
+ =&\, \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{1 - k^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi
+\end{align}
+by using
+\begin{align}
+      \cos^2(\varphi) + k_c^2 \sin^2(\varphi)
+ =&\, \cos^2(\varphi) + (1 - k^2) \sin^2(\varphi) \nonumber \\
+ =&\, \underbrace{\cos^2(\varphi) + \sin^2(\varphi)}_{=1} - k^2 \sin^2(\varphi) \nonumber \\
+ =&\, 1 - k^2 \sin^2(\varphi) \, .
+\end{align}
+The parameter of~$\textrm{cel}\,(k_c, 1, -1, 1)$ only appears in the denominator of the integrand.
+This implies that it suffices to compute the derivative of it
+in order to compute the derivative of~$\textrm{cel}\,(k_c, 1, -1, 1)$:
+\begin{align}
+      \frac{\partial}{\partial(k^2)} \left( \frac{1}{\sqrt{1 - k^2 \sin^2(\varphi)}} \right)
+ =&\, \frac{\partial}{\partial(k^2)} \left[\sqrt{1 - k^2 \sin^2(\varphi)}\right]^{-1/2} \nonumber \\
+ =&\, \bcancel{-} \frac{1}{2} \left[1 - k^2 \sin^2(\varphi)\right]^{-3/2} \left[ \bcancel{-} \sin^2(\varphi) \right] \nonumber \\
+ =&\, \frac{1}{2} \frac{\sin^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{-3/2}} \, .
+\end{align}
+It follows:
+\begin{equation}
+  \frac{\partial}{\partial(k^2)} \textrm{cel}\,(k_c, 1, -1, 1)
+ = \frac{1}{2} \int\limits_0^{\pi/2} \frac{\left[\sin^2{\varphi} - \cos^2(\varphi)\right]\sin^2(\varphi)}{\sqrt{1 - k^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \, .
+\end{equation}
+The derivatives of~$k^2$ (see~\eqn{kSq}) are as follows:
+\begin{align}
+      \frac{\partial (k^2)}{\partial z'}
+ =&\, \frac{2 z'}{z'^2 + (1 + \rho')^2} k^2 \\
+      \frac{\partial (k^2)}{\partial \rho'}
+ =&\, \frac{1}{z'^2 + (1 + \rho')^2} \left[ 4 + k^2 2 (1 + \rho') \right] \\
+ =&\, \frac{2}{z'^2 + (1 + \rho')^2} \left[ 2 + k^2 (1 + \rho') \right] \, .
+\end{align}
+
+
+
+
+
+
+
 
 
 
