@@ -249,8 +249,13 @@ with
 \end{equation}
 Here, $\mathcal{K}(k)$ and $\mathcal{E}(k)$ are the complete elliptic integrals of the first and second kind, respectively.
 Spherical coordinates~$(r, \theta)$ are used to specify the evaluation location.
-The corresponding normalized cylindrical coordinates~$(\rho', z')$ are given by
-$\rho' = r \sin(\theta) / a$ and $z' = \sqrt{r^2 - \rho^2} / a$.
+The corresponding cylindrical coordinates~$(\rho, z)$ are given by
+$\rho = r \sin(\theta)$ and $z = \sqrt{r^2 - \rho^2}$.
+Normalized coordinates are used with
+\begin{align}
+  \rho' = \rho / a \label{eqn:rhoP} \\
+    z'  =   z  / a \label{eqn:zP} \, .
+\end{align}
 An expression for the linear combination of $\mathcal{K}(k)$ and $\mathcal{E}(k)$ from Ref.~\cite{bulirsch_3}
 is used to reformulate the expression provided by Jackson:
 \begin{equation}
