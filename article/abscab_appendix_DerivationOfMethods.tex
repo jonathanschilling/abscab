@@ -234,6 +234,8 @@ formulas from Ref.~\cite{jahnke_emde} (Section V.B.11 on page 73 therein):
                      ~              =&\, 2 \left( \frac{\mathcal{K}(k) - \mathcal{E}(k)}{k^2} \right) - \mathcal{K}(k) \nonumber \\
                      ~              =&\, \frac{(2 - k^2) \mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} \, . \label{eqn:kSqC}
 \end{align}
+It is notes that the corresponding expression for~$\mathcal{C}$ given in Eqn.~(12) of Ref.~\cite{walstrom_2017}
+has a the wrong sign.
 Application of~\eqn{kSqC} to~\eqn{aNormJackson} leads to:
 \begin{equation}
   \tilde{A}_\varphi(\rho', z')
@@ -261,6 +263,10 @@ leading to:
   \lambda + \mu k_c^2 =&\, \frac{2 - k^2}{k^2} - \frac{2 (1 - k^2)}{k^2} \nonumber \\
       ~               =&\, \frac{\bcancel{2} - k^2 \bcancel{-2} + 2 k^2}{k^2} = 1
 \end{align}
+Putting things together, this implies:
+\begin{equation}
+ \frac{(2 - k^2)\mathcal{K}(k) - 2 \mathcal{E}(k)}{k^2} = \textrm{cel}\,(k_c, 1, -1, 1) \, . \label{eqn:cel_kc_1}
+\end{equation}
 Thus, $\tilde{A}_\varphi(\rho',z')$~can be expressed as follows:
 \begin{equation}
  \tilde{A}_\varphi(\rho',z')
@@ -481,7 +487,7 @@ It follows:
  =&\, \frac{1}{k_c^2} \left[ \frac{2 - k^2}{k^2} \mathcal{E} - \frac{2 - 2 k^2}{k^2} \mathcal{K} \right] \nonumber \\
  =&\, \frac{1}{k_c^2} \left[ \left(\frac{2}{k^2} - 1 \right) \mathcal{E} + \left(2 - \frac{2}{k^2} \right) \mathcal{K} \right] \nonumber \\
  =&\, \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \frac{\mathcal{K} - \mathcal{E}}{k^2} \right] \nonumber \\
- =&\, \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right]
+ =&\, \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \label{eqn:cel_kc_kcSq}
 \end{align}
 with~$\mathcal{D} = \mathcal{D}(k)$.
 This allows to write~$\tilde{B}_\rho$ as follows:
@@ -583,7 +589,7 @@ Inserting this back into~\eqn{cwl_B_z_halfway} leads to:
  ~&\, + \frac{1}{4} \left[2 - k^2 (1+\rho') \right] \int\limits_0^{\pi/2}
         \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\} \nonumber \\
  =&\, \frac{1}{2 \rho' \sqrt{z'^2 + (1 + \rho')^2}} \Bigl[ \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
- ~&\, + \frac{1}{2} \left[2 - k^2 (1+\rho') \right] \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \Bigr] \, .
+ ~&\, + \frac{1}{2} \left[2 - k^2 (1+\rho') \right] \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \Bigr] \, . \label{eqn:cwl_B_z_teal}
 \end{align}
 This is the formulation of~$\tilde{B_z}$ given as~(3.2.2.6) in Ref.~\cite{teal} with
 \begin{equation}
@@ -591,7 +597,62 @@ This is the formulation of~$\tilde{B_z}$ given as~(3.2.2.6) in Ref.~\cite{teal} 
  = 2 - k^2 - k^2 \rho'
  = 1 + k_c^2 - (1 - k_c^2) \rho' \, .
 \end{equation}
-
+It is now shown how this formulation can be transformed into
+the formulation povided by Walstrom in Eqn.~(17) of Ref.~\cite{walstrom_2017}.
+First, consider:
+\begin{align}
+  k^2 =&\, \frac{4 \rho'}{z'^2 + (1+\rho')^2} \nonumber \\
+  \Leftrightarrow
+  \frac{1}{\rho'} =&\, \frac{4}{k^2} \frac{1}{z'^2 + (1+\rho')^2} \, .
+\end{align}
+Inserting this into~\eqn{cwl_B_z_teal} leads to:
+\begin{align}
+ \tilde{B}_z
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{2}{k^2} \Biggl\{
+      -\rho' \frac{k^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \nonumber \\
+ ~&\, + \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \Biggr\} \nonumber \\
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}  \Biggl\{
+      -\rho' \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \nonumber \\
+ ~&\, + \frac{2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \nonumber \\
+\end{align}
+Using~\eqn{cel_kc_kcSq}, this is rewritten has:
+\begin{align}
+ \tilde{B}_z
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}  \Biggl\{
+      -\rho' \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \nonumber \\
+ ~&\, + \frac{2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \nonumber \\
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{1}{k_c^2} \Biggl\{
+      -\rho' \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \nonumber \\
+ ~&\, + \frac{2 k_c^2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \, .
+\end{align}
+Consider the following:
+\begin{align}
+      \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{1}{k_c^2}
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{z'^2 + (1 + \rho')^2}{z'^2 + (1 - \rho')^2} \nonumber \\
+ =&\, \frac{1}{\sqrt{z'^2 + (1 + \rho')^2} \left[z'^2 + (1 - \rho')^2\right]} \, .
+\end{align}
+This leads to:
+\begin{align}
+ \tilde{B}_z
+ =&\, \frac{1}{\sqrt{z'^2 + (1 + \rho')^2} \left[z'^2 + (1 - \rho')^2\right]} \Biggl\{
+      -\rho' \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \nonumber \\
+ ~&\, + \underbrace{\frac{2 k_c^2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right]}_{\equiv(*)} \Biggr\} \, .
+\end{align}
+Consider~$(*)$ alone for now and use~\eqn{cel_kc_1} and~\eqn{cel_kc_kcSq}:
+\begin{align}
+  (*)
+ =&\, \frac{k_c^2}{k^2} \left[ 2 \,\textrm{cel}\,(k_c, 1, -1, 1) + (1 + k_c^2) \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \nonumber \\
+ =&\, \frac{1}{k^4} \left\{ 2(1 - k^2) \left[(2-k^2)\mathcal{K} - 2 \mathcal{E} \right] + k^2 (2 - k^2) \left[2\mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
+ =&\, \frac{1}{k^4} \left\{ k^4 \mathcal{E} \right\} = \mathcal{E} \, .
+\end{align}
+It follows:
+\begin{equation}
+ \tilde{B}_z
+ = \frac{\mathcal{E} + \rho' \left[\mathcal{E} - 2 \mathcal{K} + 2 \mathcal{D} \right]}
+        {\sqrt{z'^2 + (1 + \rho')^2} \left[z'^2 + (1 - \rho')^2\right]} \, .
+\end{equation}
+This is equivalent to the formulation presented in Eqn.~(17) of Ref.~\cite{walstrom_2017},
+which also is the formulation used to compute $\tilde{B}_z$ in~\eqn{cwl_B_z_f1} of this work.
 
 
 

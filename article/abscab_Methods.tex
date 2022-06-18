@@ -427,24 +427,14 @@ One of several formulations is selected depending on the evaluation location~$(\
       \tilde{B}_{z,6} (\rho', z') &:\, \textrm{else}
     \end{cases} \, .
 \end{equation}
-
-
-
-
-
-
-{\color{red}
-TODO: There is a factor of 2 too much in the denominator of $B_z$!
-}
-
-Finally, a normalization factor is split off here as well:
+A normalization factor is split off here as well:
 \begin{equation}
-  B_z(\rho, z) = \frac{\mu_0 I}{2 \pi a} \tilde{B}_z(\rho', z')
+  B_z(\rho, z) = \frac{\mu_0 I}{\pi a} \tilde{B}_z(\rho', z')
 \end{equation}
 with
 \begin{align}
   \tilde{B}_z(\rho', z')
-  =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \nonumber \\
+  =&\, \frac{1}{2 \rho' \sqrt{z'^2 + (1 + \rho')^2}} \nonumber \\
  ~& \left[
        \textrm{cel}(k_c, 1, -1, 1)
      + \frac{1 + k_c^2 - \left( 1 - k_c^2 \right) \rho'}{2} \textrm{cel}(k_c, k_c^2, -1, 1)
@@ -456,7 +446,7 @@ the following formulation is used:
 \begin{align}
   \tilde{B}_{z,1} (\rho', z')
   =&\, \frac{1}{\sqrt{{z'}^2 + (1+\rho')^2} \left[{z'}^2 + (1 - \rho')^2 \right] } \nonumber \\
-  ~&\,  \left[ \mathcal{E}(k_c) + \rho' \left( \mathcal{E}(k_c) - 2 \mathcal{K}(k_c) + 2 \mathcal{D}(k_c) \right) \right] \, .
+  ~&\,  \left[ \mathcal{E}(k_c) + \rho' \left( \mathcal{E}(k_c) - 2 \mathcal{K}(k_c) + 2 \mathcal{D}(k_c) \right) \right] \, . \label{eqn:cwl_B_z_f1}
 \end{align}
 A second method is needed for points with $\rho' > 2$:
 \begin{equation}
