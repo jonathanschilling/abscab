@@ -620,7 +620,7 @@ Using~\eqn{cel_kc_kcSq}, this is rewritten has:
  \tilde{B}_z
  =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}  \Biggl\{
       -\rho' \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \nonumber \\
- ~&\, + \frac{2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \nonumber \\
+ ~&\, + \frac{2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \label{eqn:cwl_B_z_intermediate} \\
  =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{1}{k_c^2} \Biggl\{
       -\rho' \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \nonumber \\
  ~&\, + \frac{2 k_c^2}{k^2} \left[ \,\textrm{cel}\,(k_c, 1, -1, 1) + \frac{1 + k_c^2}{2} \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \Biggr\} \, .
@@ -643,7 +643,7 @@ Consider~$(*)$ alone for now and use~\eqn{cel_kc_1} and~\eqn{cel_kc_kcSq}:
   (*)
  =&\, \frac{k_c^2}{k^2} \left[ 2 \,\textrm{cel}\,(k_c, 1, -1, 1) + (1 + k_c^2) \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \nonumber \\
  =&\, \frac{1}{k^4} \left\{ 2(1 - k^2) \left[(2-k^2)\mathcal{K} - 2 \mathcal{E} \right] + k^2 (2 - k^2) \left[2\mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
- =&\, \frac{1}{k^4} \left\{ k^4 \mathcal{E} \right\} = \mathcal{E} \, .
+ =&\, \frac{1}{k^4} \left\{ k^4 \mathcal{E} \right\} = \mathcal{E} \, . \label{eqn:cwl_B_z_star}
 \end{align}
 It follows:
 \begin{equation}
@@ -704,5 +704,58 @@ Putting things back together, we arrive at:
    \right] \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_z_f2} of this work.
-
+One more formulation of~$\tilde{B}_z$ is required for this work.
+The derivation starts at~\eqn{cwl_B_z_intermediate}, which is reformulated
+using~\eqn{cwl_B_z_star} and~\eqn{cel_kc_kcSq} as follows:
+\begin{align}
+ \tilde{B}_z
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{1}{k_c^2}
+      \left\{ \mathcal{E} -\rho' \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
+      \left\{ \frac{1}{k_c^2} \mathcal{E} - \rho' \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
+ =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
+      \left\{ \frac{1}{k_c^2} \mathcal{E} - \rho' \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right\} \, .
+\end{align}
+Integral~(2.584.37) from Ref.~\cite{gradshteyn_ryzhik} is used as follows:
+\begin{align}
+  \frac{1}{k_c^2} \mathcal{E}
+ =&\, \int\limits_0^{\pi/2}
+        \frac{1}{\left[ 1 - k^2 \sin^2(\varphi) \right]^{3/2}}
+        \,\mathrm{d}\varphi \nonumber \\
+ =&\, \,\textrm{cel}\,(k_c, k_c^2, 1, 1) \, .
+\end{align}
+It follows:
+\begin{equation}
+  \tilde{B}_z
+ = \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \,\textrm{cel}\,(k_c, k_c^2, 1 + \rho', 1 - \rho') \, . \label{eqn:cwl_B_z_14}
+\end{equation}
+This is the formulation of~$\tilde{B}_z$ consistent with Eqn.~(14) of Ref.~\cite{walstrom_2017}.
+The terms in~\eqn{cwl_B_z_14} are now normalized to $\rho'-1$ for use close to the wire loop.
+Introduce~$n$ and~$m$ with:
+\begin{align}
+  n \equiv&\, \frac{z'}{\rho'-1} \\
+  m \equiv&\, \frac{\rho' + 1}{\rho'-1}
+    = 1 + \frac{2}{\rho' - 1} \, .
+\end{align}
+Then:
+\begin{align}
+  \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
+ =&\, \left| \rho' - 1 \right|^{-3} \left[ \left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' + 1}{\rho'-1} \right)^2 \right]^{-3/2} \nonumber \\
+ =&\, \left| \rho' - 1 \right|^{-3} \left[ n^2 + m^2 \right]^{-3/2}
+\end{align}
+and:
+\begin{align}
+  k_c^2
+ =&\, \frac{\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' - 1}{\rho'-1} \right)^2}
+           {\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' + 1}{\rho'-1} \right)^2} \nonumber \\
+ =&\, \frac{n^2 + 1}
+           {n^2 + m^2} \, . \label{eqn:cwl_B_z_n_kCSq}
+\end{align}
+Putting things back together, we arrive at:
+\begin{equation}
+  \tilde{B}_z
+ = \frac{1}{\left| \rho' - 1 \right|^3 \left[ n^2 + m^2 \right]^{3/2} } \,\textrm{cel}\,(k_c, k_c^2, 1 + \rho', 1 - \rho')
+\end{equation}
+with~$k_c = \sqrt{k_c^2}$ and $k_c^2$ from \eqn{cwl_B_z_n_kCSq}.
+This is the formulation used in \eqn{cwl_B_z_n} on this work.
 

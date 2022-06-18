@@ -487,8 +487,8 @@ In the vicinity of the wire loop, but explicitly obeying $z' \neq 0$,
 the following method should be used to compute $\tilde{B}_z$:
 \begin{equation}
   \tilde{B}_{z,5} (\rho', z')
-  = \frac{\left| \frac{z'}{\rho' - 1} \right| \,\mathrm{cel}\left( \sqrt{k_c^2}, k_c^2, \frac{1 + \rho'}{z'}, \frac{1 - \rho'}{z'} \right) }
-         {\left(\rho' - 1 \right)^2 \left[ \left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 \right]^{3/2} } \, .
+  = \frac{\,\mathrm{cel}\left( \sqrt{k_c^2}, k_c^2, 1 + \rho', 1 - \rho' \right) }
+         {\left|\rho' - 1 \right|^3 \left[ \left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 \right]^{3/2} } \, . \label{eqn:cwl_B_z_n}
 \end{equation}
 Finally, only one more expression is needed to accurately compute $\tilde{B}_z$ at $z'=0$ close to the loop.
 Here it is:
@@ -678,11 +678,11 @@ The floating point numbers are re-constructed within the arbitrary-precision sof
 in order to properly transport their intended value.
 In case of \texttt{float64}, this is done as follows for a floating-point number~$f$:
 \begin{equation}
- f = \begin{cases}
-      0                                                             & E=0 \textrm{ and } M=0 \\
-      (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) & \textrm{else}
-     \end{cases}
-     \label{eqn:float64}
+ f(s, E, M) =
+ \begin{cases}
+   0                                                             &: E=0 \textrm{ and } M=0 \\
+   (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) &: \textrm{else}
+  \end{cases} \label{eqn:float64}
 \end{equation}
 where $s$ is the sign bit, $E$ is the exponent specified as an 11-bit unsigned integer
 and $M$ is the mantissa specified as a 52-bit unsigned integer.
@@ -751,8 +751,8 @@ The method used to compute $\tilde{B}_z$ works slightly differently:
 \begin{align}
  k^2 \leftarrow&\,
   \begin{cases}
-    4 / \left( \frac{1}{\rho'} + 2 + \rho' \right) &\, z' = 0 \\
-    \frac{4 \rho'}{{z'}^2 + \left(1 + \rho'\right)^2} &\, \textrm{else}
+    4 / \left( \frac{1}{\rho'} + 2 + \rho' \right)    &: z' = 0 \\
+    \frac{4 \rho'}{{z'}^2 + \left(1 + \rho'\right)^2} &: \textrm{else}
   \end{cases} \nonumber \\
  \tilde{B}_z \leftarrow&\,
    \frac{1}{\left[ {z'}^2 + \left(1 + \rho'\right)^2 \right]^{3/2} }
@@ -770,9 +770,9 @@ The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
  = \begin{cases}
-    \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) & b \neq 0, a \neq b \\
-    0                                                                          & b=0, a \neq 0 \\
-    -16                                                                        & \textrm{else}
+    \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) &: b \neq 0, a \neq b \\
+    0                                                                          &: b=0, a \neq 0 \\
+    -16                                                                        &: \textrm{else}
    \end{cases}
 \end{equation}
 
