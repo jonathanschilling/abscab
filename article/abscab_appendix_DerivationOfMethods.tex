@@ -1,6 +1,6 @@
-\section{Derivation of General Formulations}
-\label{apx:derivation_of_general_formulations}
-The derivations of the starting point formulas presented in Sec.~\ref{sec:methods} are given here.
+\section{Derivations}
+\label{apx:derivations}
+The derivations of the formulas presented in Sec.~\ref{sec:methods} are given here.
 
 \subsection{Straight Wire Segment}
 The following geometric quantities with $\mathbf{x}_f \equiv \mathbf{x}_{i+1}$ are defined to ease the rest of the derivation:
@@ -201,9 +201,10 @@ This results in the final expression for the magnetic field:
  \boxed{\mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i } \, .
 \end{equation}
 
-\section{Derivation of Special Case Formulations}
-\label{apx:derivation_of_special_case_formulations}
-The derivation of the circular wire loop formulas is considered first.
+\subsection{Circular Wire Loop}
+The derivation of the circular wire loop formulas is considered next.
+
+\subsubsection{Magnetic Vector Potential}
 It starts at the expression given by Jackson~\cite{jackson}
 and listed here in~\eqn{cwl_A_phi_Jackson}.
 Normalized coordinates~$(\rho', z')$ as introduced in~\eqn{rhoP} and~\eqn{zP}
@@ -335,6 +336,8 @@ This result can now be evaluated using~\texttt{cel} again:
   \tilde{A}_\varphi(\rho'=1,z') = \frac{1}{|z'|} \textrm{cel}\,\left(\frac{1}{k_c}, 1, 1, -1\right) \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_A_phi_v}.
+
+\subsubsection{Magnetic Field}
 The cylindrical components of the magnetic field are computed from~$\mathbf{B} = \nabla \times \mathbf{A}$.
 The magnetic vector potential~$\mathbf{A}$ only has a tangential component~$A_\varphi$.
 This implies that the magnetic field only has components in radial~($B_\rho$) and vertical~($B_z$) direction:
@@ -528,4 +531,6 @@ This allows to write:
  \tilde{B}_\rho = \frac{1}{2} k_c \left[ \left( \frac{2}{z'^2} + 1 \right) \mathcal{E} - \mathcal{K} \right] \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_rho_v}.
-
+In order to derive the vertical component of the magnetic field,~$\tilde{B}_z$,
+we start again from~\eqn{cwl_A_phi_using_cel} for the magnetic vector potential
+and insert it into~\eqn{cwl_norm_B_z}.
