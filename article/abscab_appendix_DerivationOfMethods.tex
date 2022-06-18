@@ -498,7 +498,7 @@ Furthermore, it is noted that:
 \begin{align}
       2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D}
  =&\, k^2 \left[ \frac{\mathcal{K} - \mathcal{E}}{k^2} - \frac{2 \mathcal{D} - \mathcal{K}}{k^2} \right] \nonumber \\
- =&\, k^2 \left(  \mathcal{D} - \mathcal{C} \right) \, .
+ =&\, k^2 \left(  \mathcal{D} - \mathcal{C} \right) \, . \label{eqn:kSq_D_C}
 \end{align}
 This is used to write~$\tilde{B}_\rho$ as follows:
 \begin{align}
@@ -649,10 +649,60 @@ It follows:
 \begin{equation}
  \tilde{B}_z
  = \frac{\mathcal{E} + \rho' \left[\mathcal{E} - 2 \mathcal{K} + 2 \mathcal{D} \right]}
-        {\sqrt{z'^2 + (1 + \rho')^2} \left[z'^2 + (1 - \rho')^2\right]} \, .
+        {\sqrt{z'^2 + (1 + \rho')^2} \left[z'^2 + (1 - \rho')^2\right]} \, . \label{eqn:cwl_B_z_f1_appendix}
 \end{equation}
 This is equivalent to the formulation presented in Eqn.~(17) of Ref.~\cite{walstrom_2017},
 which also is the formulation used to compute $\tilde{B}_z$ in~\eqn{cwl_B_z_f1} of this work.
-
+This is normalized to~$\rho'^2$ in the following for evaluation at large values of~$\rho'$.
+First consider the terms in the denominator of~\eqn{cwl_B_z_f1_appendix}:
+\begin{align}
+  \frac{1}{\rho'^2} \left[ z'^2 + (1 + \rho')^2 \right]
+ =&\, \frac{1}{\rho'^2} \left( z'^2 + 1 + 2 \rho' + \rho'^2 \right) \nonumber \\
+ =&\, \frac{z'^2 + 1}{\rho'^2} + 1 + \frac{2}{\rho'} = t_1 + t_2 \nonumber \\
+ \frac{1}{\rho'^2} \left[ z'^2 + (1 - \rho')^2 \right]
+ =&\, \frac{1}{\rho'^2} \left( z'^2 + 1 - 2 \rho' + \rho'^2 \right) \nonumber \\
+ =&\, \frac{z'^2 + 1}{\rho'^2} + 1 - \frac{2}{\rho'} = t_1 - t_2
+\end{align}
+with
+\begin{align}
+  t_1 \equiv&\, \frac{z'^2 + 1}{\rho'^2} + 1 \\
+  t_2 \equiv&\, \frac{2}{\rho'} \, .
+\end{align}
+It follows:
+\begin{equation}
+  \tilde{B}_z
+ = \frac{\mathcal{E} + \rho' \left[\mathcal{E} - 2 \mathcal{K} + 2 \mathcal{D} \right]}
+        {\sqrt{t_1 + t_2} (t_1 - t_2) \rho'^3}
+\end{equation}
+and with~\eqn{kSq_D_C} we arrive at:
+\begin{equation}
+  \tilde{B}_z
+ = \frac{\mathcal{E} + \rho' k^2 \left[\mathcal{C} - \mathcal{D} \right]}
+        {\sqrt{t_1 + t_2} (t_1 - t_2) \rho'^3} \, .
+\end{equation}
+Furthermore, it holds:
+\begin{align}
+  \rho' k^2
+ =&\, \rho' \frac{4 \rho'}{z'^2 + (1 + \rho')^2} \nonumber \\
+ =&\, 4 / \left\{ \frac{1}{\rho'^2} \left[ z'^2 + (1 + \rho')^2 \right] \right\} \nonumber \\
+ =&\, 4 / \left[ \left( \frac{z'}{\rho'} \right)^2 + \left( \frac{1 + \rho'}{\rho'} \right)^2 \right]
+ = 4 / \alpha_\textrm{cd}
+\end{align}
+with
+\begin{align}
+  \alpha_\textrm{cd}
+ =&\, \frac{z'^2}{\rho'^2} + \frac{1 + 2 \rho' + \rho'^2}{\rho'^2} \nonumber \\
+ =&\, \frac{1}{\rho'^2} \left[ \rho'^2 + 2 \rho' + 1 + z'^2 \right] \nonumber \\
+ =&\, 1 + \frac{1}{\rho'} \left[ 2 + \frac{1}{\rho'} \left( 1 + z'^2 \right) \right] \, .
+\end{align}
+Putting things back together, we arrive at:
+\begin{equation}
+  \tilde{B}_z
+ = \frac{1}{\sqrt{t_1 + t_2} (t_1 - t_2) \rho'^3}
+   \left[
+     \mathcal{E} + \frac{4 \left(\mathcal{C} - \mathcal{D} \right)}{1 + \frac{1}{\rho'} \left[ 2 + \frac{1}{\rho'} \left( 1 + z'^2 \right) \right]}
+   \right] \, .
+\end{equation}
+This is the formulation used in~\eqn{cwl_B_z_f2} of this work.
 
 
