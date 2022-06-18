@@ -2049,13 +2049,13 @@ public class ABSCAB {
 	 */
 	public static double circularWireLoop_B_z(double rhoP, double zP) {
 		if (rhoP < 0.5 || (rhoP <= 2 && Math.abs(zP) > 1)) {
-			return B_z_1(rhoP, zP);
+			return cwl_B_z_f1(rhoP, zP);
 		} else if (rhoP > 2) {
-			return B_z_2(rhoP, zP);
+			return cwl_B_z_f2(rhoP, zP);
 		} else if (rhoP == 1.0) {
-			return B_z_4(zP);
+			return cwl_B_z_v(zP);
 		} else {
-			return B_z_5(rhoP, zP);
+			return cwl_B_z_n(rhoP, zP);
 		}
 	}
 
@@ -2420,7 +2420,7 @@ public class ABSCAB {
 
 	////// B_z of circular wire loop
 
-	static double B_z_1(double rhoP, double zP) {
+	static double cwl_B_z_f1(double rhoP, double zP) {
 		// far-field up to rho'=2
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
@@ -2439,7 +2439,7 @@ public class ABSCAB {
 		return prefac * (E + rhoP * comb);
 	}
 
-	static double B_z_2(double rhoP, double zP) {
+	static double cwl_B_z_f2(double rhoP, double zP) {
 		// far-field from rho'=2 on
 
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
@@ -2477,19 +2477,7 @@ public class ABSCAB {
 		return prefac * (E + 4 * (C - D) / cdScale);
 	}
 
-	static double B_z_4(double zP) {
-		// special case for rhoP=1, zp->0
-
-		double kCSq = zP * zP / (4 + zP * zP);
-		double kC = Math.sqrt(kCSq);
-
-		double f = zP * zP + 4;
-		double prefac = 1 / (f * Math.sqrt(f));
-
-		return prefac * CompleteEllipticIntegral.cel(kC, kCSq, 2, 0);
-	}
-
-	static double B_z_5(double rhoP, double zP) {
+	static double cwl_B_z_n(double rhoP, double zP) {
 		// special case for near-field: rhoP->1, zP->0; but not rhoP = 1
 
 		double rp1 = rhoP - 1;
@@ -2507,5 +2495,17 @@ public class ABSCAB {
 		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, ca1, ca2);
 
 		return prefac * cp;
+	}
+
+	static double cwl_B_z_v(double zP) {
+		// special case for rhoP=1, zp->0
+
+		double kCSq = zP * zP / (4 + zP * zP);
+		double kC = Math.sqrt(kCSq);
+
+		double f = zP * zP + 4;
+		double prefac = 1 / (f * Math.sqrt(f));
+
+		return prefac * CompleteEllipticIntegral.cel(kC, kCSq, 2, 0);
 	}
 }

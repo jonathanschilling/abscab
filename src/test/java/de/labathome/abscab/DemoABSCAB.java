@@ -652,10 +652,10 @@ public class DemoABSCAB {
 			B_rho_1[i] = ABSCAB.cwl_B_rho_n(rhoP, zP);
 			B_rho_4[i] = ABSCAB.cwl_B_rho_v(zP);
 
-			B_z_1[i] = ABSCAB.B_z_1(rhoP, zP);
-			B_z_2[i] = ABSCAB.B_z_2(rhoP, zP);
-			B_z_4[i] = ABSCAB.B_z_4(zP);
-			B_z_5[i] = ABSCAB.B_z_5(rhoP, zP);
+			B_z_1[i] = ABSCAB.cwl_B_z_f1(rhoP, zP);
+			B_z_2[i] = ABSCAB.cwl_B_z_f2(rhoP, zP);
+			B_z_4[i] = ABSCAB.cwl_B_z_v(zP);
+			B_z_5[i] = ABSCAB.cwl_B_z_n(rhoP, zP);
 		}
 
 		// write to output file
