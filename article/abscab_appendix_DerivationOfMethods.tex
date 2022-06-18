@@ -429,8 +429,8 @@ The derivatives of~$k^2$ (see~\eqn{kSq}) are as follows:
       \frac{\partial (k^2)}{\partial z'}
  =&\, \frac{2 z' k^2}{z'^2 + (1 + \rho')^2} \\
       \frac{\partial (k^2)}{\partial \rho'}
- =&\, \frac{1}{z'^2 + (1 + \rho')^2} \left[ 4 + k^2 2 (1 + \rho') \right] \\
- =&\, \frac{2}{z'^2 + (1 + \rho')^2} \left[ 2 + k^2 (1 + \rho') \right] \, .
+ =&\, \frac{1}{z'^2 + (1 + \rho')^2} \left[ 4 - k^2 2 (1 + \rho') \right] \\
+ =&\, \frac{2 \left[ 2 - k^2 (1 + \rho') \right]}{z'^2 + (1 + \rho')^2} \, .
 \end{align}
 The next step is to use above five derivatives in deriving the expressions
 for the normalized cylindrical magnetic field components.
@@ -533,4 +533,65 @@ This allows to write:
 This is the formulation used in~\eqn{cwl_B_rho_v}.
 In order to derive the vertical component of the magnetic field,~$\tilde{B}_z$,
 we start again from~\eqn{cwl_A_phi_using_cel} for the magnetic vector potential
-and insert it into~\eqn{cwl_norm_B_z}.
+and insert it into~\eqn{cwl_norm_B_z}:
+\begin{align}
+ \tilde{B}_z
+ =&\,   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{\partial}{\partial \rho'} \left[ \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \right] \nonumber \\
+ =&\,   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{\partial}{\partial \rho'} \left[ \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right] \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \frac{\partial}{\partial (k^2)} \,\textrm{cel}\,(k_c, 1, -1, 1) \frac{\partial (k^2)}{\partial \rho'} \nonumber \\
+ =&\,   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{-(1 + \rho')}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
+          \frac{\bcancel{2} \left[2 - k^2(1+\rho')\right]}{z'^2 + (1 + \rho')^2}
+          \bcancel{\frac{1}{2}} \int\limits_0^{\pi/2} \frac{\left[\sin^2{\varphi} - \cos^2(\varphi)\right]\sin^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \nonumber \\
+ =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{
+        \int\limits_0^{\pi/2}
+          \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{1 - k^2 \sin^2(\varphi)}}
+          \left[1 - \frac{\rho'(1 + \rho')}{z'^2 + (1 + \rho')^2} \right] \,\mathrm{d}\varphi \nonumber \\
+ ~&\, + \frac{\rho'\left[2 - k^2(1+\rho')\right]}{z'^2 + (1 + \rho')^2}
+        \int\limits_0^{\pi/2}
+          \frac{\left[\sin^2{\varphi} - \cos^2(\varphi)\right]\sin^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\} \nonumber \\
+ =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
+      \int\limits_0^{\pi/2}
+        \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \Biggl\{ \left[1 - k^2 \sin^2(\varphi)\right] \nonumber \\
+ ~&\,        \left[1 - \frac{\rho'(1 + \rho')}{z'^2 + (1 + \rho')^2} \right]
+          + \frac{\rho'\left[2 - k^2(1+\rho')\right]}{z'^2 + (1 + \rho')^2} \sin^2{\varphi} \Biggr\} \,\mathrm{d}\varphi \, . \label{eqn:cwl_B_z_halfway}
+\end{align}
+Consider the part inside~$\{\}$ in the integrand in more detail:
+\begin{align}
+ ~&\,   \left[1 - k^2 \sin^2(\varphi)\right] \left[1 - \frac{\rho'(1 + \rho')}{z'^2 + (1 + \rho')^2} \right]
+      + \frac{\rho'\left[2 - k^2(1+\rho')\right]}{z'^2 + (1 + \rho')^2} \sin^2{\varphi} \nonumber \\
+ =&\, 1 - k^2 \sin^2(\varphi) - \frac{\rho'(1 + \rho')}{z'^2 + (1 + \rho')^2}
+        \bcancel{+\frac{\rho' k^2 (1 + \rho')}{z'^2 + (1 + \rho')^2} \sin^2{\varphi}} \nonumber \\
+ ~&\,   + \underbrace{\frac{2 \rho'}{z'^2 + (1 + \rho')^2}}_{=k^2/2} \sin^2{\varphi}
+        \bcancel{-\frac{\rho' k^2 (1+\rho')}{z'^2 + (1 + \rho')^2} \sin^2{\varphi}} \nonumber \\
+ =&\, \frac{1}{2} \left[1 - k^2 \sin^2{\varphi} \right] + \frac{1}{2} - (1+\rho') \frac{\rho'}{z'^2 + (1 + \rho')^2} \nonumber \\
+ =&\, \frac{1}{2} \left[1 - k^2 \sin^2{\varphi} \right] + \frac{1}{2} - (1+\rho') \frac{1}{4} k^2 \nonumber \\
+ =&\, \frac{1}{2} \left[1 - k^2 \sin^2{\varphi} \right] + \frac{1}{4} \left[2 - k^2 (1+\rho') \right] \, .
+\end{align}
+Inserting this back into~\eqn{cwl_B_z_halfway} leads to:
+\begin{align}
+ \tilde{B}_z
+ =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
+      \int\limits_0^{\pi/2}
+        \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \nonumber \\
+ ~&\, \left\{ \frac{1}{2} \left[1 - k^2 \sin^2{\varphi} \right] + \frac{1}{4} \left[2 - k^2 (1+\rho') \right] \right\} \,\mathrm{d}\varphi \nonumber \\
+ =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{
+          \frac{1}{2} \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{1 - k^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
+ ~&\, + \frac{1}{4} \left[2 - k^2 (1+\rho') \right] \int\limits_0^{\pi/2}
+        \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\} \nonumber \\
+ =&\, \frac{1}{2 \rho' \sqrt{z'^2 + (1 + \rho')^2}} \Bigl[ \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
+ ~&\, + \frac{1}{2} \left[2 - k^2 (1+\rho') \right] \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \Bigr] \, .
+\end{align}
+This is the formulation of~$\tilde{B_z}$ given as~(3.2.2.6) in Ref.~\cite{teal} with
+\begin{equation}
+   2 - k^2(1 + \rho')
+ = 2 - k^2 - k^2 \rho'
+ = 1 + k_c^2 - (1 - k_c^2) \rho' \, .
+\end{equation}
+
+
+
+
