@@ -7,6 +7,7 @@ The section is concluded by a description of the verification procedure
 employed to benchmark these methods.
 
 \subsection{Straight Wire Segment}
+\label{sec:methods_sws}
 The straight wire segment is handled first.
 The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWireSegment}.
 \begin{figure}[htbp]
@@ -224,6 +225,7 @@ The final case is implemented as follows:
 with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
 
 \subsection{Circular Wire Loop}
+\label{sec:methods_cwl}
 The circular wire loop is handled next.
 The basic geometry of a circular wire loop under consideration here is shown in Fig.~\ref{fig:circularWireLoop}.
 \begin{figure}[htbp]
@@ -624,25 +626,65 @@ The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \end{equation}
 
 \subsection{Verification Method}
-The asymptotic behavior of an implementation of above formulas for the magnetic vector potential
-and magnetic field needs to be tested before using that implementation in routine work.
-
-A set of critical test points used to check this is shown in Fig.~\ref{fig:circularLoop_criticalPoints}
-for the case of the circular wire loop.
-\begin{figure}[htbp]
- \centering
- \includegraphics{img/circularLoop_criticalPoints.eps}
- \caption{Test points in the $R$-$Z$-plane for a circular wire loop (black dot).
-          The axes are labeled in normalized cylindrical coordinates ($\rho' = \rho / a$, $z' = z / a$; $a$ is the radius of the wire loop).
-          Green dashed lines indicate values of $\rho'$ and $z'$ which are well handled by a naive implementation.
-          Green dots denote points at which a naive implementation yields satisfactory results.
-          Red dashed lines indicate values of $\rho'$ and $z'$ which induce the requirement for robust asymptotic behavior.
-          Red dots denote points at which a naive implementation usually fails.
-          The grey shaded area in the background indicates the region in which the reference implementation yields accurate results.
-          Note that the problem is symmetric in $z$ direction, even though only the positive-$z$ quadrant is considered here.}
- \label{fig:circularLoop_criticalPoints}
-\end{figure}
-
+The implementations of above formulas for the magnetic vector potential
+and magnetic field of a straight wire segment and a circular wire loop
+need to be tested before using the implementations in routine work.
+This section introduces the choice of test point coordinates.
+A rectangular grid of test points in the $(\rho', z')$-plane is defined,
+where the choice of knots along the $\rho'$ and $z'$ axes are discussed below.
+The set of test point coordinates for testing a given current carrier primitive
+consists of the combinations of all test knots along the $\rho'$ axis
+with all test knots along the $z'$ axis.
+Let $T_{\rho'}$ ($T_{z'}$) be the set of knots along the $\rho'$ ($z'$) axis to test the formulation on.
+Then $T = T_{\rho'} \otimes T_{z'} \\ T_\mathrm{cc}$ is the set of test point coordinates
+where $\otimes$ is the cartesian product of two sets
+and $T_\mathrm{cc}$ is the subset of points from $T_{\rho'} \otimes T_{z'}$ that are located exactly on the current carrier.
+First, the choice of test points for testing the implementations
+of the straight wire segment methods~(SWS) is introduced.
+The set of grid knots along the $\rho'$ axis, $T^\mathrm{SWS}_{\rho'}$, are chosen as follows:
+\begin{itemize}
+  \item $T^\mathrm{SWS}_{\rho',1} = \{ 0 \}$
+  \item $T^\mathrm{SWS}_{\rho',2} = \{ 10^{-30}, 10^{-29}, ..., 10^{30} \}$
+\end{itemize}
+with $T^\mathrm{SWS}_{\rho'} = T^\mathrm{SWS}_{\rho',1} \cup T^\mathrm{SWS}_{\rho',2}$,
+leading to $|T^\mathrm{SWS}_{\rho'}| = 62$.
+The set of grid knots along the $z'$ axis, $T^\mathrm{SWS}_{z'}$, are chosen as follows:
+\begin{itemize}
+  \item $T^\mathrm{SWS}_{z',1} = \{ -10^{30}, -10^{29}, ..., -10^{-30} \}$
+  \item $T^\mathrm{SWS}_{z',2} = \{ 10^{-30}, 10^{-29}, ..., 10^{-1} \}$
+  \item $T^\mathrm{SWS}_{z',3} = \{ 1 - 10^{-1}, 1 - 10^{-2}, ..., 1 - 10^{-15}, 1 - \epsilon_{64}/2 \}$
+  \item $T^\mathrm{SWS}_{z',4} = \{ 1 + \epsilon_{64}, 1 + 10^{-15}, 1 + 10^{-14}, ..., 1 + 10^{-1} \}$
+  \item $T^\mathrm{SWS}_{z',5} = \{ 10^{1}, 10^{2}, ..., 10^{30} \}$
+  \item $T^\mathrm{SWS}_{z',6} = \{ 0, 1/2, 1, 2 \}$
+\end{itemize}
+with $T^\mathrm{SWS}_{z'} = T^\mathrm{SWS}_{z',1} \cup T^\mathrm{SWS}_{z',2} \cup T^\mathrm{SWS}_{z',3} \cup T^\mathrm{SWS}_{z',4} \cup T^\mathrm{SWS}_{z',5} \cup T^\mathrm{SWS}_{z',6}$,
+leading to $|T^\mathrm{SWS}_{z'}| = 157$.
+The machine-precision epsilon is given by $\epsilon_{64} \approx 2.2 \times 10^{-16}$ for the case of \texttt{float64}.
+The exclusion of the test points that are located exactly on the wire segment leads to
+a total number of test point coordinates~$T_\mathrm{SWS}$ for the straight wire segment of
+$|T_\mathrm{SWS}| = 9685$.
+Next, the choice of test points for testing the implementations
+of the circular wire loop~(CWL) methods is introduced.
+The set of grid knots along the $\rho'$ axis, $T^\mathrm{CWL}_{\rho'}$, are chosen as follows:
+\begin{itemize}
+  \item $T^\mathrm{CWL}_{\rho',1} = \{ 10^{-30}, 10^{-29}, ..., 10^{-1} \}$
+  \item $T^\mathrm{CWL}_{\rho',2} = \{ 1 - 10^{-1}, 1 - 10^{-2}, ..., 1 - 10^{-15}, 1 - \epsilon_{64}/2 \}$
+  \item $T^\mathrm{CWL}_{\rho',3} = \{ 1 + \epsilon_{64}, 1 + 10^{-15}, 1 + 10^{-14}, ..., 1 + 10^{-1} \}$
+  \item $T^\mathrm{CWL}_{\rho',4} = \{ 10^{1}, 10^{2}, ..., 10^{30} \}$
+  \item $T^\mathrm{CWL}_{\rho',5} = \{ 0, 1/2, 1, 2 \}$
+\end{itemize}
+with $T^\mathrm{CWL}_{\rho'} = T^\mathrm{CWL}_{\rho',1} \cup T^\mathrm{CWL}_{\rho',2} \cup T^\mathrm{CWL}_{\rho',3} \cup T^\mathrm{CWL}_{\rho',4} \cup T^\mathrm{CWL}_{\rho',5}$,
+leading to $|T^\mathrm{CWL}_{\rho'}| = 96$.
+The set of grid knots along the $z'$ axis, $T^\mathrm{CWL}_{z'}$, are chosen as follows:
+\begin{itemize}
+  \item $T^\mathrm{CWL}_{z',1} = \{ 0 \}$
+  \item $T^\mathrm{CWL}_{z',2} = \{ 10^{-30}, 10^{-29}, ..., 10^{30} \}$
+\end{itemize}
+with $T^\mathrm{CWL}_{z'} = T^\mathrm{CWL}_{z',1} \cup T^\mathrm{CWL}_{z',2}$,
+leading to $|T^\mathrm{CWL}_{z'}| = 62$.
+The exclusion of the test point that is located exactly on the wire loop leads to
+a total number of test point coordinates~$T_\mathrm{CWL}$ for the circular wire loop of
+$|T_\mathrm{CWL}| = 5951$.
 The reference results are computed on each test point using arbitrary-precision arithmetic
 as provided by the Python package~\texttt{mpmath}~\cite{mpmath} and Mathematica~\cite{Mathematica}.
 The test point coordinates are computed within the finite-precision test programs used to check the accuracy of the results.
@@ -679,12 +721,10 @@ In particular, a test point coordinate value~$f$ is passed to the reference comp
 by passing the three values $s$, $E$ and $M$ as integers (which are easy to represent exactly).
 Within the reference computation, the value of $f$ is constructed using~\eqn{float64} implemented
 in arbitrary precision and with the exact values of $s$, $E$ and $M$.
-
 The reference data for the straight wire segment methods
 is computed using 300 decimal digits of precision.
 The reference data for the circular wire loop
 is computed using 200 decimal digits of precision.
-
 The evaluation position is specified exactly
 via $s_\rho$, $E_\rho$ and $M_\rho$ (for $\rho'$)
 and $s_z$, $E_z$ and $M_z$ (for $z'$):
@@ -739,7 +779,9 @@ The method used to compute $\tilde{B}_z$ works slightly differently:
 \end{align}
 The integrals are carried out numerically within the arbitrary-precision software.
 In case of~\texttt{mpmath}, double-exponential quadrature~\cite{double_exp_quad} is used~\cite{mpmath_quad}.
-
+The particular choices for the number of digits of precision used throughout the arbitrary-precision computation
+mentioned above have been adjusted to robustly yield enough equal digits
+in the outputs from \texttt{mpmath} and Mathematica for benchmarking the \texttt{float64} implementation of the methods presented in Sec.~\ref{sec:methods_sws} and~\ref{sec:methods_cwl}.
 The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
@@ -749,6 +791,5 @@ The error metric employed in this work is given as follows:
     -16                                                                        &: \textrm{else}
    \end{cases}
 \end{equation}
-where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$
-with  the machine-precision epsilon $\epsilon_{64} \approx 2.2 \times 10^{-16}$.
+where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$.
 
