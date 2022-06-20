@@ -67,7 +67,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \rho' > 0, z' \in \{0, 1\} \\
     \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq 1 \textrm{ or } z' > 2 \\
     \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{else} \, .
-  \end{cases}
+  \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
 For the case~$\rho'=0$, the following formulation is used:
 \begin{equation}
@@ -202,7 +202,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
                                             ~    & ~ \textrm{ or } \rho'/(1-z') \geq 1  \\
                                             ~    & ~ \textrm{ or } \rho'/z'   \geq 1 \\
     \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{else} \, .
-  \end{cases}
+  \end{cases} \label{eqn:sws_B_phi_switchover}
 \end{equation}
 The special case~$z' \in \{0, 1\}$ is implemented as follows:
 \begin{equation}
@@ -397,7 +397,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
       \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
       \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
       \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else} \, .
-    \end{cases}
+    \end{cases} \label{eqn:cwl_B_rho_switchover}
 \end{equation}
 The following formulation is implemented for evaluation locations away from to the wire loop:
 \begin{equation}
@@ -467,7 +467,7 @@ One of several formulations is selected depending on the evaluation location~$(\
       \tilde{B}_{z,\mathrm{f2}} (\rho', z') &:\, \rho' > 2 \\
       \tilde{B}_{z,\mathrm{v}} (z') &:\, \rho' = 1 \\
       \tilde{B}_{z,\mathrm{n}} (\rho', z') &:\, \textrm{else}
-    \end{cases} \, .
+    \end{cases} \label{eqn:cwl_B_z_switchover} \, .
 \end{equation}
 For points not too close to the wire loop, the following formulation is used:
 \begin{align}
@@ -626,6 +626,7 @@ The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \end{equation}
 
 \subsection{Verification Method}
+\label{sec:methods_verification}
 The implementations of above formulas for the magnetic vector potential
 and magnetic field of a straight wire segment and a circular wire loop
 need to be tested before using the implementations in routine work.
@@ -739,8 +740,8 @@ for the straight wire segment:
   r_\mathrm{i}  \leftarrow&\, \sqrt{ {\rho'}^2 + {z'}^2 } \nonumber \\
   r_\mathrm{f}  \leftarrow&\, \sqrt{ {\rho'}^2 + \left(1 - z'\right)^2 } \label{alg:sws_ref} \\
   \epsilon \leftarrow&\, \left( r_\mathrm{i} + r_\mathrm{f} \right)^{-1} \nonumber \\
-  \tilde{A}_z \leftarrow&\, \textrm{atanh} (\epsilon) \nonumber \\
-  \tilde{B}_\varphi \leftarrow&\, \left(\frac{1}{r_\mathrm{i}} + \frac{1}{r_\mathrm{f}} \right) \frac{\rho'}{r_\mathrm{i} r_\mathrm{f} + {\rho'}^2 + z' (z' - 1)} \nonumber
+  \tilde{A}_z \leftarrow&\, \textrm{atanh} (\epsilon) \label{eqn:sws_A_z_ref} \\
+  \tilde{B}_\varphi \leftarrow&\, \left(\frac{1}{r_\mathrm{i}} + \frac{1}{r_\mathrm{f}} \right) \frac{\rho'}{r_\mathrm{i} r_\mathrm{f} + {\rho'}^2 + z' (z' - 1)} \label{eqn:sws_B_phi_ref}
 \end{align}
 The following algorithm is used to compute reference values
 of $\tilde{A}_\varphi$ and $\tilde{B}_\rho$ at~$(\rho', z')$
@@ -762,7 +763,7 @@ for the circular wire loop:
                                  \int\limits_0^{\pi/2}
                                    \frac{\sin^2(\varphi) - \cos^2(\varphi)}
                                         {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi &:\, \textrm{else}
- \end{cases}
+ \end{cases} \label{eqn:B_rho_ref}
 \end{align}
 The method used to compute $\tilde{B}_z$ works slightly differently:
 \begin{align}
@@ -775,7 +776,7 @@ The method used to compute $\tilde{B}_z$ works slightly differently:
    \frac{1}{\left[ {z'}^2 + \left(1 + \rho'\right)^2 \right]^{3/2} }
                                  \int\limits_0^{\pi/2}
                                    \frac{(1-\rho') \sin^2(\varphi) + (1+\rho') \cos^2(\varphi)}
-                                        {\left[1 - k^2 \sin^2(\varphi) \right]^{3/2}} \,\mathrm{d}\varphi
+                                        {\left[1 - k^2 \sin^2(\varphi) \right]^{3/2}} \,\mathrm{d}\varphi  \label{eqn:B_z_ref}
 \end{align}
 The integrals are carried out numerically within the arbitrary-precision software.
 In case of~\texttt{mpmath}, double-exponential quadrature~\cite{double_exp_quad} is used~\cite{mpmath_quad}.
@@ -789,7 +790,7 @@ The error metric employed in this work is given as follows:
     \log_{10} \left(\min\left(1, \left| \frac{a - b}{b} \right|\right) \right) &: b \neq 0, a \neq b \\
     0                                                                          &: b=0, a \neq 0 \\
     -16                                                                        &: \textrm{else}
-   \end{cases}
+   \end{cases} \label{eqn:error_metric}
 \end{equation}
 where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$.
 
