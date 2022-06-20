@@ -214,7 +214,7 @@ This results in the final expression for the magnetic field:
 The derivation of the circular wire loop formulas is considered next.
 
 \subsubsection{Magnetic Vector Potential}
-It starts at the expression given by Jackson~\cite{jackson}
+The derivation starts at the expression given by Jackson~\cite{jackson}
 and listed here in~\eqn{cwl_A_phi_Jackson}.
 Normalized coordinates~$(\rho', z')$ as introduced in~\eqn{rhoP} and~\eqn{zP}
 are used to reformulate the expression given by Jackson into the following:
@@ -559,7 +559,6 @@ This allows to write:
  \tilde{B}_\rho = \frac{1}{2} k_c \left[ \left( \frac{2}{z'^2} + 1 \right) \mathcal{E} - \mathcal{K} \right] \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_rho_v}.
-
 In order to derive the vertical component of the magnetic field,~$\tilde{B}_z$,
 we start again from~\eqn{cwl_A_phi_using_cel} for the magnetic vector potential
 and insert it into~\eqn{cwl_norm_B_z}:
@@ -585,7 +584,11 @@ Continuing:
           \left[1 - \frac{\rho'(1 + \rho')}{z'^2 + (1 + \rho')^2} \right] \,\mathrm{d}\varphi \nonumber \\
  ~&\, + \frac{\rho'\left[2 - k^2(1+\rho')\right]}{z'^2 + (1 + \rho')^2}
         \int\limits_0^{\pi/2}
-          \frac{\left[\sin^2{\varphi} - \cos^2(\varphi)\right]\sin^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\} \nonumber \\
+          \frac{\left[\sin^2{\varphi} - \cos^2(\varphi)\right]\sin^2{\varphi}}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\}
+\end{align}
+The integrals can be combined to arrive at:
+\begin{align}
+ \tilde{B}_z
  =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}}
       \int\limits_0^{\pi/2}
         \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \Biggl\{ \left[1 - k^2 \sin^2(\varphi)\right] \nonumber \\
@@ -614,7 +617,11 @@ Inserting this back into~\eqn{cwl_B_z_halfway} leads to:
  =&\, \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \Biggl\{
           \frac{1}{2} \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{1 - k^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
  ~&\, + \frac{1}{4} \left[2 - k^2 (1+\rho') \right] \int\limits_0^{\pi/2}
-        \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\} \nonumber \\
+        \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\left[1 - k^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi \Biggr\}
+\end{align}
+Here, the two integrals can be re-expressed using cel:
+\begin{align}
+ \tilde{B}_z
  =&\, \frac{1}{2 \rho' \sqrt{z'^2 + (1 + \rho')^2}} \Bigl[ \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{1}{2} \left[2 - k^2 (1+\rho') \right] \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \Bigr] \, . \label{eqn:cwl_B_z_teal}
 \end{align}
