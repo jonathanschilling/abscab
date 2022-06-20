@@ -1983,7 +1983,7 @@ public class ABSCAB {
 			return 0.0;
 		} else if (zP == 0.0 || zP == 1.0) {
 			return sws_B_phi_rad(rhoP);
-		} else if (zP >= 1.0 || zP <= 0.0 || rhoP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
+		} else if (rhoP >= 1.0 || zP <= 0.0 || zP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
 			return sws_B_phi_f(rhoP, zP);
 		} else {
 			return sws_B_phi_n(rhoP, zP);
@@ -2300,10 +2300,14 @@ public class ABSCAB {
 	 * @return normalized tangential component of magnetic vector potential
 	 */
 	static double cwl_A_phi_n(double rhoP, double zP) {
-		double n = zP / (rhoP - 1);
-		double m = 1 + 2 / (rhoP - 1);
-		double den = n * n + m * m;
+		double rhoP_m_1 = rhoP - 1;
+
+		double n = zP / rhoP_m_1;
+		double m = 1 + 2 / rhoP_m_1;
+
 		double num = n * n + 1;
+		double den = n * n + m * m;
+
 		double kCSq = num / den;
 
 		double prefac = 1 / (Math.abs(rhoP - 1) * Math.sqrt(den));
@@ -2392,8 +2396,8 @@ public class ABSCAB {
 		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
 		double C = arg2 * CompleteEllipticIntegral.cel(arg1, 1, 0, 1);
 
-		// |z'| / (rho' - 1)^5
-		double zP_rd5 = Math.abs(n) / (rd2 * rd2);
+		// z' / |rho' - 1|^5
+		double zP_rd5 = zP / (Math.abs(rhoP_m_1) * rd2 * rd2);
 
 		double prefac = 4 * rhoP / (kCSqDen * sqrt_kCSqDen * kCSqNum);
 

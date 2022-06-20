@@ -58,11 +58,20 @@ It follows:
  \mathbf{A}(\mathbf{x})
  = \frac{\mu_0 I}{4 \pi} L \hat{\mathbf{e}} \int\limits_0^1 \frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \, . \label{eqn:A_integral}
 \end{equation}
-For $X = a x^2 + b x + c$ with $a>0$ the following relation holds~\cite{bronstein}:
+The following relation holds for
+$R = a + bx + cx^2$,
+$\Delta = 4 a c - b^2$ with
+$c > 0$, $2 c x + b > \sqrt{- \Delta}$ and $\Delta < 0$
+according to integral (2.261) in Ref.~\cite{gradshteyn_ryzhik}:
 \begin{equation}
- \int \frac{\mathrm{d}x}{\sqrt{X}} = \frac{1}{\sqrt{a}} \log \left( 2 \sqrt{a X} + 2 a x + b \right) \, .
+ \int \frac{\mathrm{d}x}{\sqrt{R}} = \frac{1}{\sqrt{c}} \log \left( 2 \sqrt{c R} + 2 c x + b \right) \, .
 \end{equation}
-Here, $x = \lambda$, $a = L^2$, $b=-2 L R_{i ||}$ and $c=R_i^2$.
+
+{\color{red}
+TODO: check applicability !!!
+}
+
+Here, $x = \lambda$, $a=R_i^2$, $b=-2 L R_{i ||}$ and $c = L^2$.
 The corresponding antiderivative of the integrand in \eqn{A_integral} is:
 \begin{align}
  \int&\frac{\mathrm{d}\lambda}{\sqrt{R_i^2 - 2 \lambda L R_{i ||} + \lambda^2 L^2}} \nonumber \\
@@ -128,7 +137,7 @@ Note that
 \end{equation}
 leading to
 \begin{equation}
- \boxed{\mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}}} \, . \label{eqn:A_artanh}
+ \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}} \, . \label{eqn:A_artanh}
 \end{equation}
 
 \subsubsection{Magnetic Field}
@@ -186,19 +195,19 @@ Inserting this into \eqn{B_intermediate} leads to:
 Next, look at $f'(\epsilon)$:
 \begin{equation}
    f'(\epsilon)
- = \frac{\bcancel{1 - \epsilon}}{1 + \epsilon} \cdot \frac{1 (1-\epsilon) - (1+\epsilon) (-1)}{(1 - \epsilon)^{\bcancel{2}}}
+ = \frac{\bcancel{1 - \epsilon}}{1 + \epsilon} \frac{1 (1-\epsilon) - (1+\epsilon) (-1)}{(1 - \epsilon)^{\bcancel{2}}}
  = \frac{1 - \epsilon + 1 + \epsilon}{(1 + \epsilon)(1 - \epsilon)}
  = \frac{2}{1 - \epsilon^2}
 \end{equation}
 and insert this into \eqn{B_intermediate_2}:
 \begin{align}
    \frac{4 \pi}{\mu_0 I} \mathbf{B}
- = & \frac{2 \epsilon}{1 - \epsilon^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \\
- = & \frac{2 L}{\bcancel{R_i + R_f}} \cdot \frac{(R_i + R_f)^{\bcancel{2}}}{(R_i + R_f)^2 - L^2} \cdot \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, .
+ = & \frac{2 \epsilon}{1 - \epsilon^2} \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \\
+ = & \frac{2 L}{\bcancel{R_i + R_f}} \frac{(R_i + R_f)^{\bcancel{2}}}{(R_i + R_f)^2 - L^2} \frac{1}{R_i R_f} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, .
 \end{align}
 This results in the final expression for the magnetic field:
 \begin{equation}
- \boxed{\mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i } \, .
+ \mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, .
 \end{equation}
 
 \subsection{Circular Wire Loop}
@@ -274,31 +283,44 @@ Thus, $\tilde{A}_\varphi(\rho',z')$~can be expressed as follows:
    \textrm{cel}\,(k_c, 1, -1, 1) \, . \label{eqn:cwl_A_phi_using_cel}
 \end{equation}
 This is equivalent to Eqn.~(3.2.1.6) in Ref.~\cite{teal}.
-The near-field (close to~$\rho' = 1$) is handled by normalizing terms to~$|\rho'-1|$:
+The near-field (close to~$\rho' = 1$) is handled by normalizing terms to~$\rho'-1$:
 \begin{equation}
  \tilde{A}_\varphi(\rho',z')
  = \frac{1}{|\rho'-1| \sqrt{\left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2}}
-   \textrm{cel}\,(k_c, 1, -1, 1) \label{eqn:cwl_A_phi_near}
+   \textrm{cel}\,(k_c, 1, -1, 1) \label{eqn:cwl_A_phi_near} \, .
 \end{equation}
-with
-\begin{equation}
-  k_c^2 =
-  \frac{\left(\frac{z'}{\rho'-1}\right)^2 + 1}
-       {\left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2} \, ,
-\end{equation}
+Introduce~$n$ and~$m$ with:
+\begin{align}
+  n \equiv&\, \frac{z'}{\rho'-1} \\
+  m \equiv&\, \frac{\rho' + 1}{\rho'-1}
+    = 1 + \frac{2}{\rho' - 1}
+\end{align}
 where the following was used:
 \begin{equation}
     \frac{\rho' + 1}{\rho' - 1}
   = \frac{\rho'-1 + 2}{\rho' - 1}
   = 1 + \frac{2}{\rho' - 1} \, .
 \end{equation}
+This implies:
+\begin{equation}
+ \tilde{A}_\varphi(\rho',z')
+ = \frac{1}{|\rho'-1| \sqrt{n^2 + m^2}} \textrm{cel}\,(k_c, 1, -1, 1) \, .
+\end{equation}
+and
+\begin{align}
+  k_c^2
+ =&\, \frac{\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' - 1}{\rho'-1} \right)^2}
+           {\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' + 1}{\rho'-1} \right)^2} \nonumber \\
+ =&\, \frac{n^2 + 1}
+           {n^2 + m^2} \, . \label{eqn:cwl_kCSq_mn}
+\end{align}
 The formulation presented in~\eqn{cwl_A_phi_near} is used in~\eqn{cwl_A_phi_n}.
 It remains to derive the special case formulation used in~\eqn{cwl_A_phi_v} for~$\rho'=1$.
 First, it is noted that inserting~$\rho'=1$ into~$k_c^2$ from~\eqn{kCSq_general} leads to:
 \begin{equation}
   k_c^2 = \frac{z'^2}{z'^2 + 4} \, .
 \end{equation}
-This implies the following form of the factor in front of~\texttt{cel} in~\eqn{cwl_A_phi_using_cel}
+This implies the following form of the factor in front of cel in~\eqn{cwl_A_phi_using_cel}
 for the case of~$\rho'=1$:
 \begin{equation}
   \frac{1}{\sqrt{z'^2 + 4}} = \frac{k_c}{|z'|} \, .
@@ -306,14 +328,14 @@ for the case of~$\rho'=1$:
 It follows~\cite{bulirsch_3}:
 \begin{align}
   \tilde{A}_\varphi(\rho'=1,z') =&\, \frac{k_c}{|z'|} \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
-  ~ =&\, \frac{k_c}{|z'|} \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
-  ~ =&\,   \frac{1}{|z'|} \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{\sin^2(\varphi) + \frac{1}{k_c^2} \cos^2(\varphi)}} \,\mathrm{d}\varphi \, .
+  ~ =&\, \frac{k_c}{|z'|} \int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}{\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
+  ~ =&\,   \frac{1}{|z'|} \int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}{\sqrt{\sin^2(\varphi) + \frac{1}{k_c^2} \cos^2(\varphi)}} \,\mathrm{d}\varphi \, .
 \end{align}
 A change of variables is performed from~$\varphi$ to~$\beta = \varphi - \pi/2 \Leftrightarrow \varphi = \beta + \pi/2$:
-\begin{equation}
-   \int\limits_0^{\pi/2} \frac{\sin^2{\varphi} - \cos^2(\varphi)}{\sqrt{\sin^2(\varphi) + \frac{1}{k_c^2} \cos^2(\varphi)}} \,\mathrm{d}\varphi
- = \int\limits_{-\pi/2}^{0} \frac{\sin^2{\beta + \pi/2} - \cos^2(\beta + \pi/2)}{\sqrt{\sin^2(\beta + \pi/2) + \frac{1}{k_c^2} \cos^2(\beta + \pi/2)}} \,\mathrm{d}\beta \, .
-\end{equation}
+\begin{align}
+ ~&\,  \int\limits_0^{\pi/2} \frac{\sin^2(\varphi) - \cos^2(\varphi)}{\sqrt{\sin^2(\varphi) + \frac{1}{k_c^2} \cos^2(\varphi)}} \,\mathrm{d}\varphi \nonumber \\
+ =&\, \int\limits_{-\pi/2}^{0} \frac{\sin^2(\beta + \pi/2) - \cos^2(\beta + \pi/2)}{\sqrt{\sin^2(\beta + \pi/2) + \frac{1}{k_c^2} \cos^2(\beta + \pi/2)}} \,\mathrm{d}\beta \, .
+\end{align}
 The shift in the arguments to~$\sin$ and~$\cos$ are incorporated according to:
 \begin{align}
   \cos(\beta + \pi/2) =&\,          -    \sin{\beta} \\
@@ -326,18 +348,18 @@ This leads to:
 \end{align}
 The limits of the integral are swapped and a negative sign is introduced in order to compensate this:
 \begin{equation}
-   \frac{1}{|z'|} \int\limits_{-\pi/2}^{0} \frac{\cos^2{\beta} - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta
- = \frac{-1}{|z'|} \int\limits_{0}^{-\pi/2} \frac{\cos^2{\beta} - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta \, .
+   \frac{1}{|z'|} \int\limits_{-\pi/2}^{0} \frac{\cos^2(\beta) - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta
+ = \frac{-1}{|z'|} \int\limits_{0}^{-\pi/2} \frac{\cos^2(\beta) - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta \, .
 \end{equation}
 Another change of variables~$\varphi = -\beta$ is performed.
 This integrand is even-symmetric and thus, the change of variables leads to
 the following expression:
 \begin{equation}
-   \frac{-1}{|z'|} \int\limits_{0}^{-\pi/2} \frac{\cos^2{\beta} - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta
- = \frac{1}{|z'|} \int\limits_{0}^{\pi/2} \frac{\cos^2{\varphi} - \sin^2(\varphi)}{\sqrt{\cos^2(\varphi) + \frac{1}{k_c^2} \sin^2(\varphi)}} \,\mathrm{d}\varphi \, .
+   \frac{-1}{|z'|} \int\limits_{0}^{-\pi/2} \frac{\cos^2(\beta) - \sin^2(\beta)}{\sqrt{\cos^2(\beta ) + \frac{1}{k_c^2} \sin^2(\beta)}} \,\mathrm{d}\beta
+ = \frac{1}{|z'|} \int\limits_{0}^{\pi/2} \frac{\cos^2(\varphi) - \sin^2(\varphi)}{\sqrt{\cos^2(\varphi) + \frac{1}{k_c^2} \sin^2(\varphi)}} \,\mathrm{d}\varphi \, .
 \end{equation}
 Note that the negative sign at the front has been incorporated into the sign change of the integration differential.
-This result can now be evaluated using~\texttt{cel} again:
+This result can now be evaluated using cel again:
 \begin{equation}
   \tilde{A}_\varphi(\rho'=1,z') = \frac{1}{|z'|} \textrm{cel}\,\left(\frac{1}{k_c}, 1, 1, -1\right) \, .
 \end{equation}
@@ -389,7 +411,7 @@ with
 Five derivatives are required in order to formulate the expressions for~$B_\rho$ and~$B_z$.
 They originate from the chain rule and the product rule applied in~\eqn{cwl_norm_B_rho} and~\eqn{cwl_norm_B_z}
 to the formulation of $\tilde{A}_\varphi$ in \eqn{cwl_A_phi_using_cel}.
-First, consider the partial derivatives of the factor in front of~\texttt{cel}:
+First, consider the partial derivatives of the factor in front of cel:
 \begin{align}
       \frac{\partial}{\partial z'} \left( \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right)
  =&\, \frac{\partial}{\partial z'} \left[ z'^2 + (1 + \rho')^2 \right]^{-1/2} \nonumber \\
@@ -417,7 +439,7 @@ by using
  =&\, 1 - k^2 \sin^2(\varphi) \, .
 \end{align}
 The parameter of~$\textrm{cel}\,(k_c, 1, -1, 1)$ only appears in the denominator of the integrand.
-This implies that it suffices to compute the derivative of it
+This implies that it suffices to compute the derivative of the denominator
 in order to compute the derivative of~$\textrm{cel}\,(k_c, 1, -1, 1)$:
 \begin{align}
       \frac{\partial}{\partial(k^2)} \left( \frac{1}{\sqrt{1 - k^2 \sin^2(\varphi)}} \right)
@@ -510,7 +532,7 @@ This is the form of~$\tilde{B}_\rho$ used in \eqn{cwl_B_rho_f}.
 The near-field formulation is obtained from this by normalizing to~$\rho'-1$:
 \begin{equation}
   \tilde{B}_\rho
- = \frac{4 \rho' \left|\frac{z'}{\rho'-1}\right| \left( \mathcal{D} - \mathcal{C} \right) }
+ = \frac{4 \rho' \frac{z'}{|\rho'-1|} \left( \mathcal{D} - \mathcal{C} \right) }
         {(\rho'-1)^4 \left[ \left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2 \right]^{3/2}
                      \left[ \left(\frac{z'}{\rho'-1}\right)^2 + 1 \right]} \, .
 \end{equation}
@@ -537,6 +559,7 @@ This allows to write:
  \tilde{B}_\rho = \frac{1}{2} k_c \left[ \left( \frac{2}{z'^2} + 1 \right) \mathcal{E} - \mathcal{K} \right] \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_rho_v}.
+
 In order to derive the vertical component of the magnetic field,~$\tilde{B}_z$,
 we start again from~\eqn{cwl_A_phi_using_cel} for the magnetic vector potential
 and insert it into~\eqn{cwl_norm_B_z}:
@@ -546,7 +569,11 @@ and insert it into~\eqn{cwl_norm_B_z}:
  ~&\, + \frac{\partial}{\partial \rho'} \left[ \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \right] \nonumber \\
  =&\,   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{\partial}{\partial \rho'} \left[ \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \right] \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
- ~&\, + \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \frac{\partial}{\partial (k^2)} \,\textrm{cel}\,(k_c, 1, -1, 1) \frac{\partial (k^2)}{\partial \rho'} \nonumber \\
+ ~&\, + \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \frac{\partial}{\partial (k^2)} \,\textrm{cel}\,(k_c, 1, -1, 1) \frac{\partial (k^2)}{\partial \rho'} \, .
+\end{align}
+Continuing:
+\begin{align}
+ \tilde{B}_z
  =&\,   \frac{1}{\rho' \sqrt{z'^2 + (1 + \rho')^2}} \,\textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{-(1 + \rho')}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \textrm{cel}\,(k_c, 1, -1, 1) \nonumber \\
  ~&\, + \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}}
@@ -710,11 +737,11 @@ using~\eqn{cwl_B_z_star} and~\eqn{cel_kc_kcSq} as follows:
 \begin{align}
  \tilde{B}_z
  =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}} \frac{1}{k_c^2}
-      \left\{ \mathcal{E} -\rho' \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
+      \left[ \mathcal{E} -\rho' \left( 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right) \right] \nonumber \\
  =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
-      \left\{ \frac{1}{k_c^2} \mathcal{E} - \rho' \frac{1}{k_c^2} \left[ 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right] \right\} \nonumber \\
+      \left[ \frac{1}{k_c^2} \mathcal{E} - \rho' \frac{1}{k_c^2} \left( 2 \mathcal{K} - \mathcal{E} - 2 \mathcal{D} \right) \right] \nonumber \\
  =&\, \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
-      \left\{ \frac{1}{k_c^2} \mathcal{E} - \rho' \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right\} \, .
+      \left[ \frac{1}{k_c^2} \mathcal{E} - \rho' \,\textrm{cel}\,(k_c, k_c^2, -1, 1) \right] \, .
 \end{align}
 Integral~(2.584.37) from Ref.~\cite{gradshteyn_ryzhik} is used as follows:
 \begin{align}
@@ -731,32 +758,18 @@ It follows:
 \end{equation}
 This is the formulation of~$\tilde{B}_z$ consistent with Eqn.~(14) of Ref.~\cite{walstrom_2017}.
 The terms in~\eqn{cwl_B_z_14} are now normalized to $\rho'-1$ for use close to the wire loop.
-Introduce~$n$ and~$m$ with:
-\begin{align}
-  n \equiv&\, \frac{z'}{\rho'-1} \\
-  m \equiv&\, \frac{\rho' + 1}{\rho'-1}
-    = 1 + \frac{2}{\rho' - 1} \, .
-\end{align}
 Then:
 \begin{align}
   \frac{1}{\left[z'^2 + (1 + \rho')^2\right]^{3/2}}
  =&\, \left| \rho' - 1 \right|^{-3} \left[ \left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' + 1}{\rho'-1} \right)^2 \right]^{-3/2} \nonumber \\
  =&\, \left| \rho' - 1 \right|^{-3} \left[ n^2 + m^2 \right]^{-3/2}
 \end{align}
-and:
-\begin{align}
-  k_c^2
- =&\, \frac{\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' - 1}{\rho'-1} \right)^2}
-           {\left(\frac{z'}{\rho'-1}\right)^2 + \left( \frac{\rho' + 1}{\rho'-1} \right)^2} \nonumber \\
- =&\, \frac{n^2 + 1}
-           {n^2 + m^2} \, . \label{eqn:cwl_B_z_n_kCSq}
-\end{align}
 Putting things back together, we arrive at:
 \begin{equation}
   \tilde{B}_z
  = \frac{1}{\left| \rho' - 1 \right|^3 \left[ n^2 + m^2 \right]^{3/2} } \,\textrm{cel}\,(k_c, k_c^2, 1 + \rho', 1 - \rho')
 \end{equation}
-with~$k_c = \sqrt{k_c^2}$ and $k_c^2$ from \eqn{cwl_B_z_n_kCSq}.
+with~$k_c = \sqrt{k_c^2}$ and $k_c^2$ from \eqn{cwl_kCSq_mn}.
 This is the formulation used in \eqn{cwl_B_z_n} of this work.
 Above expression cannot be used to compute~$\tilde{B}_z$ close to the wire loop at $\rho'=1$.
 Therefore, one final special-case formulation is required.

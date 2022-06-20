@@ -161,8 +161,8 @@ A suitable global set of test points is introduced and the methods presented in 
 are tested against results obtained using arbitrary-precision arithmetic on all test points.
 The results are accurate to approximately 16 decimal digits of precision when computed using 64 bit floating point arithmetic,
 with few exceptions where accuracy drops to 13 digits.
-These primitive types can be used to make up more complex current carrier arrangements,
-such as a current along a polygon (by means of defining straight wire segments from point to point of the polygon)
+These primitive current carrier types can be used to make up more complex arrangements,
+such as a current along a polygon (by means of defining straight wire segments from point to point along the polygon)
 and a multi-winding coil with circular cross-section (by positioning circular wire loops at appropriate positions in the coils cross-section).
 Reference data is provided along with the code to compute it
 for testing the reader's routines against this work.
@@ -202,13 +202,6 @@ magnetostatics; Biot-Savart; straight wire segment; circular wire loop; magnetic
   %Provide any additional comments here.
 The implementations provided here have not been optimized for speed.
    \\
-
-\begin{thebibliography}{0}
-\bibitem{1}Reference 1         % This list should only contain those items referenced in the
-\bibitem{2}Reference 2         % Program Summary section.
-\bibitem{3}Reference 3         % Type references in text as [1], [2], etc.
-                               % This list is different from the bibliography at the end of the Long Write-Up.
-\end{thebibliography}
 \end{small}
 
 
@@ -217,7 +210,7 @@ The implementations provided here have not been optimized for speed.
 \include{abscab_Methods.tex}
 \include{abscab_Results.tex}
 \include{abscab_Discussion.tex}
-\include{abscab_ConcludingRemarks.tex}
+\include{abscab_Outlook.tex}
 
 
 %% The Appendices part is started with the command \appendix;

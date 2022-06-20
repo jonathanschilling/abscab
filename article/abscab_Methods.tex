@@ -2,7 +2,7 @@
 \label{sec:methods}
 In this section, accurate methods used to compute the magnetic vector potential and the magnetic field
 of a straight wire segment and a circular wire loop are presented.
-Furthermore, methods to evaluate the magnetostatic quantities in Cartesian coordinates are provided.
+Furthermore, methods to evaluate the magnetostatic quantities in global coordinates are provided.
 The section is concluded by a description of the verification procedure
 employed to benchmark these methods.
 
@@ -11,8 +11,14 @@ The straight wire segment is handled first.
 The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWireSegment}.
 \begin{figure}[htbp]
  \centering
- \includegraphics{img/straightWireSegment.eps}
- \caption{Geometry of a single wire segment. After Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.}
+ \includegraphics[width=8cm]{img/straightWireSegment.eps}
+ \caption{Geometry of a single wire segment after Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.
+          A cylindrical coordinate system~$(\rho, \varphi,z)$ is aligned with the wire segment~(red line),
+          such that the wire is aligned with the $z$-axis and starts at the origin.
+          A current $I$ flows along the wire segment of length~$L$ in positive~$z$ direction~(red arrow).
+          The evaluation point is specified by~$\mathbf{x} = (\rho, \varphi=0, z)$.
+          $R_\mathrm{i}$ ($R_\mathrm{f}$) denotes the distance from the start (end) of the wire segment to the evaluation location.
+          The angles $\alpha$ and $\beta$ are used in the formulas below.}
  \label{fig:straightWireSegment}
 \end{figure}
 
@@ -32,17 +38,18 @@ with
        R_\mathrm{i} =&\, \sqrt{\rho^2 + z^2} \\
        R_\mathrm{f} =&\, \sqrt{\rho^2 + (1 - z)^2} \, .
 \end{align}
-Here, we use normalized coordinates~$\rho' = \rho/L$ and~$z' = z/L$.
+In this work normalized coordinates~$\rho' = \rho/L$ and~$z' = z/L$ are used.
 This leads to the following expressions
 for~$r_\mathrm{i} = R_\mathrm{i}/L$ and~$r_\mathrm{f} = R_\mathrm{f}/L$:
 \begin{align}
   r_\mathrm{i} =&\, \sqrt{{\rho'}^2 +      {z'}^2 }       \label{eqn:r_i_default} \\
   r_\mathrm{f} =&\, \sqrt{{\rho'}^2 + (1 - {z'})^2}       \label{eqn:r_f_default} \\
+  \Rightarrow
   \epsilon     =&\, \frac{1}{r_\mathrm{i} + r_\mathrm{f}} \label{eqn:eps_default}\, .
 \end{align}
 A common prefactor depending on the current~$I$ and~$\mu_0$ is split off:
 \begin{equation}
-  A_z(\rho, z) = \frac{\mu_0 I}{2 \pi} \tilde{A}_z (\rho', z')
+  A_z(\rho', z') = \frac{\mu_0 I}{2 \pi} \tilde{A}_z (\rho', z')
 \end{equation}
 with
 \begin{equation}
@@ -55,8 +62,8 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{A}_z (\rho', z') =
   \begin{cases}
-    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0 , \textrm{ any } z'      \\
-    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \textrm{any } \rho', z' \in \{0, 1\} \\
+    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0 , \textrm{any } z'      \\
+    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \rho' > 0, z' \in \{0, 1\} \\
     \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq 1 \textrm{ or } z' > 2 \\
     \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{else} \, .
   \end{cases}
@@ -87,11 +94,11 @@ The following formulation is used for the cases $z'=0$ or $z'=1$:
 \end{equation}
 with
 \begin{equation}
-  \tilde{A}_\mathrm{z,rad,f} (z') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right)
+  \tilde{A}_\mathrm{z,rad,f} (\rho') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right)
 \end{equation}
 and
 \begin{equation}
-  \tilde{A}_\mathrm{z,rad,n} (z') = \frac{1}{2} \ln \left(\frac{\rho' c + 1 + c}{\rho' c + 2 s^2 }\right) \, ,
+  \tilde{A}_\mathrm{z,rad,n} (\rho') = \frac{1}{2} \ln \left(\frac{\rho' c + 1 + c}{\rho' c + 2 s^2 }\right) \, ,
 \end{equation}
 where
 \begin{align}
@@ -113,8 +120,9 @@ with
   r_\mathrm{i} - z'       =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:ri_zp} \\
   r_\mathrm{f} - (1 - z') =&\, 2 r_\mathrm{f} \sin^2(\beta/2)  \label{eqn:rf_zp_1} \\
   \alpha =&\, \texttt{atan2}(\rho', z')   \label{eqn:sws_alpha} \\
-  \beta  =&\, \texttt{atan2}(\rho', 1-z') \label{eqn:sws_beta} \, .
+  \beta  =&\, \texttt{atan2}(\rho', 1-z') \label{eqn:sws_beta}
 \end{align}
+and~$r_\mathrm{i}$, $r_\mathrm{f}$ from~\eqn{r_i_default}, \eqn{r_f_default}, respectively.
 
 \subsubsection{Magnetic Field}
 The magnetic field of a straight wire segment
@@ -128,10 +136,10 @@ is given by~\cite{hanson_hirshman_2002}:
 The vector~$\mathbf{R}_\mathrm{i}$ has components in directions parallel~($z$) and perpendicular~($\rho$) to the wire segment:
 \begin{equation}
  \mathbf{R}_\mathrm{i}
- = z \,\hat{\mathbf{e}}_z + \rho \,\hat{\mathbf{e}}_\rho
+ = z \,\hat{\mathbf{e}}_z + \rho \,\hat{\mathbf{e}}_\rho \label{eqn:R_i_vec}
 \end{equation}
 where $\rho$ and $z$ are cylindrical coordinates in the coordinate system aligned with the wire segment.
-The vector-valued term in~\eqn{sws_B_phi} is reformulated as follows:
+The vector-valued term in~\eqn{sws_B_phi} is reformulated as follows by inserting \eqn{R_i_vec}:
 \begin{align}
  \hat{\mathbf{e}}_z \times \mathbf{R}_\mathrm{i}
  =&\, \hat{\mathbf{e}}_z \times \left( z \,\hat{\mathbf{e}}_z + \rho \,\hat{\mathbf{e}}_\rho \right) \nonumber \\
@@ -139,7 +147,7 @@ The vector-valued term in~\eqn{sws_B_phi} is reformulated as follows:
       + \rho \underbrace{\hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho}_{=\hat{\mathbf{e}}_\varphi}
  = \rho \,\hat{\mathbf{e}}_\varphi \, .
 \end{align}
-It follows that the magnetic field of a straight wire segment only has a component~$B_\varphi$ in tangential direction:
+It follows that the magnetic field of a straight wire segment only has a component~$B_\varphi$ in tangential~($\varphi$) direction:
 \begin{equation}
  \mathbf{B} = B_\varphi \hat{\mathbf{e}}_\varphi
 \end{equation}
@@ -150,17 +158,17 @@ with
    \frac{2 \rho L (R_\mathrm{i} + R_\mathrm{f})}{R_\mathrm{i} R_\mathrm{f}}
    \frac{1}{\left(R_\mathrm{i} + R_\mathrm{f}\right)^2 - L^2} \, .
 \end{equation}
-This is now reformulated to use normalized quantities
+This is now reformulated to use normalized coordinates
 (as done above for the computation of the magnetic vector potential):
 \begin{equation}
- B_\varphi
+ B_\varphi(\rho', z')
  = \frac{\mu_0 I}{4 \pi L}
    \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
    \frac{2 \rho'}{\left( r_\mathrm{i} + r_\mathrm{f} \right)^2 - 1} \, .
 \end{equation}
 Again a normalization factor is split off:
 \begin{equation}
-  B_\varphi(\rho, z) = \frac{\mu_0 I}{4 \pi L} \tilde{B}_\varphi(\rho', z')
+  B_\varphi(\rho', z') = \frac{\mu_0 I}{4 \pi L} \tilde{B}_\varphi(\rho', z')
 \end{equation}
 with
 \begin{equation}
@@ -187,8 +195,8 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{B}_\varphi (\rho', z') =
   \begin{cases}
-    0                                            &:\, \rho' = 0 , \textrm{ any } z'      \\
-    \tilde{B}_{\varphi,\mathrm{rad}} (\rho')     &:\, \textrm{any } \rho', z' \in \{0, 1\} \\
+    0                                            &:\, \rho' = 0 , \textrm{any } z'      \\
+    \tilde{B}_{\varphi,\mathrm{rad}} (\rho')     &:\, \rho' > 0, z' \in \{0, 1\} \\
     \tilde{B}_{\varphi,\mathrm{f}}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq 0 \textrm{ or } z' \geq 1 \\
                                             ~    & ~ \textrm{ or } \rho'/(1-z') \geq 1  \\
                                             ~    & ~ \textrm{ or } \rho'/z'   \geq 1 \\
@@ -223,10 +231,11 @@ The basic geometry of a circular wire loop under consideration here is shown in 
  \includegraphics[width=0.5\textwidth]{img/circularWireLoop.eps}
  \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.
           The radius of the loop is denoted $a$ and a current $I$ flows in the indicated direction.
-          The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.}
+          The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.
+          The coordinates of the evaluation point can be expressed in spherical coordinates as~$(r, \theta)$
+          or in cylindrical coordinates as~$(\rho, z)$.}
  \label{fig:circularWireLoop}
 \end{figure}
-
 Similar to the case of the straight wire segment,
 the magnetic vector potential and the magnetic field of the circular wire loop
 are assembled from various formulations for special cases of the far-field and the near-field.
@@ -251,19 +260,29 @@ Here, $\mathcal{K}(k)$ and $\mathcal{E}(k)$ are the complete elliptic integrals 
 Spherical coordinates~$(r, \theta)$ are used to specify the evaluation location.
 The corresponding cylindrical coordinates~$(\rho, z)$ are given by
 $\rho = r \sin(\theta)$ and $z = \sqrt{r^2 - \rho^2}$.
-Normalized coordinates are used with
+Normalized coordinates~$(\rho', z')$ are introduced with
 \begin{align}
-  \rho' = \rho / a \label{eqn:rhoP} \\
-    z'  =   z  / a \label{eqn:zP} \, .
+  \rho' =&\, \rho / a \label{eqn:rhoP} \\
+    z'  =&\,   z  / a \label{eqn:zP}   \, .
 \end{align}
-An expression for the linear combination of $\mathcal{K}(k)$ and $\mathcal{E}(k)$ from Ref.~\cite{bulirsch_3}
+An expression for the linear combination of $\mathcal{K}(k)$ and $\mathcal{E}(k)$
 is used to reformulate the expression provided by Jackson:
 \begin{equation}
-  \lambda \mathcal{K}(k) + \mu \mathcal{E}(k) = \,\mathrm{cel}(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2)
+  \lambda \mathcal{K}(k) + \mu \mathcal{E}(k) = \,\mathrm{cel}(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2) \label{eqn:K_E_by_cel}
 \end{equation}
 where
 \begin{equation}
-  k_\mathrm{c}^2 = 1 - k^2 \, .
+  k_\mathrm{c}^2 = 1 - k^2
+\end{equation}
+and cel is the so-called general complete elliptic integral
+introduced by Bulirsch~\cite{bulirsch_3}:
+\begin{equation}
+  \mathrm{cel}(k_c, p, a, b) =
+  \int\limits_0^{\pi/2}
+    \frac{a \cos^2(\varphi) + b \sin^2(\varphi)}
+         {\cos^2(\varphi) + p \sin^2(\varphi)}
+    \frac{\mathrm{d}\varphi}
+         {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \, .
 \end{equation}
 The argument of the elliptic integrals is considered first:
 \begin{align}
@@ -279,12 +298,12 @@ This implies:
 \begin{equation}
   k_c^2 = \frac{z'^2 + (1 - \rho')^2}{z'^2 + (1 + \rho')^2} \, . \label{eqn:kCSq_general}
 \end{equation}
-The coefficients of the elliptic integrals are identified as follows:
+The coefficients of the elliptic integrals in \eqn{cwl_A_phi_Jackson} are identified as follows:
 \begin{align}
   \lambda &= \frac{2 - k^2}{k^2} = \frac{2}{k^2} - 1 \\
   \mu     &= -\frac{2}{k^2}
 \end{align}
-and their combinations are as follows:
+and their combinations are as follows for use in \eqn{K_E_by_cel}:
 \begin{align}
   \lambda + \mu       &= \frac{2}{k^2} - 1 - \frac{2}{k^2}     = -1 \\
   \lambda + \mu k_c^2 &= \frac{2}{k^2} - 1 - \frac{2}{k^2} (1 - k^2) \nonumber \\
@@ -296,7 +315,7 @@ Putting above results together, we arrive at the following expression for $A_\va
                         \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1) \, . \label{eqn:cwl_A_phi_cel}
 \end{equation}
 It is favorable for numerical evaluation of $A_\varphi$ to use the form given in \eqn{cwl_A_phi_cel}
-where the linear combination of the complete elliptic integrals is embedded in the parameters of $\mathrm{cel}(k_c, p, a, b)$
+where the linear combination of the complete elliptic integrals is embedded in the parameters of cel
 and less precautions need to be taken to deal with cancellations in \eqn{cwl_A_phi_Jackson}.
 A physics-oriented prefactor is split off to be able to focus on geometry in the following:
 \begin{equation}
@@ -307,14 +326,14 @@ with
   \tilde{A}_\varphi(\rho',z')
   = \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1) \, .
 \end{equation}
-One of several formulations is chosen depending on the evaluation location~$(\rho', z')$:
+One of several formulations for $\tilde{A}_\varphi$ is chosen depending on the evaluation location~$(\rho', z')$:
 \begin{equation}
   \tilde{A}_\varphi (\rho', z') =
   \begin{cases}
     0                                          &:\, \rho' = 0 , \textrm{ any } z' \\
-    \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
+    \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, 0 < \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
     \tilde{A}_{\varphi,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
-    \tilde{A}_{\varphi,\mathrm{v}} (\rho', z') &:\, \textrm{else} \, .
+    \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \textrm{else} \, .
   \end{cases} \label{eqn:A_phi_final}
 \end{equation}
 The following formula is implemented for evaluation locations away from the wire loop:
@@ -340,7 +359,7 @@ with $k_c^2$ computed as follows:
 At~$\rho' = 1$, some further simplification can be carried out.
 This leads to the following formulation for~$\rho' = 1$ and~$|z'| < 1$:
 \begin{equation}
-  \tilde{A}_{\varphi,\mathrm{v}} (\rho'=1, z') = \frac{1}{|z'|} \,\mathrm{cel}\left(\frac{1}{k_c}, 1, 1, -1\right) \label{eqn:cwl_A_phi_v}
+  \tilde{A}_{\varphi,\mathrm{v}} (z') = \frac{1}{|z'|} \,\mathrm{cel}\left(\frac{1}{k_c}, 1, 1, -1\right) \label{eqn:cwl_A_phi_v}
 \end{equation}
 with $k_c$ computed as follows:
 \begin{equation}
@@ -349,27 +368,30 @@ with $k_c$ computed as follows:
 
 \subsubsection{Magnetic Field}
 The magnetic field produced by a circular wire loop is made up of two components:
-$B_\rho$ denotes the radial component and $B_z$ denotes the vertical component.
-The radial component~$B_\rho$ is given by:
+\begin{equation}
+  \mathbf{B} = B_\rho \hat{\mathbf{e}}_\rho + B_z \hat{\mathbf{e}}_z
+\end{equation}
+where $B_\rho$ denotes the radial component and $B_z$ denotes the vertical component.
+The radial component~$B_\rho$ is given by~\cite{teal}:
 \begin{equation}
   B_\rho(\rho', z')
-  = \frac{\mu_0 I}{\pi a} \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}} \,\mathrm{cel}(k_c, k_c^2, -1, 1)
+  = \frac{\mu_0 I}{\pi a} \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \,\mathrm{cel}(k_c, k_c^2, -1, 1)
 \end{equation}
 Also here, a normalization factor is split off:
 \begin{equation}
-  B_\rho(\rho, z) = \frac{\mu_0 I}{\pi a} \tilde{B}_\rho(\rho', z')
+  B_\rho(\rho', z') = \frac{\mu_0 I}{\pi a} \tilde{B}_\rho(\rho', z')
 \end{equation}
 with
 \begin{align}
   \tilde{B}_\rho(\rho', z')
-  =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{\frac{3}{2}}} \,\mathrm{cel}(k_c, k_c^2, -1, 1) \, .
+  =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \,\mathrm{cel}(k_c, k_c^2, -1, 1) \, .
 \end{align}
 One of several formulations is chosen depending on the evaluation location~$(\rho', z')$:
 \begin{equation}
   \tilde{B}_\rho(\rho', z')
   = \begin{cases}
       0                                 &:\, \rho' = 0, \textrm{ any } z' \\
-                    ~                   &\, ~\textrm{ or any } \rho', z' = 0 \\
+                    ~                   &\, ~\textrm{ or } \rho' > 0, z' = 0 \\
       \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
       \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
       \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else} \, .
@@ -384,7 +406,7 @@ The following formulation is implemented for evaluation locations away from to t
 with
 \begin{equation}
   \mathcal{D}(k_c)
-  = \frac{\mathcal{K}(k_c) - \,\mathcal{E}(k_c)}{k^2}
+  = \frac{\mathcal{K}(k) - \,\mathcal{E}(k)}{k^2}
   = \,\mathrm{cel}(k_c, 1, 0, 1) \, . \label{eqn:elliptic_d}
 \end{equation}
 For points close to the wire loop, but with~$\rho' \neq 1$, the following formulation is used:
@@ -404,9 +426,14 @@ Finally, for $\rho'=1$ and~$|z'| < 1$, the following formulation is used:
 \end{equation}
 with
 \begin{equation}
-  k_c^2 = \frac{1}{1 + 4/{z'}^2} \, .
+  k_c^2 = \frac{1}{1 + 4/{z'}^2}
 \end{equation}
-The vertical component~$B_z$ of the magnetic field of a circular wire loop is given by:
+and
+\begin{align}
+  \mathcal{K}(k_c) =&\, \,\mathrm{cel}(k_c, 1, 1, 1) \\
+  \mathcal{E}(k_c) =&\, \,\mathrm{cel}(k_c, 1, 1, k_c^2) \, .
+\end{align}
+The vertical component~$B_z$ of the magnetic field of a circular wire loop is given by~\cite{teal}:
 \begin{align}
  B_z(\rho', z')
  =&\, \frac{\mu_0 I}{2 \pi a}
@@ -416,20 +443,9 @@ The vertical component~$B_z$ of the magnetic field of a circular wire loop is gi
      + \frac{1 + k_c^2 - \left( 1 - k_c^2 \right) \rho'}{2} \textrm{cel}(k_c, k_c^2, -1, 1)
    \right]
 \end{align}
-One of several formulations is selected depending on the evaluation location~$(\rho', z')$:
-\begin{equation}
-  \tilde{B}_z(\rho', z')
-  = \begin{cases}
-      \tilde{B}_{z,1} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } (\rho' < 2 \textrm{ and } z' \geq 1) \\
-      \tilde{B}_{z,2} (\rho', z') &:\, \rho' \geq 2 \\
-      \tilde{B}_{z,4} (\rho', z') &:\, \rho' = 1 \\
-      \tilde{B}_{z,5} (\rho', z') &:\, z' \neq 0 \\
-      \tilde{B}_{z,6} (\rho', z') &:\, \textrm{else}
-    \end{cases} \, .
-\end{equation}
 A normalization factor is split off here as well:
 \begin{equation}
-  B_z(\rho, z) = \frac{\mu_0 I}{\pi a} \tilde{B}_z(\rho', z')
+  B_z(\rho', z') = \frac{\mu_0 I}{\pi a} \tilde{B}_z(\rho', z')
 \end{equation}
 with
 \begin{align}
@@ -441,102 +457,83 @@ with
    \right] \, .
 \end{align}
 The evaluation of this formula is split up as well into separate special cases.
-For points not too close to the wire loop,
-the following formulation is used:
-\begin{align}
-  \tilde{B}_{z,1} (\rho', z')
-  =&\, \frac{1}{\sqrt{{z'}^2 + (1+\rho')^2} \left[{z'}^2 + (1 - \rho')^2 \right] } \nonumber \\
-  ~&\,  \left[ \mathcal{E}(k_c) + \rho' \left( \mathcal{E}(k_c) - 2 \mathcal{K}(k_c) + 2 \mathcal{D}(k_c) \right) \right] \, . \label{eqn:cwl_B_z_f1}
-\end{align}
-A second method is needed for points with $\rho' > 2$:
+One of several formulations is selected depending on the evaluation location~$(\rho', z')$:
 \begin{equation}
-  \tilde{B}_{z,2} (\rho', z')
-  = \frac{1}{\sqrt{r_0} {\rho'}^3}
-    \left[ \mathcal{E}(k_c) + \frac{4}{t} \left( \mathcal{C}(k_c) - \,\mathcal{D}(k_c) \right) \right] \label{eqn:cwl_B_z_f2}
+  \tilde{B}_z(\rho', z')
+  = \begin{cases}
+      \tilde{B}_{z,\mathrm{f1}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } (\rho' \leq 2 \textrm{ and } z' > 1) \\
+      \tilde{B}_{z,\mathrm{f2}} (\rho', z') &:\, \rho' > 2 \\
+      \tilde{B}_{z,\mathrm{v}} (z') &:\, \rho' = 1 \\
+      \tilde{B}_{z,\mathrm{n}} (\rho', z') &:\, \textrm{else}
+    \end{cases} \, .
+\end{equation}
+For points not too close to the wire loop, the following formulation is used:
+\begin{align}
+  \tilde{B}_{z,\mathrm{f1}} (\rho', z')
+  =&\, \frac{1}{\sqrt{{z'}^2 + (1+\rho')^2} \left[{z'}^2 + (1 - \rho')^2 \right] } \nonumber \\
+  ~&\,  \left\{ \mathcal{E}(k_c) + \rho' \left[ \mathcal{E}(k_c) - 2 \mathcal{K}(k_c) + 2 \mathcal{D}(k_c) \right] \right\} \, . \label{eqn:cwl_B_z_f1}
+\end{align}
+A second far-field method is needed for points with $\rho' > 2$:
+\begin{equation}
+  \tilde{B}_{z,\mathrm{f2}} (\rho', z')
+  = \frac{1}{\sqrt{t_1 + t_2}(t_1-t_2) {\rho'}^3}
+    \left\{ \mathcal{E}(k_c) + \frac{4}{\alpha_\mathrm{cd}} \left[ \mathcal{C}(k_c) - \,\mathcal{D}(k_c) \right] \right\} \label{eqn:cwl_B_z_f2}
 \end{equation}
 with
 \begin{align}
-  r_0
-  = &\,             1 + \frac{1}{\rho'} \Biggl[
-                  - 2 + \frac{1}{\rho'} \Biggl(
-         3 {z'}^2 - 1 + \frac{1}{\rho'} \Biggl\{
-       - 4 {z'}^2 + 4 \nonumber \\
-  ~& + \frac{1}{\rho'} \Biggl[ 3 \left( {z'}^2 + 1 \right)^2 - 4 \left( {z'}^2 + 1 \right) \nonumber \\
-  ~& + \frac{1}{\rho'} \Biggl(-2 \left( {z'}^2 + 1 \right)^2 + \frac{1}{\rho'} \left( {z'}^2 + 1 \right)^3
-       \Biggr)
-       \Biggr]
-       \Biggr\}
-       \Biggr)
-       \Biggr]
+  t_1 =&\, \frac{z'^2 + 1}{\rho'^2} + 1 \\
+  t_2 =&\, \frac{2}{\rho'}
 \end{align}
 and
 \begin{equation}
-  t = 1 + \frac{1}{\rho'} \left( 2 + \frac{1}{\rho'} \left[ {z'}^2 + 1 \right] \right) \, .
+  \alpha_\mathrm{cd} = 1 + \frac{1}{\rho'} \left[ 2 + \frac{1}{\rho'} \left( 1 + {z'}^2 \right) \right] \, .
 \end{equation}
 The expression for $\tilde{B}_z$ becomes significantly simpler at $\rho'=1$,
 which is considered next:
 \begin{equation}
-  \tilde{B}_{z,4} (\rho'=1, z')
-  = \frac{1}{\left[ {z'}^2 + 4 \right]^{3/2}} \,\mathrm{cel}(\sqrt{k_c^2}, k_c^2, 2, 0) \label{eqn:cwl_B_z_v}
+  \tilde{B}_{z,\mathrm{v}} (z')
+  = \frac{1}{\left[ {z'}^2 + 4 \right]^{3/2}} \,\mathrm{cel}\left(\sqrt{k_c^2}, k_c^2, 2, 0 \right) \label{eqn:cwl_B_z_v}
 \end{equation}
 with
 \begin{equation}
   k_c^2 = \frac{{z'}^2}{{z'}^2 + 4} \, .
 \end{equation}
-In the vicinity of the wire loop, but explicitly obeying $z' \neq 0$,
-the following method should be used to compute $\tilde{B}_z$:
+In the vicinity of the wire loop, but with $z' \neq 0$,
+the following method is used to compute $\tilde{B}_z$:
 \begin{equation}
-  \tilde{B}_{z,5} (\rho', z')
+  \tilde{B}_{z,\mathrm{n}} (\rho', z')
   = \frac{\,\mathrm{cel}\left( \sqrt{k_c^2}, k_c^2, 1 + \rho', 1 - \rho' \right) }
          {\left|\rho' - 1 \right|^3 \left[ \left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 \right]^{3/2} } \, . \label{eqn:cwl_B_z_n}
 \end{equation}
-Finally, only one more expression is needed to accurately compute $\tilde{B}_z$ at $z'=0$ close to the loop.
-Here it is:
-\begin{equation}
-  \tilde{B}_{z,6} (\rho', z'=0)
-  = \frac{1}{|1 + \rho'|^3}
-    \,\mathrm{cel}(k_c, k_c^2, 1+\rho', 1-\rho')
-\end{equation}
-with
-\begin{equation}
-  k_c = \frac{1-\rho'}{1+\rho'} \, .
-\end{equation}
-%
-% total assembly of B_z for circular wire loop
-%
 
-
-
-
-
-
-\subsection{Transformation to Cartesian Coordinates}
-Evaluation of the magnetic vector potential~$A$ and magnetic field~$B$
+\subsection{Evaluation in to Global Coordinates}
+Evaluation of the magnetic vector potential~$\mathbf{A}$ and magnetic field~$\mathbf{B}$
 produced by the current carriers considered in this work
-happens in cylindrical coordinates~$\rho$ and~$z$.
-It is often more convenient to be able to work in Cartesian coordinates.
+happens in cylindrical coordinates~$\rho$ and~$z$
+in the coordinate system of the current carriers.
+It is often more convenient to be able to work in global coordinates.
 The methods given in this section show how to transform the evaluation location
 into cylindrical coordinates in the frame of reference of the current carrier
-and subsequently transform back the magnetostatic quantities into the global Cartesian coordinate system.
+and subsequently transform back the magnetostatic quantities into the global global coordinate system.
 
 \subsubsection{Straight Wire Segment}
-Figure~\ref{fig:StraightWireSegment_MappingToCartesian} illustrates the setup of a straight wire segment.
+Figure~\ref{fig:StraightWireSegment_MappingToCartesian} illustrates the setup for a straight wire segment.
 \begin{figure}[htbp]
  \centering
  \includegraphics{img/StraightWireSegment_MappingToCartesian.eps}
- \caption{Mapping the components to Cartesian coordinates for an exemplary straight wire segment.
-          The wire segment is positioned from~$\mathbf{x}_i$ to~$\mathbf{x}_f$.
+ \caption{Mapping the components to global coordinates for an exemplary straight wire segment.
+          The wire segment is positioned from~$\mathbf{x}_\mathrm{i}$ to~$\mathbf{x}_\mathrm{f}$.
           Its parallel unit vector is denoted $\hat{\mathbf{e}}_z$.
           The length of the wire segment is denoted by~$L$.
           The evaluation location is denoted by~$\mathbf{r}$.}
  \label{fig:StraightWireSegment_MappingToCartesian}
 \end{figure}
-
 The length of the wire segment is denoted by~$L$:
 \begin{equation}
   L = |\mathbf{x}_f - \mathbf{x}_i| \, .
 \end{equation}
-The unit vector along the segment~$\hat{\mathbf{e}}_z$ is then computed as:
+If $L=0$, no contribution is taken into account from the wire segment.
+Otherwise, the unit vector along the segment~$\hat{\mathbf{e}}_z$ is computed as:
 \begin{equation}
   \hat{\mathbf{e}}_z = \frac{\mathbf{x}_f - \mathbf{x}_i}{L} \, .
 \end{equation}
@@ -553,24 +550,25 @@ For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
   \Delta \mathbf{r} = (\mathbf{r} - \mathbf{x}_i) - z \, \hat{\mathbf{e}}_z
 \end{equation}
 and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
-A unit vector in radial direction is formed as follows:
-\begin{equation}
-  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
-\end{equation}
 The normalized radial coordinate~$\rho'$ is then obtained as:
 \begin{equation}
   \rho' = \frac{\rho}{a} = \frac{1}{a} |(\mathbf{r} - \mathbf{x}_i) - z \, \hat{\mathbf{e}}_z| \, .
 \end{equation}
-The magnetic field of the straight wire segment consists of the tangential component~$B_\varphi$:
-\begin{equation}
-  \mathbf{B}(\mathbf{r}) = B_\varphi \hat{\mathbf{e}}_\varphi
-\end{equation}
-with $\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho$.
 The magnetic vector potential only has a component in parallel direction in the coordinate system of the wire segment.
 The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \begin{equation}
-  \mathbf{A}(\mathbf{r}) = A_z \hat{\mathbf{e}}_z \, .
+  \mathbf{A}(\mathbf{r}) = A_z(\rho', z') \hat{\mathbf{e}}_z \, .
 \end{equation}
+If $\rho' \neq 0$, a unit vector in radial direction is formed as follows:
+\begin{equation}
+  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho}
+\end{equation}
+and the magnetic field of the straight wire segment (consisting only of the tangential component~$B_\varphi$)
+is evaluated as:
+\begin{equation}
+  \mathbf{B}(\mathbf{r}) = B_\varphi(\rho', z') \hat{\mathbf{e}}_\varphi
+\end{equation}
+with $\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho$.
 
 \subsubsection{Circular Wire Loop}
 Figure~\ref{fig:CircularWireLoop_MappingToCartesian} illustrates the setup of a circular wire loop.
@@ -584,8 +582,7 @@ Figure~\ref{fig:CircularWireLoop_MappingToCartesian} illustrates the setup of a 
           The evaluation location is denoted by~$\mathbf{r}$.}
  \label{fig:CircularWireLoop_MappingToCartesian}
 \end{figure}
-
-The $z$-axis of the wire loop's coordinate system is defined by the normal vector~$\mathbf{n}$:
+The $z$-axis of the coordinate system of the wire loop is defined by the normal vector~$\mathbf{n}$:
 \begin{equation}
   \hat{\mathbf{e}}_z = \frac{\mathbf{n}}{|\mathbf{n}|} \, .
 \end{equation}
@@ -602,10 +599,6 @@ For the radial coordinate, first the vector~$\Delta \mathbf{r}$ is formed:
   \Delta \mathbf{r} = (\mathbf{r} - \mathbf{r}_0) - z \, \hat{\mathbf{e}}_z
 \end{equation}
 and the radial coordinate $\rho$ is then obtained by taking $\rho = |\Delta \mathbf{r}|$.
-A unit vector in radial direction is formed as follows:
-\begin{equation}
-  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho} \, .
-\end{equation}
 The normalized radial coordinate~$\rho'$ is then obtained as:
 \begin{equation}
   \rho' = \frac{\rho}{a} = \frac{1}{a} |(\mathbf{r} - \mathbf{r}_0) - z \, \hat{\mathbf{e}}_z| \, .
@@ -613,44 +606,26 @@ The normalized radial coordinate~$\rho'$ is then obtained as:
 The magnetic field of the circular wire loop consists of two cylindrical components, namely $B_\rho$ and $B_z$.
 The Cartesian magnetic field components are then computed as follows:
 \begin{equation}
-  \mathbf{B}(\mathbf{r}) = B_\rho \hat{\mathbf{e}}_\rho + B_z \hat{\mathbf{e}}_z \, .
+  \mathbf{B}(\mathbf{r}) = B_\rho(\rho', z') \hat{\mathbf{e}}_\rho + B_z(\rho', z') \hat{\mathbf{e}}_z \, .
 \end{equation}
-The magnetic vector potential only has a component in angular direction in the coordinate system of the wire loop.
+If $\rho' = 0$, only $B_z$ is evaluated.
+Otherwise, a unit vector in radial direction is formed as follows:
+\begin{equation}
+  \hat{\mathbf{e}}_\rho = \frac{\Delta \mathbf{r}}{\rho}
+\end{equation}
+and $B_\rho$ is evaluated as well.
+The magnetic vector potential only has a component in tangential direction in the coordinate system of the wire loop.
+It is also only evaluated if $\rho' \neq 0$.
 The corresponding unit vector~$\hat{\mathbf{e}}_\varphi$ is then given by
 $\hat{\mathbf{e}}_\varphi = \hat{\mathbf{e}}_z \times \hat{\mathbf{e}}_\rho$.
 The vector potential of the circular wire loop in thus in Cartesian coordinates:
 \begin{equation}
-  \mathbf{A}(\mathbf{r}) = A_\varphi \hat{\mathbf{e}}_\varphi \, .
+  \mathbf{A}(\mathbf{r}) = A_\varphi(\rho', z') \hat{\mathbf{e}}_\varphi \, .
 \end{equation}
-
-\subsection{Superposition in multi-filament assemblies}
-
-% PolygonFilament
-
-An infinitely thin polygon filament $P$ is described by a list of $N$ points $\mathbf{x}_i$ with $i=1, ..., N$ in three-dimensional (3D) space and a current $I$.
-The $(N-1)$ straight connecting lines between each two consecutive points $\mathbf{x}_i$ and $\mathbf{x}_{i+1}$ are assumed to represent the geometry of a wire which carries the current.
-If the first and the last point of the polygon filament coincide, the wire forms a closed loop and $\nabla \cdot \mathbf{j} = 0$ is ensured by construction.
-
-The magnetic vector potential $\mathbf{A}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x})$ and the magnetic field $\mathbf{B}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x})$
-of the wire segments at a location $\mathbf{x}$ can be computed analytically.
-The resulting contributions from each segment are superposed in order to compute the resulting magnetic field from the full length of the wire:
-\begin{align}
- \mathbf{A}(\mathbf{x}) & = \sum_{i=1}^{N-1} \mathbf{A}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x}) \quad \mathrm{and} \\
- \mathbf{B}(\mathbf{x}) & = \sum_{i=1}^{N-1} \mathbf{B}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x}) \quad .
-\end{align}
-Computationally robust and efficient expressions for
-$\mathbf{A}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x})$ and
-$\mathbf{B}(I, \mathbf{x}_i, \mathbf{x}_{i+1}, \mathbf{x})$
-are given in Ref.~\cite{hanson_hirshman_2002}.
-The detailed derivation of these expressions is given below.
-
-% Kahan-Babuska summation
-
-
 
 \subsection{Verification Method}
 The asymptotic behavior of an implementation of above formulas for the magnetic vector potential
-and magnetic field needs to be tested before using that implementation in daily routine work.
+and magnetic field needs to be tested before using that implementation in routine work.
 
 A set of critical test points used to check this is shown in Fig.~\ref{fig:circularLoop_criticalPoints}
 for the case of the circular wire loop.
@@ -705,12 +680,10 @@ by passing the three values $s$, $E$ and $M$ as integers (which are easy to repr
 Within the reference computation, the value of $f$ is constructed using~\eqn{float64} implemented
 in arbitrary precision and with the exact values of $s$, $E$ and $M$.
 
-
 The reference data for the straight wire segment methods
 is computed using 300 decimal digits of precision.
 The reference data for the circular wire loop
 is computed using 200 decimal digits of precision.
-
 
 The evaluation position is specified exactly
 via $s_\rho$, $E_\rho$ and $M_\rho$ (for $\rho'$)
@@ -734,18 +707,22 @@ of $\tilde{A}_\varphi$ and $\tilde{B}_\rho$ at~$(\rho', z')$
 for the circular wire loop:
 \begin{align}
  k_c^2 \leftarrow&\, \frac{{z'}^2 + \left(1 - \rho'\right)^2}{{z'}^2 + \left(1 + \rho'\right)^2} \nonumber \\
- \textrm{if } \rho' =&\, 0 : \tilde{A}_\varphi = 0 ; \textrm{else:} \nonumber \\
  \tilde{A}_\varphi \leftarrow&\,
-     \frac{1}{\sqrt{{z'}^2 + \left(1 + \rho'\right)^2}}
+ \begin{cases}
+   0 &:\, \rho' = 0 \\
+   \frac{1}{\sqrt{{z'}^2 + \left(1 + \rho'\right)^2}}
                                  \int\limits_0^{\pi/2}
                                    \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                        {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi \label{eqn:A_phi_ref} \\
- \textrm{if } \rho' =&\, 0 \textrm{ or } z' = 0 : \tilde{B}_\rho = 0 ; \textrm{else:} \nonumber \\
+                                        {\sqrt{\cos^2(\varphi) + k_c^2 \sin^2(\varphi)}} \,\mathrm{d}\varphi &:\, \textrm{else}
+ \end{cases} \label{eqn:A_phi_ref} \\
  \tilde{B}_\rho \leftarrow&\,
-    \frac{z'}{\left[{z'}^2 + \left(1 + \rho'\right)^2\right]^{3/2}}
+ \begin{cases}
+   0 &:\, \rho' = 0 \textrm{ or } z' = 0 \\
+   \frac{z'}{\left[{z'}^2 + \left(1 + \rho'\right)^2\right]^{3/2}}
                                  \int\limits_0^{\pi/2}
                                    \frac{\sin^2(\varphi) - \cos^2(\varphi)}
-                                        {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi
+                                        {\left[\cos^2(\varphi) + k_c^2 \sin^2(\varphi)\right]^{3/2}} \,\mathrm{d}\varphi &:\, \textrm{else}
+ \end{cases}
 \end{align}
 The method used to compute $\tilde{B}_z$ works slightly differently:
 \begin{align}
@@ -763,9 +740,6 @@ The method used to compute $\tilde{B}_z$ works slightly differently:
 The integrals are carried out numerically within the arbitrary-precision software.
 In case of~\texttt{mpmath}, double-exponential quadrature~\cite{double_exp_quad} is used~\cite{mpmath_quad}.
 
-
-
-
 The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
@@ -775,5 +749,6 @@ The error metric employed in this work is given as follows:
     -16                                                                        &: \textrm{else}
    \end{cases}
 \end{equation}
-
+where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$
+with  the machine-precision epsilon $\epsilon_{64} \approx 2.2 \times 10^{-16}$.
 
