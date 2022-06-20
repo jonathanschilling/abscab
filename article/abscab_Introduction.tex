@@ -1,8 +1,36 @@
 \section{Introduction}
 \label{sec:introduction}
+A common task in computational physics is to compute the magnetic field and magnetic vector potential
+originating from current-carrying wire arrangements in the form of coils and cables.
+These current carriers can be approximated for computational simplicity as infinitely thin filaments
+following the center lines of the real current carrier.
+A current carrier path specified by a list of points along the path
+can be modeled as a set of straight wire segments from point to point along the polygon describing the current carrier geometry.
+Closed circular wire loops appear as well in practise and can be chosen to model, e.g.,
+individual windings in a circular coil.
+Computational methods are thus needed to compute the magnetic field and the magnetic vector potential
+of a single straight wire segment or a single circular wire loop
+in order to model more complex current carrier arrangements
+by superposition of the current carrier primitives.
+Analytical expressions are derived in this work to accurately compute
+the magnetic field and the magnetic vector potential of a straight wire segment
+and a circular wire loop. The expressions consist of several special cases,
+which are switched between depending on the location of the evaluation location
+in the coordinate system of the current carrier primitive.
+This approach allows to select the most accurate formulation
+for a given evaluation location and make explicit use of simplications
+in certain special cases for the sake of simplicity, speed and accuracy.
+Particular attention was paid to make sure that the expressions presented in this work
+obey the correct asymptotic behavior for evaluation locations
+far away from and close to the current carriers.
+For most test cases, the full relative accuracy of the floating point
+arithmetic chosen for implementation is retained throughout the computations
+(16 digits of precision in the \texttt{float64} implementation),
+with few exceptions where accuracy drops by up to 2 digits of precision
+(in the \texttt{float64} case).
+The provided implementations have not been optimized for speed.
 
-Usually,
-the magnetic field is denoted by $\mathbf{H}$ and
+The magnetic field is denoted by $\mathbf{H}$ and
 the magnetic flux density $\mathbf{B}$ is then given by $\mathbf{B} = \mu_0 \mu_\mathrm{r} \mathbf{H}$,
 where $\mu_0$ is the vacuum magnetic permeability
 and $\mu_r$ is the relative permeability, taking material properties into account.
