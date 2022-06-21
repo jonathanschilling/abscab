@@ -8,30 +8,25 @@ The normalized vertical component of the magnetic vector potential, $\tilde{A}_z
 and the normalized tangential component magnetic field, $\tilde{B}_\varphi$, of a straight wire segment
 have been evaluated using \eqn{sws_A_z_switchover} and \eqn{sws_B_phi_switchover}, respectively,
 on all test points in $T_\mathrm{SWS}$ (see Sec.~\ref{sec:methods_verification}).
-Fig.~(\ref{fig:StraightWireSegment_A_z_Java}) shows the deviation
-according to the error metric~\eqn{error_metric}
+The left half of Fig.~(\ref{fig:StraightWireSegment_results}) shows the deviation
 between the reference data computed for $\tilde{A}_z$ using \eqn{sws_A_z_ref}
-and the results from the \texttt{float64} implementation of \eqn{sws_A_z_switchover}.
-\begin{figure}[htbp]
- \centering
- \includegraphics[height=0.8\textwidth]{img/StraightWireSegment_A_z_Java.pdf}
- \caption{Deviation between Java implementation of \eqn{sws_A_z_switchover} and \eqn{sws_A_z_ref}
-          for the computation of $\tilde{A}_z$ of a straight wire segment
-          in the error metric given by~\eqn{error_metric}.}
- \label{fig:StraightWireSegment_A_z_Java}
-\end{figure}
-It is observed that the relative error is less that $10^{-15}$ for all test points under consideration.
-Fig.~(\ref{fig:StraightWireSegment_B_phi_Java}) shows the deviation
-according to the error metric~\eqn{error_metric}
+and the results from the \texttt{float64} implementation of \eqn{sws_A_z_switchover}
+according to the error metric~\eqn{error_metric}.
+The right half of Fig.~(\ref{fig:StraightWireSegment_results}) shows the corresponding deviation
 between the reference data computed for $\tilde{B}_\varphi$ using \eqn{sws_B_phi_ref}
 and the results from the \texttt{float64} implementation of \eqn{sws_B_phi_switchover}.
 \begin{figure}[htbp]
  \centering
- \includegraphics[height=0.8\textwidth]{img/StraightWireSegment_B_phi_Java.pdf}
- \caption{Deviation between Java implementation of \eqn{sws_B_phi_switchover} and \eqn{sws_B_phi_ref}
-          for the computation of $\tilde{B}_\varphi$ of a straight wire segment
+ \includegraphics[width=\textwidth]{img/StraightWireSegment_results.pdf}
+ \caption{Deviation between the Java implementation of the methods for $\tilde{A}_z$ (left)
+          and $\tilde{B}_\varphi$ (right) of a straight wire segment (SWS).
+          The left  plot shows the deviation between the Java implementation of \eqn{sws_A_z_switchover}
+                         and the arbitray-precision implementation of \eqn{sws_A_z_ref}
+          and
+          the right plot shows the deviation between the Java implementation of \eqn{sws_B_phi_switchover}
+                         and the arbitray-precision implementation of \eqn{sws_B_phi_ref}
           in the error metric given by~\eqn{error_metric}.}
- \label{fig:StraightWireSegment_B_phi_Java}
+ \label{fig:StraightWireSegment_results}
 \end{figure}
 It is observed that the relative error is less that $10^{-15}$ for all test points under consideration.
 
