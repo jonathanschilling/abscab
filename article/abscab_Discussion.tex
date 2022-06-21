@@ -1,4 +1,55 @@
 \section{Discussion}
 \label{sec:discussion}
-
-
+Accurate methods have been presented in this work
+to compute the magnetic vector potential~$\mathbf{A}$
+and the vacuum magnetic field~$\mathbf{B}$
+of filamentary current carriers
+in the form of a straight wire segment
+and a circular wire loop.
+Particular attention was paid to make sure that the implemented formulas
+are capable of achieving nearly full precision of the floating-point arithmetic
+in which they are implemented.
+%
+The methods for the straight wire segment
+achieve 15 out of 16 digits of precision for both
+the magnetic vector potential and the magnetic field
+in the \texttt{float64} implementation.
+%
+The methods for the circular wire loop
+achieve 15 digits of precision for the magnetic vector potential
+and for the magnetic field far away from the wire loop.
+Close to the wire loop, accuracy of the magnetic field methods
+drops to 14 digits of precision.
+%
+The reference data was computed using arbitrary-precision arithmetic
+in two very different implementations (namely the open source \texttt{mpmath} Python package
+and the commercial Mathematica software) and verified to be sufficiently accurate
+for testing the \texttt{float64} implementations.
+This reference data is provided along with this article
+to allow the readers to test their own routines.
+%
+An application is presented where these methods
+are used to approximate the magnetic field of a circular current loop
+by using a current along a polygon aligned with the shape of the wire loop.
+It is demonstrated that the approximation converges to the analytical result
+of the wire loop down to machine precision and remains there
+for further increases in the number of vertices of the approximating polygon.
+This further demonstrates the robustness of the methods presented in this work.
+It was found that compensated summation techniques were required
+in order to correctly accumulate the superposition of a large number
+of individual polygon segments.
+The selected second-order Kahan-Babushka summation is therefore used by default in the reference implementation.
+%
+The asymptotic behaviour of the formulas
+when evaluating~$\mathbf{A}$ and~$\mathbf{B}$ close to the current carrier
+and far away from it is verified to produce the correct results.
+%
+The free-boundary part of the Variational Moments Equilibrium Code (VMEC)~\cite{hirshman_1986}
+uses interpolation of the vacuum magnetic field produced by the confinement coils
+of a Stellarator device~\cite{spitzer_1958}.
+It is frequently the case that coils overlap with the region
+in which the cached interpolation table is computed for further use.
+During iterations of VMEC, it can happen that this way
+field values close to the coils enter the computation
+and it is deemed beneficary for the robustness of the computation
+if those values attain the correct asymptotic values.

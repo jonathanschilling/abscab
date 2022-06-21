@@ -1,4 +1,33 @@
 \section{Outlook}
 \label{sec:outlook}
-
-
+An obvious extension of this work is to include gradients
+of the computed magnetic vector potential and magnetic field.
+This issue is already discussed in Ref.~\cite{walstrom_2017}
+for the case of the circular wire loop.
+%
+Precise methods to compute the field gradients would be useful for magnetic field-line tracing applications~\cite{bozhenkov_2013}.
+Typical applications in experimental physics do not require the full 16 digits of precision
+provided by a \texttt{float64} implementation of these methods.
+An implementation in \texttt{float32} arithmetic
+of the methods presented in this work
+is expected to achieve a similar fraction of precision,
+since no constants dependent on machine-precision are used in the implementation.
+This would correspond to approximately 7 digits of precision
+that could be expected from a \texttt{float32} implementation.
+Entry-level graphics processing units (GPUs) (and in particular more advanced models)
+can perform parallel computations in \texttt{float32} much quicker than regular processors of a PC.
+The methods presented in this work as well as the gradient methods therefore should be ported to \texttt{float32}
+and would allow for rapid evaluation at guaranteed error levels still low enough for practical applications in experimental physics.
+%
+Furthermore, gradient-based optimization methods applied to, e.g., finding the coils for a Stellarator device~\cite{zhu_2017}
+require calculations of the field gradients.
+It is noted that derivatives with respect to the position of the current carrier
+are easily expressed via derivatives of the fields.
+The change of the field with changing current carrier position is complementary
+to the change of field with changing evaluation position (relative to the current carrier).
+%
+Other types of current carriers are also desirable to have implemented in this framework.
+In particular, the case of a filamentary arc segment (the non-closed counterpart of the circular wire loop)
+would be of interest as well as finite-extent current carriers.
+It is noted that the methods presented by Urankar for this case~\cite{urankar_1,urankar_2,urankar_3,urankar_4,urankar_5}
+have recently been reconsidered and improved~\cite{maurer_2020}.
