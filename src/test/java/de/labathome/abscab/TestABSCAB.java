@@ -237,11 +237,15 @@ public class TestABSCAB {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			double aPhi = ABSCAB.circularWireLoop_A_phi(rhoP, zP);
+			// A_phi is equal for sign change of z'
+
+			double aPhi     = ABSCAB.circularWireLoop_A_phi(rhoP,  zP);
+			double aPhiNegZ = ABSCAB.circularWireLoop_A_phi(rhoP, -zP);
 
 			if (ref_A_phi[i] == 0.0) {
 				// exact zero has to be reproduced exactly
 				Assertions.assertEquals(0.0, aPhi);
+				Assertions.assertEquals(0.0, aPhiNegZ);
 			} else {
 				double relErr = Math.abs((aPhi - ref_A_phi[i])/ref_A_phi[i]);
 				if (relErr >= tolerance) {
@@ -249,6 +253,13 @@ public class TestABSCAB {
 							i, rhoP, zP, relErr);
 				}
 				Assertions.assertTrue(relErr < tolerance);
+
+				double relErrNegZ = Math.abs((aPhiNegZ - ref_A_phi[i])/ref_A_phi[i]);
+				if (relErrNegZ >= tolerance) {
+					System.out.printf(Locale.ENGLISH, "case %4d (rhoP=%.20e zP=%.20e) => relErr = %.3e\n",
+							i, rhoP, -zP, relErrNegZ);
+				}
+				Assertions.assertTrue(relErrNegZ < tolerance);
 			}
 		}
 	}
@@ -271,11 +282,15 @@ public class TestABSCAB {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			double bRho = ABSCAB.circularWireLoop_B_rho(rhoP, zP);
+			// B_rho switches sign for sign change of z'
+
+			double bRho     = ABSCAB.circularWireLoop_B_rho(rhoP,  zP);
+			double bRhoNegZ = ABSCAB.circularWireLoop_B_rho(rhoP, -zP);
 
 			if (ref_B_rho[i] == 0.0) {
 				// exact zero has to be reproduced exactly
 				Assertions.assertEquals(0.0, bRho);
+				Assertions.assertEquals(0.0, bRhoNegZ);
 			} else {
 				double relErr = Math.abs((bRho - ref_B_rho[i])/ref_B_rho[i]);
 				if (relErr >= tolerance) {
@@ -283,6 +298,13 @@ public class TestABSCAB {
 							i, rhoP, zP, relErr);
 				}
 				Assertions.assertTrue(relErr < tolerance);
+
+				double relErrNegZ = Math.abs((-bRhoNegZ - ref_B_rho[i])/ref_B_rho[i]);
+				if (relErrNegZ >= tolerance) {
+					System.out.printf(Locale.ENGLISH, "case %4d (rhoP=%.20e zP=%.20e) => relErr = %.3e\n",
+							i, rhoP, -zP, relErrNegZ);
+				}
+				Assertions.assertTrue(relErrNegZ < tolerance);
 			}
 		}
 	}
@@ -305,11 +327,15 @@ public class TestABSCAB {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			double bZ = ABSCAB.circularWireLoop_B_z(rhoP, zP);
+			// B_z is equal for sign change of z'
+
+			double bZ     = ABSCAB.circularWireLoop_B_z(rhoP,  zP);
+			double bZNegZ = ABSCAB.circularWireLoop_B_z(rhoP, -zP);
 
 			if (ref_B_z[i] == 0.0) {
 				// exact zero has to be reproduced exactly
 				Assertions.assertEquals(0.0, bZ);
+				Assertions.assertEquals(0.0, bZNegZ);
 			} else {
 				double relErr = Math.abs((bZ - ref_B_z[i])/ref_B_z[i]);
 				if (relErr >= tolerance) {
@@ -317,6 +343,13 @@ public class TestABSCAB {
 							i, rhoP, zP, relErr);
 				}
 				Assertions.assertTrue(relErr < tolerance);
+
+				double relErrNegZ = Math.abs((bZNegZ - ref_B_z[i])/ref_B_z[i]);
+				if (relErrNegZ >= tolerance) {
+					System.out.printf(Locale.ENGLISH, "case %4d (rhoP=%.20e zP=%.20e) => relErr = %.3e\n",
+							i, rhoP, -zP, relErrNegZ);
+				}
+				Assertions.assertTrue(relErrNegZ < tolerance);
 			}
 		}
 	}

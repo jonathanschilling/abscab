@@ -2417,7 +2417,7 @@ public class ABSCAB {
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
 		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 
-		return kC / 2 * ((2 / zPSq + 1) * E - K);
+		return Math.signum(zP) * kC / 2 * ((2 / zPSq + 1) * E - K);
 	}
 
 	////// B_z of circular wire loop

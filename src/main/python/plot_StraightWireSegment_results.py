@@ -101,7 +101,6 @@ yTicksAndLabels = [
     [1e+30,     r"$10^{30}$"]
 ]
 
-
 nClusters = 16
 cmap = plt.get_cmap("viridis", nClusters)
 
