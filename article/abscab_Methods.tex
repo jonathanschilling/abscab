@@ -661,7 +661,7 @@ The set of grid knots along the $z'$ axis, $T^\mathrm{SWS}_{z'}$, are chosen as 
 \end{itemize}
 with $T^\mathrm{SWS}_{z'} = T^\mathrm{SWS}_{z',1} \cup T^\mathrm{SWS}_{z',2} \cup T^\mathrm{SWS}_{z',3} \cup T^\mathrm{SWS}_{z',4} \cup T^\mathrm{SWS}_{z',5} \cup T^\mathrm{SWS}_{z',6}$,
 leading to $|T^\mathrm{SWS}_{z'}| = 157$.
-The machine-precision epsilon is given by $\epsilon_{64} \approx 2.2 \times 10^{-16}$ for the case of \texttt{float64}.
+The machine-precision epsilon is given by $\epsilon_{64} \approx 2.2 \times 10^{-16}$ for the case of \texttt{binary64}.
 The exclusion of the test points that are located exactly on the wire segment leads to
 a total number of test point coordinates~$T_\mathrm{SWS}$ for the straight wire segment of
 $|T_\mathrm{SWS}| = 9685$.
@@ -692,36 +692,36 @@ as provided by the Python package~\texttt{mpmath}~\cite{mpmath} and Mathematica~
 The test point coordinates are computed within the finite-precision test programs used to check the accuracy of the results.
 This implies that the exact \textit{implied} values of the test point coordinates have to be transported
 into the arbitrary-precision software used to compute the reference data.
-The evaluation positions are specified at IEEE754~\texttt{float64} floating-point numbers.
+The evaluation positions are specified at IEEE754~\texttt{binary64} floating-point numbers.
 The floating point numbers are re-constructed within the arbitrary-precision software
 in order to properly transport their intended value.
-In case of \texttt{float64}, this is done as follows for a floating-point number~$f$:
+In case of \texttt{binary64}, this is done as follows for a floating-point number~$f$:
 \begin{equation}
  f(s, E, M) =
  \begin{cases}
    0                                                             &: E=0 \textrm{ and } M=0 \\
    (-1)^s \, 2^{E - 1023} \, \left( 1 + \frac{M}{2^{52}} \right) &: \textrm{else}
-  \end{cases} \label{eqn:float64}
+  \end{cases} \label{eqn:binary64}
 \end{equation}
 where $s$ is the sign bit, $E$ is the exponent specified as an 11-bit unsigned integer
 and $M$ is the mantissa specified as a 52-bit unsigned integer.
 Several special cases are defined for certain values of $s$, $E$ and $M$,
 but in the context of this work only the case $E=0$, $M=0$ ($s$ arbitrary),
 which represents an exact zero, is relevant.
-The organization of those bits in a \texttt{float64} number is shown in Fig.~\ref{fig:float64}.
+The organization of those bits in a \texttt{binary64} number is shown in Fig.~\ref{fig:binary64}.
 \begin{figure}[htbp]
  \centering
- \includegraphics{img/IEEE754_float64.eps}
+ \includegraphics{img/IEEE754_binary64.eps}
  \caption{Organization of sign bit~$s$, exponent~$E$ (11 bits, unsigned integer)
           and mantissa~$M$ (52 bits, unsigned integer) within the 64 bits
-          of a IEEE754~\texttt{float64} floating-point number.
+          of a IEEE754~\texttt{binary64} floating-point number.
           Each box represents one bit and the colors indicate which quantity a bit belongs to
           (red: sign bit, green: exponent, blue: mantiassa).}
- \label{fig:float64}
+ \label{fig:binary64}
 \end{figure}
 In particular, a test point coordinate value~$f$ is passed to the reference computation
 by passing the three values $s$, $E$ and $M$ as integers (which are easy to represent exactly).
-Within the reference computation, the value of $f$ is constructed using~\eqn{float64} implemented
+Within the reference computation, the value of $f$ is constructed using~\eqn{binary64} implemented
 in arbitrary precision and with the exact values of $s$, $E$ and $M$.
 The reference data for the straight wire segment methods
 is computed using 300 decimal digits of precision.
@@ -789,7 +789,7 @@ The integrals are carried out numerically within the arbitrary-precision softwar
 In case of~\texttt{mpmath}, double-exponential quadrature~\cite{double_exp_quad} is used~\cite{mpmath_quad}.
 The particular choices for the number of digits of precision used throughout the arbitrary-precision computation
 mentioned above have been adjusted to robustly yield enough equal digits
-in the outputs from \texttt{mpmath} and Mathematica for benchmarking the \texttt{float64} implementation of the methods presented in Sec.~\ref{sec:methods_sws} and~\ref{sec:methods_cwl}.
+in the outputs from \texttt{mpmath} and Mathematica for benchmarking the \texttt{binary64} implementation of the methods presented in Sec.~\ref{sec:methods_sws} and~\ref{sec:methods_cwl}.
 The error metric employed in this work is given as follows:
 \begin{equation}
  \delta(a, b)
@@ -799,6 +799,6 @@ The error metric employed in this work is given as follows:
     -16                                                                        &: \textrm{else}
    \end{cases} \label{eqn:error_metric}
 \end{equation}
-where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$.
+where the constant~$-16$ is chosen for \texttt{binary64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$.
 Here, $a$ is the value to be tested and
 $b$ is the reference value computed using arbitrary-precision arithmetic.

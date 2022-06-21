@@ -10,11 +10,11 @@ have been evaluated using \eqn{sws_A_z_switchover} and \eqn{sws_B_phi_switchover
 on all test points in $T_\mathrm{SWS}$ (see Sec.~\ref{sec:methods_verification}).
 The left half of Fig.~(\ref{fig:StraightWireSegment_results}) shows the deviation
 between the reference data computed for $\tilde{A}_z$ using \eqn{sws_A_z_ref}
-and the results from the \texttt{float64} implementation of \eqn{sws_A_z_switchover}
+and the results from the \texttt{binary64} implementation of \eqn{sws_A_z_switchover}
 according to the error metric~\eqn{error_metric}.
 The right half of Fig.~(\ref{fig:StraightWireSegment_results}) shows the corresponding deviation
 between the reference data computed for $\tilde{B}_\varphi$ using \eqn{sws_B_phi_ref}
-and the results from the \texttt{float64} implementation of \eqn{sws_B_phi_switchover}.
+and the results from the \texttt{binary64} implementation of \eqn{sws_B_phi_switchover}.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=\textwidth]{img/StraightWireSegment_results.pdf}
@@ -40,7 +40,7 @@ on all test points in $T_\mathrm{CWL}$ (see Sec.~\ref{sec:methods_verification})
 Fig.~(\ref{fig:CircularWireLoop_A_phi_Java}) shows the deviation
 according to the error metric~\eqn{error_metric}
 between the reference data computed for $\tilde{A}_\varphi$ using \eqn{A_phi_ref}
-and the results from the \texttt{float64} implementation of \eqn{A_phi_final}.
+and the results from the \texttt{binary64} implementation of \eqn{A_phi_final}.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.8\textwidth]{img/CircularWireLoop_A_phi_Java.pdf}
@@ -52,7 +52,7 @@ and the results from the \texttt{float64} implementation of \eqn{A_phi_final}.
 Fig.~(\ref{fig:CircularWireLoop_B_rho_Java}) shows the deviation
 according to the error metric~\eqn{error_metric}
 between the reference data computed for $\tilde{B}_\rho$ using \eqn{B_rho_ref}
-and the results from the \texttt{float64} implementation of \eqn{cwl_B_rho_switchover}.
+and the results from the \texttt{binary64} implementation of \eqn{cwl_B_rho_switchover}.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.8\textwidth]{img/CircularWireLoop_B_rho_Java.pdf}
@@ -64,7 +64,7 @@ and the results from the \texttt{float64} implementation of \eqn{cwl_B_rho_switc
 Fig.~(\ref{fig:CircularWireLoop_B_z_Java}) shows the deviation
 according to the error metric~\eqn{error_metric}
 between the reference data computed for $\tilde{B}_z$ using \eqn{B_z_ref}
-and the results from the \texttt{float64} implementation of \eqn{cwl_B_z_switchover}.
+and the results from the \texttt{binary64} implementation of \eqn{cwl_B_z_switchover}.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.8\textwidth]{img/CircularWireLoop_B_z_Java.pdf}
