@@ -584,38 +584,38 @@ public class DemoABSCAB {
 		int numCases = testPointsRp.length;
 
 		// compute A_z and B_phi at test points
-		double[] A_z_along_rhoP_0    = new double[numCases];
-		double[] A_z_along_zP_0_or_1 = new double[numCases];
-		double[] A_z_6              = new double[numCases];
-		double[] A_z_1               = new double[numCases];
+		double[] A_z_ax  = new double[numCases];
+		double[] A_z_rad = new double[numCases];
+		double[] A_z_n   = new double[numCases];
+		double[] A_z_f   = new double[numCases];
 
-		double[] B_phi_3 = new double[numCases];
-		double[] B_phi_4 = new double[numCases];
-		double[] B_phi_5 = new double[numCases];
+		double[] B_phi_rad = new double[numCases];
+		double[] B_phi_f   = new double[numCases];
+		double[] B_phi_n   = new double[numCases];
 
 		for (int i=0; i<numCases; ++i) {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			A_z_along_rhoP_0[i]    = ABSCAB.sws_A_z_ax(zP);
-			A_z_along_zP_0_or_1[i] = ABSCAB.sws_A_z_rad(rhoP);
-			A_z_6[i]               = ABSCAB.sws_A_z_n(rhoP, zP);
-			A_z_1[i]               = ABSCAB.sws_A_z_f(rhoP, zP);
+			A_z_ax[i]  = ABSCAB.sws_A_z_ax(zP);
+			A_z_rad[i] = ABSCAB.sws_A_z_rad(rhoP);
+			A_z_n[i]   = ABSCAB.sws_A_z_n(rhoP, zP);
+			A_z_f[i]   = ABSCAB.sws_A_z_f(rhoP, zP);
 
-			B_phi_3[i] = ABSCAB.sws_B_phi_rad(rhoP);
-			B_phi_4[i] = ABSCAB.sws_B_phi_f(rhoP, zP);
-			B_phi_5[i] = ABSCAB.sws_B_phi_n(rhoP, zP);
+			B_phi_rad[i] = ABSCAB.sws_B_phi_rad(rhoP);
+			B_phi_f[i]   = ABSCAB.sws_B_phi_f(rhoP, zP);
+			B_phi_n[i]   = ABSCAB.sws_B_phi_n(rhoP, zP);
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_z_along_rhoP_0,    "data/StraightWireSegment_A_z_along_rhoP_0_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_along_zP_0_or_1, "data/StraightWireSegment_A_z_along_zP_0_or_1_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_6,               "data/StraightWireSegment_A_z_6_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_1,               "data/StraightWireSegment_A_z_1_Java.dat");
+		TestABSCABUtils.dumpToFile(A_z_ax,  "data/StraightWireSegment_A_z_ax_Java.dat");
+		TestABSCABUtils.dumpToFile(A_z_rad, "data/StraightWireSegment_A_z_rad_Java.dat");
+		TestABSCABUtils.dumpToFile(A_z_n,   "data/StraightWireSegment_A_z_n_Java.dat");
+		TestABSCABUtils.dumpToFile(A_z_f,   "data/StraightWireSegment_A_z_f_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_phi_3, "data/StraightWireSegment_B_phi_3_Java.dat");
-		TestABSCABUtils.dumpToFile(B_phi_4, "data/StraightWireSegment_B_phi_4_Java.dat");
-		TestABSCABUtils.dumpToFile(B_phi_5, "data/StraightWireSegment_B_phi_5_Java.dat");
+		TestABSCABUtils.dumpToFile(B_phi_rad, "data/StraightWireSegment_B_phi_rad_Java.dat");
+		TestABSCABUtils.dumpToFile(B_phi_f,   "data/StraightWireSegment_B_phi_f_Java.dat");
+		TestABSCABUtils.dumpToFile(B_phi_n,   "data/StraightWireSegment_B_phi_n_Java.dat");
 	}
 
 
@@ -627,49 +627,49 @@ public class DemoABSCAB {
 		int numCases = testPointsRp.length;
 
 		// compute A_phi, B_rho and B_z at test points
-		double[] A_phi_1 = new double[numCases];
-		double[] A_phi_6 = new double[numCases];
-		double[] A_phi_5 = new double[numCases];
+		double[] A_phi_f = new double[numCases];
+		double[] A_phi_n = new double[numCases];
+		double[] A_phi_v = new double[numCases];
 
-		double[] B_rho_3 = new double[numCases];
-		double[] B_rho_1 = new double[numCases];
-		double[] B_rho_4 = new double[numCases];
+		double[] B_rho_f = new double[numCases];
+		double[] B_rho_n = new double[numCases];
+		double[] B_rho_v = new double[numCases];
 
-		double[] B_z_1 = new double[numCases];
-		double[] B_z_2 = new double[numCases];
-		double[] B_z_4 = new double[numCases];
-		double[] B_z_5 = new double[numCases];
+		double[] B_z_f1 = new double[numCases];
+		double[] B_z_f2 = new double[numCases];
+		double[] B_z_n  = new double[numCases];
+		double[] B_z_v  = new double[numCases];
 
 		for (int i=0; i<numCases; ++i) {
 			double rhoP = testPointsRp[i];
 			double zP   = testPointsZp[i];
 
-			A_phi_1[i] = ABSCAB.cwl_A_phi_f(rhoP, zP);
-			A_phi_6[i] = ABSCAB.cwl_A_phi_n(rhoP, zP);
-			A_phi_5[i] = ABSCAB.cwl_A_phi_v(zP);
+			A_phi_f[i] = ABSCAB.cwl_A_phi_f(rhoP, zP);
+			A_phi_n[i] = ABSCAB.cwl_A_phi_n(rhoP, zP);
+			A_phi_v[i] = ABSCAB.cwl_A_phi_v(zP);
 
-			B_rho_3[i] = ABSCAB.cwl_B_rho_f(rhoP, zP);
-			B_rho_1[i] = ABSCAB.cwl_B_rho_n(rhoP, zP);
-			B_rho_4[i] = ABSCAB.cwl_B_rho_v(zP);
+			B_rho_f[i] = ABSCAB.cwl_B_rho_f(rhoP, zP);
+			B_rho_n[i] = ABSCAB.cwl_B_rho_n(rhoP, zP);
+			B_rho_v[i] = ABSCAB.cwl_B_rho_v(zP);
 
-			B_z_1[i] = ABSCAB.cwl_B_z_f1(rhoP, zP);
-			B_z_2[i] = ABSCAB.cwl_B_z_f2(rhoP, zP);
-			B_z_4[i] = ABSCAB.cwl_B_z_v(zP);
-			B_z_5[i] = ABSCAB.cwl_B_z_n(rhoP, zP);
+			B_z_f1[i] = ABSCAB.cwl_B_z_f1(rhoP, zP);
+			B_z_f2[i] = ABSCAB.cwl_B_z_f2(rhoP, zP);
+			B_z_n[i]  = ABSCAB.cwl_B_z_n(rhoP, zP);
+			B_z_v[i]  = ABSCAB.cwl_B_z_v(zP);
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_phi_1, "data/CircularWireLoop_A_phi_1_Java.dat");
-		TestABSCABUtils.dumpToFile(A_phi_6, "data/CircularWireLoop_A_phi_6_Java.dat");
-		TestABSCABUtils.dumpToFile(A_phi_5, "data/CircularWireLoop_A_phi_5_Java.dat");
+		TestABSCABUtils.dumpToFile(A_phi_f, "data/CircularWireLoop_A_phi_f_Java.dat");
+		TestABSCABUtils.dumpToFile(A_phi_n, "data/CircularWireLoop_A_phi_n_Java.dat");
+		TestABSCABUtils.dumpToFile(A_phi_v, "data/CircularWireLoop_A_phi_v_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_rho_3, "data/CircularWireLoop_B_rho_3_Java.dat");
-		TestABSCABUtils.dumpToFile(B_rho_1, "data/CircularWireLoop_B_rho_1_Java.dat");
-		TestABSCABUtils.dumpToFile(B_rho_4, "data/CircularWireLoop_B_rho_4_Java.dat");
+		TestABSCABUtils.dumpToFile(B_rho_f, "data/CircularWireLoop_B_rho_f_Java.dat");
+		TestABSCABUtils.dumpToFile(B_rho_n, "data/CircularWireLoop_B_rho_n_Java.dat");
+		TestABSCABUtils.dumpToFile(B_rho_v, "data/CircularWireLoop_B_rho_v_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_z_1,   "data/CircularWireLoop_B_z_1_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_2,   "data/CircularWireLoop_B_z_2_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_4,   "data/CircularWireLoop_B_z_4_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_5,   "data/CircularWireLoop_B_z_5_Java.dat");
+		TestABSCABUtils.dumpToFile(B_z_f1, "data/CircularWireLoop_B_z_f1_Java.dat");
+		TestABSCABUtils.dumpToFile(B_z_f2, "data/CircularWireLoop_B_z_f2_Java.dat");
+		TestABSCABUtils.dumpToFile(B_z_n,  "data/CircularWireLoop_B_z_n_Java.dat");
+		TestABSCABUtils.dumpToFile(B_z_v,  "data/CircularWireLoop_B_z_v_Java.dat");
 	}
 }

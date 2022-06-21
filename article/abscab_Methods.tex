@@ -335,7 +335,7 @@ One of several formulations for $\tilde{A}_\varphi$ is chosen depending on the e
     0                                          &:\, \rho' = 0 , \textrm{ any } z' \\
     \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, 0 < \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
     \tilde{A}_{\varphi,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
-    \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \textrm{else} \, .
+    \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
   \end{cases} \label{eqn:A_phi_final}
 \end{equation}
 The following formula is implemented for evaluation locations away from the wire loop:
@@ -396,7 +396,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
                     ~                   &\, ~\textrm{ or } \rho' > 0, z' = 0 \\
       \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
       \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
-      \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else} \, .
+      \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
     \end{cases} \label{eqn:cwl_B_rho_switchover}
 \end{equation}
 The following formulation is implemented for evaluation locations away from to the wire loop:
@@ -463,10 +463,11 @@ One of several formulations is selected depending on the evaluation location~$(\
 \begin{equation}
   \tilde{B}_z(\rho', z')
   = \begin{cases}
-      \tilde{B}_{z,\mathrm{f1}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } (\rho' \leq 2 \textrm{ and } z' > 1) \\
-      \tilde{B}_{z,\mathrm{f2}} (\rho', z') &:\, \rho' > 2 \\
-      \tilde{B}_{z,\mathrm{v}} (z') &:\, \rho' = 1 \\
-      \tilde{B}_{z,\mathrm{n}} (\rho', z') &:\, \textrm{else}
+      \tilde{B}_{z,\mathrm{f1}} (\rho', z') &:\, \rho' < 1/2, \textrm{ any } z' \\
+                ~                           &~ \textrm{ or } \rho' \leq 2, |z'| > 1) \\
+      \tilde{B}_{z,\mathrm{f2}} (\rho', z') &:\, \rho' > 2, \textrm{ any } z' \\
+      \tilde{B}_{z,\mathrm{n}}  (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| \leq 1 \\
+      \tilde{B}_{z,\mathrm{v}}  (z') &:\, \textrm{else } (\rho' = 1, |z'| \leq 1) \, .
     \end{cases} \label{eqn:cwl_B_z_switchover} \, .
 \end{equation}
 For points not too close to the wire loop, the following formulation is used:

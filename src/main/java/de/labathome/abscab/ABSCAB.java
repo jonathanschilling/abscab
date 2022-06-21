@@ -2052,10 +2052,10 @@ public class ABSCAB {
 			return cwl_B_z_f1(rhoP, zP);
 		} else if (rhoP > 2) {
 			return cwl_B_z_f2(rhoP, zP);
-		} else if (rhoP == 1.0) {
-			return cwl_B_z_v(zP);
-		} else {
+		} else if (rhoP != 1.0) {
 			return cwl_B_z_n(rhoP, zP);
+		} else {
+			return cwl_B_z_v(zP);
 		}
 	}
 
@@ -2424,9 +2424,16 @@ public class ABSCAB {
 
 	////// B_z of circular wire loop
 
+	/**
+	 * Compute the normalized vertical component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for certain points away from the wire ("far-field")
+	 * at rhoP < 1/2 or (rhoP <= 2 and |zP| >= 1).
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized vertical component of magnetic field
+	 */
 	static double cwl_B_z_f1(double rhoP, double zP) {
-		// far-field up to rho'=2
-
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
@@ -2443,9 +2450,16 @@ public class ABSCAB {
 		return prefac * (E + rhoP * comb);
 	}
 
+	/**
+	 * Compute the normalized vertical component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for certain other points away from the wire ("far-field")
+	 * at rhoP > 2.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized vertical component of magnetic field
+	 */
 	static double cwl_B_z_f2(double rhoP, double zP) {
-		// far-field from rho'=2 on
-
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
@@ -2481,29 +2495,41 @@ public class ABSCAB {
 		return prefac * (E + 4 * (C - D) / cdScale);
 	}
 
+	/**
+	 * Compute the normalized vertical component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for points close to the wire ("near-field")
+	 * at 1/2 <= rhoP <= 2, but not rhoP=1, and |zP| <= 1.
+	 *
+	 * @param rhoP normalized radial coordinate of evaluation location
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized vertical component of magnetic field
+	 */
 	static double cwl_B_z_n(double rhoP, double zP) {
-		// special case for near-field: rhoP->1, zP->0; but not rhoP = 1
-
 		double rp1 = rhoP - 1;
 
 		double n = zP / rp1;
 		double m = 1 + 2 / rp1;
+
 		double den = n * n + m * m;
 		double num = n * n + 1;
+
 		double kCSq = num / den;
 
 		double prefac = 1 / (Math.abs(rp1) * rp1 * rp1 * den * Math.sqrt(den));
 
-		double ca1 = 1 + rhoP;
-		double ca2 = 1 - rhoP;
-		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, ca1, ca2);
+		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, 1 + rhoP, 1 - rhoP);
 
 		return prefac * cp;
 	}
 
+	/**
+	 * Compute the normalized vertical component of the magnetic field of a circular wire loop.
+	 * This formulation is useful for points along rhoP=1 with |zP| <= 1.
+	 *
+	 * @param zP normalized axial coordinate of evaluation location
+	 * @return normalized vertical component of magnetic field
+	 */
 	static double cwl_B_z_v(double zP) {
-		// special case for rhoP=1, zp->0
-
 		double kCSq = zP * zP / (4 + zP * zP);
 		double kC = Math.sqrt(kCSq);
 
