@@ -2256,7 +2256,7 @@ public class ABSCAB {
 		//   + r_i * (1 - z') + (1 - z') * r_i * cos(alpha)
 		// =   r_i *    r_f   * (1 - cos(beta))
 		//   + r_i * (1 - z') * (1 - cos(alpha))
-		// = 2 * r_i * [ r_f * sin^2(beta) + (1 - z') * sin^2(alpha) ]
+		// = 2 * r_i * [ r_f * sin^2(beta/2) + (1 - z') * sin^2(alpha/2) ]
 		double den = rhoP * rhoP + 2 * r_i * rfb_omza;
 
 		return num / den;
@@ -2274,14 +2274,12 @@ public class ABSCAB {
 	 * @return normalized tangential component of magnetic vector potential
 	 */
 	static double cwl_A_phi_f(double rhoP, double zP) {
-
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
-		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 
+		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 		double kSq = 4 * rhoP / (sqrt_kCSqDen * sqrt_kCSqDen);
 
-		// Walstrom
 		double kCp1 = 1 + kC;
 		double arg1 = 2 * Math.sqrt(kC) / kCp1;
 		double arg2 = 2 / (kCp1 * kCp1 * kCp1);
@@ -2343,7 +2341,6 @@ public class ABSCAB {
 	 * @return normalized radial component of magnetic field
 	 */
 	static double cwl_B_rho_f(double rhoP, double zP) {
-
 		double sqrt_kCSqNum = Math.hypot(zP, 1 - rhoP);
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
@@ -2413,11 +2410,12 @@ public class ABSCAB {
 	 */
 	static double cwl_B_rho_v(double zP) {
 		double zPSq = zP * zP;
+
 		double kCSq = 1 / (1 + 4 / zPSq);
 		double kC = Math.sqrt(kCSq);
 
-		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
+		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 
 		return kC / 2 * ((2 / zPSq + 1) * E - K);
 	}
@@ -2438,10 +2436,9 @@ public class ABSCAB {
 		double sqrt_kCSqDen = Math.hypot(zP, 1 + rhoP);
 
 		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
-		double kCSq = kC * kC;
 
-		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 		double K = CompleteEllipticIntegral.cel(kC, 1, 1, 1);
+		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kC * kC);
 		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
 		double prefac = 1 / (sqrt_kCSqDen * sqrt_kCSqNum * sqrt_kCSqNum);
@@ -2467,29 +2464,31 @@ public class ABSCAB {
 		double kCSq = kC * kC;
 
 		double zPSqP1 = zP * zP + 1;
-		double t1 = zPSqP1 / (rhoP * rhoP) + 1;
+		double rhoPSq = rhoP * rhoP;
+		double t1 = zPSqP1 / rhoPSq + 1;
 		double t2 = 2 / rhoP;
 
 		// a is sqrt_kCSqDen normalized to rho'^2
 		// b is sqrt_kCSqNum normalized to rho'^2
-		// a == (z'^2 + (1 + rho')^2) / rho'^2
-		// b == (z'^2 + (1 - rho')^2) / rho'^2
+		// a == (z'^2 + (1 + rho')^2) / rho'^2 = (z'^2 + 1)/rho'^2 + 1  +  2/rho'
+		// b == (z'^2 + (1 - rho')^2) / rho'^2 = (z'^2 + 1)/rho'^2 + 1  -  2/rho'
 		double a = t1 + t2;
 		double b = t1 - t2;
 
-		// 1/prefac = sqrt((z'^2 + (1 + rho')^2) / rho'^2) * (z'^2 + (1 - rho')^2) / rho'^2 * rho'^3
-		//          = sqrt( z'^2 + (1 + rho')^2)           * (z'^2 + (1 - rho')^2)
-		double prefac = 1 / (Math.sqrt(a) * b * rhoP * rhoP * rhoP);
+		// 1/prefac = sqrt( z'^2 + (1 + rho')^2)           * (z'^2 + (1 - rho')^2)
+		//          = sqrt((z'^2 + (1 + rho')^2) / rho'^2) * (z'^2 + (1 - rho')^2) / rho'^2 * rho'^3
+		//          = sqrt(a)                              * b                              * rho'^3
+		double prefac = 1 / (Math.sqrt(a) * b * rhoPSq * rhoP);
 
 		double cdScale = 1 + (2 + zPSqP1 / rhoP) / rhoP;
+
+		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
+		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
 
 		double kCP1 = 1 + kC;
 		double arg1 = 2 * Math.sqrt(kC) / kCP1;
 		double arg2 = 2 / (kCP1 * kCP1 * kCP1);
 		double C = arg2 * CompleteEllipticIntegral.cel(arg1, 1, 0, 1);
-
-		double D = CompleteEllipticIntegral.cel(kC, 1, 0, 1);
-		double E = CompleteEllipticIntegral.cel(kC, 1, 1, kCSq);
 
 		// use C - D for (2 * D - E)/kSq
 		return prefac * (E + 4 * (C - D) / cdScale);
@@ -2510,16 +2509,16 @@ public class ABSCAB {
 		double n = zP / rp1;
 		double m = 1 + 2 / rp1;
 
-		double den = n * n + m * m;
-		double num = n * n + 1;
+		double sqrt_kCSqNum = Math.hypot(n, 1);
+		double sqrt_kCSqDen = Math.hypot(n, m);
 
-		double kCSq = num / den;
+		double kCSqDen = sqrt_kCSqDen * sqrt_kCSqDen;
 
-		double prefac = 1 / (Math.abs(rp1) * rp1 * rp1 * den * Math.sqrt(den));
+		double kC = sqrt_kCSqNum / sqrt_kCSqDen;
 
-		double cp = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), kCSq, 1 + rhoP, 1 - rhoP);
+		double prefac = 1 / (Math.abs(rp1) * rp1 * rp1 * kCSqDen * sqrt_kCSqDen);
 
-		return prefac * cp;
+		return prefac * CompleteEllipticIntegral.cel(kC, kC * kC, 1 + rhoP, 1 - rhoP);
 	}
 
 	/**
