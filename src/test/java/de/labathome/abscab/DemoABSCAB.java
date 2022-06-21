@@ -20,10 +20,10 @@ public class DemoABSCAB {
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 
-//		demoStraightWireSegment();
+		demoStraightWireSegment();
 		demoCircularWireLoop();
-//
-//		dumpInternalResultsStraightWireSegment();
+
+		dumpInternalResultsStraightWireSegment();
 		dumpInternalResultsCircularWireLoop();
 	}
 

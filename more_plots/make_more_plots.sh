@@ -14,10 +14,10 @@ pushd ../src/test/python || exit -1
 
 # Straight Wire Segment
 
-for i in A_z_along_rhoP_0 \
-         A_z_along_zP_0_or_1 \
-         A_z_6 \
-         A_z_1
+for i in A_z_ax \
+         A_z_rad \
+         A_z_f \
+         A_z_n
 do
   ./plotStraightWireSegmentVsRef.py \
     ../resources/StraightWireSegment_A_z_ref.dat \
@@ -26,9 +26,9 @@ do
     "${i} of Straight Wire Segment (Java)"
 done
 
-for i in B_phi_3 \
-         B_phi_4 \
-         B_phi_5
+for i in B_phi_rad \
+         B_phi_f \
+         B_phi_n
 do
   ./plotStraightWireSegmentVsRef.py \
     ../resources/StraightWireSegment_B_phi_ref.dat \
@@ -39,9 +39,9 @@ done
 
 # Circular Wire Loop
 
-for i in A_phi_1 \
-         A_phi_6 \
-         A_phi_5
+for i in A_phi_f \
+         A_phi_n \
+         A_phi_v
 do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_A_phi_ref.dat \
@@ -50,9 +50,9 @@ do
     "${i} of Circular Wire Loop (Java)"
 done
 
-for i in B_rho_3 \
-         B_rho_1 \
-         B_rho_4
+for i in B_rho_f \
+         B_rho_n \
+         B_rho_v
 do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_B_rho_ref.dat \
@@ -61,11 +61,10 @@ do
     "${i} of Circular Wire Loop (Java)"
 done
 
-for i in B_z_1 \
-         B_z_2 \
-         B_z_4 \
-         B_z_5 \
-         B_z_6
+for i in B_z_f1 \
+         B_z_f2 \
+         B_z_n \
+         B_z_v
 do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_B_z_ref.dat \
