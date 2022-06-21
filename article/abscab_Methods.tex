@@ -731,15 +731,21 @@ The evaluation position is specified exactly
 via $s_\rho$, $E_\rho$ and $M_\rho$ (for $\rho'$)
 and $s_z$, $E_z$ and $M_z$ (for $z'$):
 \begin{align}
- \rho' \leftarrow&\, (-1)^{s_\rho} \, 2^{E_\rho - 1023} \, \left(1 + \frac{M_\rho}{2^{52}}  \right) \nonumber \\
-    z' \leftarrow&\, (-1)^{s_z   } \, 2^{E_z    - 1023} \, \left(1 + \frac{M_z   }{2^{52}}  \right)
+ \rho' \leftarrow&\, \begin{cases}
+                       0  &:\, E_\rho = 0 \textrm{ and } M_\rho = 0 \\
+                       (-1)^{s_\rho} \, 2^{E_\rho - 1023} \, \left(1 + M_\rho / 2^{52}  \right) &:\, \textrm{else}
+                     \end{cases} \nonumber \\
+    z' \leftarrow&\, \begin{cases}
+                       0  &:\, E_z = 0 \textrm{ and } M_z = 0 \\
+                       (-1)^{s_z   } \, 2^{E_z    - 1023} \, \left(1 + M_z / 2^{52}  \right) &:\, \textrm{else}
+                     \end{cases} \nonumber
 \end{align}
 The following algorithm is used to compute reference values
 of $\tilde{A}_z$ and $\tilde{B}_\varphi$ at~$(\rho', z')$
 for the straight wire segment:
 \begin{align}
   r_\mathrm{i}  \leftarrow&\, \sqrt{ {\rho'}^2 + {z'}^2 } \nonumber \\
-  r_\mathrm{f}  \leftarrow&\, \sqrt{ {\rho'}^2 + \left(1 - z'\right)^2 } \label{alg:sws_ref} \\
+  r_\mathrm{f}  \leftarrow&\, \sqrt{ {\rho'}^2 + \left(1 - z'\right)^2 } \nonumber \\
   \epsilon \leftarrow&\, \left( r_\mathrm{i} + r_\mathrm{f} \right)^{-1} \nonumber \\
   \tilde{A}_z \leftarrow&\, \textrm{atanh} (\epsilon) \label{eqn:sws_A_z_ref} \\
   \tilde{B}_\varphi \leftarrow&\, \left(\frac{1}{r_\mathrm{i}} + \frac{1}{r_\mathrm{f}} \right) \frac{\rho'}{r_\mathrm{i} r_\mathrm{f} + {\rho'}^2 + z' (z' - 1)} \label{eqn:sws_B_phi_ref}
@@ -794,4 +800,5 @@ The error metric employed in this work is given as follows:
    \end{cases} \label{eqn:error_metric}
 \end{equation}
 where the constant~$-16$ is chosen for \texttt{float64} as $\lfloor \log_{10}(\epsilon_{64}) \rfloor$.
-
+Here, $a$ is the value to be tested and
+$b$ is the reference value computed using arbitrary-precision arithmetic.
