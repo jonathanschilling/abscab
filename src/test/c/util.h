@@ -71,6 +71,8 @@ char* trim_whitespace(char *str) {
  * Rows in the file starting with "#" are not counted and not parsed.
  */
 double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
+
+	// try to open given file
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
 		printf("failed to open file '%s'\n", filename);
@@ -94,19 +96,20 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 			// now count how many columns there are in the current line
 			char* trimmed_line = trim_whitespace(line);
 
-			int cols_in_this_line = 0;
 			// https://en.cppreference.com/w/c/string/byte/strtok
+			int cols_in_this_line = 0;
 			char *token = strtok(trimmed_line, delims);
 			while (token) {
 				cols_in_this_line++;
 				token = strtok(NULL, delims);
 			}
 
+			// cols <-- max(cols, cols_in_this_line)
 			cols = (cols_in_this_line > cols ? cols_in_this_line : cols);
 		}
 	}
 
-	printf("found %d rows of up to %d column(s)\n", rows, cols);
+//	printf("found %d rows of up to %d column(s)\n", rows, cols);
 
 	// allocate target array
 	double** data = (double**) malloc(cols * sizeof(double*));
@@ -114,24 +117,53 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 		data[i] = (double*) malloc(rows * sizeof(double));
 	}
 
+	// seek back to start of file
+	int status = fseek(fp, 0, SEEK_SET);
+	if (status) {
+		printf("failed to seek to start of file '%s': status = %d\n", filename, status);
+	}
+
 	// second pass: read data from file and parse into allocated array
+	int row = 0;
+	while ((numRead = getline(&line, &bufSize, fp)) != -1) {
+		// skip empty lines and comment lines
+		if (numRead > 0 && line[0] != '#') {
+			rows++;
 
-	// TODO
+			// now count how many columns there are in the current line
+			char* trimmed_line = trim_whitespace(line);
 
+			int col = 0;
+			char *token = strtok(trimmed_line, delims);
+			while (token) {
 
+//				printf("parse '%s' into data[%d][%d]", token, col, row);
 
-	// close file
-	int status = fclose(fp);
+				// parse data
+				data[col][row] = atof(token);
+
+//				printf(" => %g\n", data[col][row]);
+
+				token = strtok(NULL, delims);
+				col++;
+			}
+			row++;
+		}
+	}
+
+	// close file and check that this was successful
+	status = fclose(fp);
 	if (status) {
 		printf("failed to close file '%s': status = %d\n", filename, status);
 	}
 
-	// free (possibly) still-allocated line buffer
+	// free (possibly) still-allocated line buffer --> see getline() docs
 	free(line);
 
-	// actually prepare return values
+	// return row and column counts
 	*(numRows) = rows;
 	*(numColumns) = cols;
+
 	return data;
 }
 
