@@ -1,5 +1,6 @@
 
-#include "abscab.h"
+#include "cel.h"
+
 #include "util.h"
 
 /** test case for cel() implementation as described in section 4.2 of the 1969 Bulirsch article */
@@ -18,10 +19,10 @@ int testCel() {
 	double c1 = cel(k_c, p1, a, b);
 	double c2 = cel(k_c, p2, a, b);
 
-	double ra1 = fabs(cel1 - c1)/(1.0 + fabs(cel1));
-	double ra2 = fabs(cel2 - c2)/(1.0 + fabs(cel2));
-	printf("case 1: rel/abs deviation = %g\n", ra1);
-	printf("case 2: rel/abs deviation = %g\n", ra2);
+//	double ra1 = fabs(cel1 - c1)/(1.0 + fabs(cel1));
+//	double ra2 = fabs(cel2 - c2)/(1.0 + fabs(cel2));
+//	printf("case 1: rel/abs deviation = %g\n", ra1);
+//	printf("case 2: rel/abs deviation = %g\n", ra2);
 
 	int status = 0;
 	status |= assertRelAbsEquals(cel1, c1, tolerance);

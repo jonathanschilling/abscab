@@ -1,11 +1,9 @@
 
-
 ABSCAB_DIR=../../main/c
-ABSCAB_H=${ABSCAB_DIR}/abscab.h
 
-.PHONY: all test
+.PHONY: all test clean
 
-test_cel: ${ABSCAB_H} test_cel.c util.h
+test_cel: ${ABSCAB_DIR}/cel.h test_cel.c util.h
 	gcc -I${ABSCAB_DIR} -lm -o test_cel test_cel.c 
 
 all: test_cel
