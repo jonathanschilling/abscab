@@ -128,7 +128,6 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 	while ((numRead = getline(&line, &bufSize, fp)) != -1) {
 		// skip empty lines and comment lines
 		if (numRead > 0 && line[0] != '#') {
-			rows++;
 
 			// now count how many columns there are in the current line
 			char* trimmed_line = trim_whitespace(line);
