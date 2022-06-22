@@ -9,7 +9,7 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
-		//		demoDoubleParts();
+//		demoDoubleParts();
 
 //		demoStraightWireSegmentAlongRhoP0();
 //		demoStraightWireSegmentAlongZP01();

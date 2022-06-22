@@ -1,10 +1,9 @@
+#include "util.h"
 
 #include "cel.h"
 
-#include "util.h"
-
 /** test case for cel() implementation as described in section 4.2 of the 1969 Bulirsch article */
-int testCel() {
+int test_cel() {
 	double tolerance = 1.0e-15;
 
 	double k_c = 0.1;
@@ -34,11 +33,11 @@ int main(int argc, char** argv) {
 
 	int status = 0;
 
-	status |= testCel();
+	status |= test_cel();
 
 	if (status != 0) {
-		printf("some test(s) failed :-(\n");
+		printf("%s: some test(s) failed :-(\n", argv[0]);
 	} else {
-		printf("all test(s) passed :-)\n");
+		printf("%s: all test(s) passed :-)\n", argv[0]);
 	}
 }

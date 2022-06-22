@@ -1952,6 +1952,8 @@ public class ABSCAB {
 		return len;
 	}
 
+	// --------------------------------------------------
+
 	/**
 	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
 	 *
