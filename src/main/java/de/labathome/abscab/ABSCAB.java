@@ -373,7 +373,7 @@ public class ABSCAB {
 
 					// It is better that many threads do more
 					// than one thread needs to do more.
-					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads) ;
+					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads);
 				}
 
 				final double[][][] vectorPotentialContributions = new double[nThreads][3][numEvalPos];
@@ -574,7 +574,7 @@ public class ABSCAB {
 
 					// It is better that many threads do more
 					// than one thread needs to do more.
-					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads) ;
+					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads);
 				}
 
 				final double[][][] vectorPotentialContributions = new double[nThreads][3][numEvalPos];
@@ -778,7 +778,7 @@ public class ABSCAB {
 
 					// It is better that many threads do more
 					// than one thread needs to do more.
-					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads) ;
+					nSourcePerThread = (int) Math.ceil( (numVertices-1.0) / nThreads);
 				}
 
 				final double[][][] magneticFieldContributions = new double[nThreads][3][numEvalPos];
@@ -979,7 +979,7 @@ public class ABSCAB {
 
 					// It is better that many threads do more
 					// than one thread needs to do more.
-					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads) ;
+					nSourcePerThread = (int) Math.ceil( ((double)(numVertices - 1)) / nThreads);
 				}
 
 				final double[][][] magneticFieldContributions = new double[nThreads][3][numEvalPos];

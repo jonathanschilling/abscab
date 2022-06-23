@@ -29,6 +29,9 @@ void vertexSupplierMcG(int idxVertex, double *point) {
 	point[2] = 0.0;
 }
 
+//  1 thread : 9 min, 21 s
+// 16 threads: 0 min, 38 s --> 15x speedup
+// 32 threads: 0 min, 26 s --> 22x speedup
 void demoMcGreivy() {
 
 	radius = 1.23; // m
@@ -75,7 +78,7 @@ void demoMcGreivy() {
 	for (int i = 0; i < numCases; ++i) {
 
 		int numPhi = allNumPhi[i];
-		printf("numPhi = %d\n", numPhi);
+		printf("case %2d/%2d: numPhi = %d\n", i+1, numCases, numPhi);
 
 		omega = 2.0 * M_PI / (numPhi-1);
 
@@ -112,9 +115,9 @@ void demoMcGreivy() {
 	}
 
 	if (useCompensatedSummation) {
-		dumpToFile(3, numCases, resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
+		dumpToFile(3, numCases, resultTable, "convergenceMcGreivy_CompensatedSummation.dat");
 	} else {
-		dumpToFile(3, numCases, resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
+		dumpToFile(3, numCases, resultTable, "convergenceMcGreivy_StandardSummation.dat");
 	}
 
 	free(allBzStdErr);
@@ -133,12 +136,6 @@ void demoMcGreivy() {
 //
 //	return ret;
 //}
-
-
-
-
-
-
 
 int main(int argc, char **argv) {
 

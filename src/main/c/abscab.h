@@ -1510,7 +1510,7 @@ void vectorPotentialPolygonFilament_specPar_specSum(
 
 				// It is better that many threads do more
 				// than one thread needs to do more.
-				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads) ;
+				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads);
 			}
 
 			double *vectorPotentialContributions = (double *) malloc(nThreads * 3 * numEvalPos * sizeof(double));
@@ -1522,7 +1522,7 @@ void vectorPotentialPolygonFilament_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart =      idxThread    * nSourcePerThread;
@@ -1587,7 +1587,7 @@ void vectorPotentialPolygonFilament_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart = 0;
@@ -1674,7 +1674,7 @@ void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 
 				// It is better that many threads do more
 				// than one thread needs to do more.
-				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads) ;
+				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads);
 			}
 
 			double *vectorPotentialContributions = (double *) malloc(nThreads * 3 * numEvalPos * sizeof(double));
@@ -1686,7 +1686,7 @@ void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart =      idxThread    * nSourcePerThread;
@@ -1751,7 +1751,7 @@ void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart = 0;
@@ -1838,7 +1838,7 @@ void magneticFieldPolygonFilament_specPar_specSum(
 
 				// It is better that many threads do more
 				// than one thread needs to do more.
-				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads) ;
+				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads);
 			}
 
 			double *magneticFieldContributions = (double *) malloc(nThreads * 3 * numEvalPos * sizeof(double));
@@ -1850,7 +1850,7 @@ void magneticFieldPolygonFilament_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart =      idxThread    * nSourcePerThread;
@@ -1915,7 +1915,7 @@ void magneticFieldPolygonFilament_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart = 0;
@@ -2003,7 +2003,7 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 
 				// It is better that many threads do more
 				// than one thread needs to do more.
-				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads) ;
+				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads);
 			}
 
 			double *magneticFieldContributions = (double *) malloc(nThreads * 3 * numEvalPos * sizeof(double));
@@ -2015,7 +2015,7 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart =      idxThread    * nSourcePerThread;
@@ -2080,7 +2080,7 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 			// parallelized evaluation
 			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
 #ifdef _OPENMP
-#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#pragma omp parallel for private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
 #endif // _OPENMP
 			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 				idxSourceStart = 0;
