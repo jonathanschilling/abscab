@@ -262,7 +262,6 @@ public class DemoABSCAB {
 		plt.ylabel("rel. err");
 		plt.legend("loc='upper right'");
 		plt.title("McGreivy method for circular loop");
-		plt.ylim(new double[] {1e-16, 1});
 		plt.tight_layout();
 
 		plt.show();
