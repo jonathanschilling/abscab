@@ -299,6 +299,76 @@ int testMagneticFieldInfiniteLineFilament() {
 	return assertRelAbsEquals(bPhiRef, bPhi, tolerance);
 }
 
+int testBPhiInfiniteLineFilament() {
+	double tolerance = 1.0e-15;
+
+	// Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+	// B(r) = mu_0 * I / (2 pi r)
+	// Test this here with:
+	// I = 123.0 A
+	// r = 0.132 m
+	// => B = 0.186 mT
+	double current = 123.0;
+	double r = 0.132;
+	double bPhiRef = MU_0 * current / (2.0 * M_PI * r);
+//	printf("ref bPhi = %.5e\n", bPhiRef);
+
+	// half the length of the wire segment
+	double halfL = 1e6;
+	double L = 2*halfL;
+	double rhoP = r / L;
+	double zP = halfL / L;
+	double bPhi = MU_0 * current / (4.0 * M_PI * L) * straightWireSegment_B_phi(rhoP, zP);
+//	printf("act bPhi = %.5e\n", bPhi);
+
+	double relAbsErr = fabs(bPhi - bPhiRef) / (1.0 + fabs(bPhiRef));
+//	printf("raErr = %.5e\n", relAbsErr);
+
+	return assertRelAbsEquals(bPhiRef, bPhi, tolerance);
+}
+
+int testMagneticFieldInsideLongCoil() {
+	double tolerance = 1.0e-4;
+
+	// Demtroeder 2, Sec. 3.2.3 ("Magnetic field of a long coil")
+	// B_z = mu_0 * n * I
+	// where n is the winding density: n = N / L
+	// of a coil of N windings over a length L
+	// Example (which is tested here):
+	// n = 1e3 m^{-1}
+	// I = 10 A
+	// => B = 0.0126T
+	double bZRef = 0.0126;
+
+	int N = 50000; // windings
+	double L = 50.0; // total length of coil in m
+	double n = N/L;
+
+	double current = 10.0; // A
+	double radius = 1.0; // m
+
+	double bZ = 0.0;
+	for (int i = 0; i < N; ++i) {
+
+		// axial position of coil
+		double z0 = -L/2.0 + (i + 0.5) / n;
+
+		// compute magnetic field
+		double prefac = MU_0 * current / (M_PI * radius);
+		double bZContrib = prefac * circularWireLoop_B_z(0.0, z0);
+
+//		printf("coil %d at z0 = % .3e => contrib = %.3e\n", i, z0, bZContrib);
+
+		bZ += bZContrib;
+	}
+//	printf("B_z = %.5e\n", bZ);
+
+	double relAbsErr = fabs(bZ - bZRef) / (1.0 + fabs(bZRef));
+//	printf("raErr = %.5e\n", relAbsErr);
+
+	return assertRelAbsEquals(bZRef, bZ, tolerance);
+}
+
 int main(int argc, char **argv) {
 
 	int status = 0;
@@ -306,6 +376,8 @@ int main(int argc, char **argv) {
 	status |= testStraightWireSegment();
 	status |= testCircularWireLoop();
 	status |= testMagneticFieldInfiniteLineFilament();
+	status |= testBPhiInfiniteLineFilament();
+	status |= testMagneticFieldInsideLongCoil();
 
 	if (status != 0) {
 		printf("%s: some test(s) failed :-(\n", argv[0]);
