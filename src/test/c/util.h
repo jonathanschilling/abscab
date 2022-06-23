@@ -76,21 +76,24 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
 		printf("failed to open file '%s'\n", filename);
-		return 0x0;
+		return NULL;
 	}
 
-	char *line = NULL;
-	ssize_t numRead;
-	size_t bufSize = 0;
+	int bufSize = 256;
+	char *line = (char *) malloc(bufSize);
+	if (line == NULL) {
+		printf("could not allocate read buffer\n");
+		return NULL;
+	}
 
 	int rows = 0;
 	int cols = 0;
 	char *delims = " \t";
 
 	// first pass: read file and count lines and columns
-	while ((numRead = getline(&line, &bufSize, fp)) != -1) {
+	while (fgets(line, bufSize, fp) != NULL) {
 		// skip empty lines and comment lines
-		if (numRead > 0 && line[0] != '#') {
+		if (line[0] != '#') {
 			rows++;
 
 			// now count how many columns there are in the current line
@@ -121,13 +124,14 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 	int status = fseek(fp, 0, SEEK_SET);
 	if (status) {
 		printf("failed to seek to start of file '%s': status = %d\n", filename, status);
+		return NULL;
 	}
 
 	// second pass: read data from file and parse into allocated array
 	int row = 0;
-	while ((numRead = getline(&line, &bufSize, fp)) != -1) {
+	while (fgets(line, bufSize, fp) != NULL) {
 		// skip empty lines and comment lines
-		if (numRead > 0 && line[0] != '#') {
+		if (line[0] != '#') {
 
 			// now count how many columns there are in the current line
 			char* trimmed_line = trim_whitespace(line);
@@ -156,7 +160,6 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 		printf("failed to close file '%s': status = %d\n", filename, status);
 	}
 
-	// free (possibly) still-allocated line buffer --> see getline() docs
 	free(line);
 
 	// return row and column counts
