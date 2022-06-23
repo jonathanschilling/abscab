@@ -32,6 +32,27 @@ int assertRelAbsEquals(double expected, double actual, double tolerance) {
 	return 0;
 }
 
+/**
+ *
+ */
+double errorMetric(double ref, double act) {
+	double bad = 0.0;
+	double good = -16.0;
+
+	double tenToBad = pow(10, bad);
+
+	if (fabs(ref) > 0.0) {
+		if (act != ref) {
+			double relErr = fabs((act-ref)/ref);
+			return log10(tenToBad < relErr ? tenToBad : relErr);
+		} else {
+			return good;
+		}
+	} else {
+		return ((fabs(act) > 0.0) ? bad : good);
+	}
+}
+
 // https://stackoverflow.com/a/122721
 // Note: This function returns a pointer to a substring of the original string.
 // If the given string was allocated dynamically, the caller must not overwrite
@@ -167,6 +188,27 @@ double** loadColumnsFromFile(char *filename, int *numRows, int *numColumns) {
 	*(numColumns) = cols;
 
 	return data;
+}
+
+void dumpToFile(int numCols, int numRows, double *data, char *filename) {
+
+	FILE *fp = fopen(filename, "w+");
+	if (fp == NULL) {
+		printf("failed to open file '%s'\n", filename);
+		return;
+	}
+
+	for (int row = 0; row < numRows; ++row) {
+		for (int col = 0; col < (numCols-1); ++col) {
+			fprintf(fp, "%.20e ", data[row * numCols + col]);
+		}
+		fprintf(fp, "%.20e\n", data[row * numCols + (numCols-1)]);
+	}
+
+	int status = fclose(fp);
+	if (status) {
+		printf("failed to close file '%s': status = %d\n", filename, status);
+	}
 }
 
 #endif // UTIL_H

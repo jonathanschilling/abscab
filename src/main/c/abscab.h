@@ -7,7 +7,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #else // _OPENMP
-#define omp_get_num_threads() 1
+#define omp_get_max_threads() 1
 #endif // _OPENMP
 
 #include "cel.h"
@@ -2243,7 +2243,7 @@ void vectorPotentialPolygonFilament(
 		double *evalPos,
 		double *vectorPotential) {
 
-	int numProcessors = omp_get_num_threads();
+	int numProcessors = omp_get_max_threads();
 	vectorPotentialPolygonFilament_specPar(
 			numVertices, vertices, current,
 			numEvalPos, evalPos,
@@ -2271,7 +2271,7 @@ void vectorPotentialPolygonFilamentVertexSupplier(
 		double *evalPos,
 		double *vectorPotential) {
 
-	int numProcessors = omp_get_num_threads();
+	int numProcessors = omp_get_max_threads();
 	vectorPotentialPolygonFilamentVertexSupplier_specPar(
 			numVertices, vertexSupplier, current,
 			numEvalPos, evalPos,
@@ -2299,7 +2299,7 @@ void magneticFieldPolygonFilament(
 		double *evalPos,
 		double *magneticField) {
 
-	int numProcessors = omp_get_num_threads();
+	int numProcessors = omp_get_max_threads();
 	magneticFieldPolygonFilament_specPar(
 			numVertices, vertices, current,
 			numEvalPos, evalPos,
@@ -2327,7 +2327,7 @@ void magneticFieldPolygonFilamentVertexSupplier(
 		double *evalPos,
 		double *magneticField) {
 
-	int numProcessors = omp_get_num_threads();
+	int numProcessors = omp_get_max_threads();
 	magneticFieldPolygonFilamentVertexSupplier_specPar(
 			numVertices, vertexSupplier, current,
 			numEvalPos, evalPos,
