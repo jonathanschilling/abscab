@@ -1224,9 +1224,9 @@ public class ABSCAB {
 
 				// add contribution from wire segment to result
 				if (useCompensatedSummation) {
-					aXSum[idxEval].add(aParallel * eX);
-					aYSum[idxEval].add(aParallel * eY);
-					aZSum[idxEval].add(aParallel * eZ);
+					aXSum[idxEval - idxEvalStart].add(aParallel * eX);
+					aYSum[idxEval - idxEvalStart].add(aParallel * eY);
+					aZSum[idxEval - idxEvalStart].add(aParallel * eZ);
 				} else {
 					vectorPotential[0][idxEval] += aParallel * eX;
 					vectorPotential[1][idxEval] += aParallel * eY;
@@ -1359,9 +1359,9 @@ public class ABSCAB {
 
 				// add contribution from wire segment to result
 				if (useCompensatedSummation) {
-					aXSum[idxEval].add(aParallel * eX);
-					aYSum[idxEval].add(aParallel * eY);
-					aZSum[idxEval].add(aParallel * eZ);
+					aXSum[idxEval - idxEvalStart].add(aParallel * eX);
+					aYSum[idxEval - idxEvalStart].add(aParallel * eY);
+					aZSum[idxEval - idxEvalStart].add(aParallel * eZ);
 				} else {
 					vectorPotential[0][idxEval] += aParallel * eX;
 					vectorPotential[1][idxEval] += aParallel * eY;
@@ -1512,9 +1512,9 @@ public class ABSCAB {
 
 					// add contribution from wire segment to result
 					if (useCompensatedSummation) {
-						bXSum[idxEval].add(bPhi * ePhiX);
-						bYSum[idxEval].add(bPhi * ePhiY);
-						bZSum[idxEval].add(bPhi * ePhiZ);
+						bXSum[idxEval - idxEvalStart].add(bPhi * ePhiX);
+						bYSum[idxEval - idxEvalStart].add(bPhi * ePhiY);
+						bZSum[idxEval - idxEvalStart].add(bPhi * ePhiZ);
 					} else {
 						magneticField[0][idxEval] += bPhi * ePhiX;
 						magneticField[1][idxEval] += bPhi * ePhiY;
@@ -1668,9 +1668,9 @@ public class ABSCAB {
 
 					// add contribution from wire segment to result
 					if (useCompensatedSummation) {
-						bXSum[idxEval].add(bPhi * ePhiX);
-						bYSum[idxEval].add(bPhi * ePhiY);
-						bZSum[idxEval].add(bPhi * ePhiZ);
+						bXSum[idxEval - idxEvalStart].add(bPhi * ePhiX);
+						bYSum[idxEval - idxEvalStart].add(bPhi * ePhiY);
+						bZSum[idxEval - idxEvalStart].add(bPhi * ePhiZ);
 					} else {
 						magneticField[0][idxEval] += bPhi * ePhiX;
 						magneticField[1][idxEval] += bPhi * ePhiY;

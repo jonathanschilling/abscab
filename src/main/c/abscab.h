@@ -1,7 +1,11 @@
 #ifndef ABSCAB_H
 #define ABSCAB_H
 
+// for memset()
+#include <string.h>
+
 #include "cel.h"
+#include "compsum.h"
 
 /** vacuum magnetic permeability in Vs/Am (CODATA-2018) */
 const double MU_0 = 1.25663706212e-6;
@@ -804,6 +808,628 @@ void magneticFieldCircularFilament(double *center, double *normal, double radius
 	}
 }
 
+// --------------------------------------------------
 
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ * @param idxSourceStart first index in {@code vertices} to take into account
+ * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+ * @param idxEvalStart first index in {@code evalPos} to take into account
+ * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+ * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+ *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+ */
+void kernelVectorPotentialPolygonFilament(
+		double *vertices,
+		double current,
+		double *evalPos,
+		double *vectorPotential,
+		int idxSourceStart,
+		int idxSourceEnd,
+		int idxEvalStart,
+		int idxEvalEnd,
+		bool useCompensatedSummation) {
+
+	double aPrefactor = MU_0_BY_2_PI * current;
+
+	// setup compensated summation objects
+	double *aXSum;
+	double *aYSum;
+	double *aZSum;
+	if (useCompensatedSummation) {
+		int numEvalPos = idxEvalEnd - idxEvalStart;
+
+		// need three doubles (s, cs, ccs) per eval pos --> see compsum.h
+		int numBytesToAllocate = 3 * numEvalPos * sizeof(double);
+
+		aXSum = (double *) malloc (numBytesToAllocate);
+		aYSum = (double *) malloc (numBytesToAllocate);
+		aZSum = (double *) malloc (numBytesToAllocate);
+
+		memset(aXSum, 0, numBytesToAllocate);
+		memset(aYSum, 0, numBytesToAllocate);
+		memset(aZSum, 0, numBytesToAllocate);
+	} else {
+		aXSum = NULL;
+		aYSum = NULL;
+		aZSum = NULL;
+	}
+
+	double x_i = vertices[3 * idxSourceStart + 0];
+	double y_i = vertices[3 * idxSourceStart + 1];
+	double z_i = vertices[3 * idxSourceStart + 2];
+
+	for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+		double x_f = vertices[3 * (idxSource + 1) + 0];
+		double y_f = vertices[3 * (idxSource + 1) + 1];
+		double z_f = vertices[3 * (idxSource + 1) + 2];
+
+		// vector from start to end of i:th wire segment
+		double dx = x_f - x_i;
+		double dy = y_f - y_i;
+		double dz = z_f - z_i;
+
+		// squared length of wire segment
+		double l2 = dx * dx + dy * dy + dz * dz;
+		if (l2 == 0.0) {
+			// skip zero-length segments: no contribution
+			continue;
+		}
+
+		// length of wire segment
+		double l = sqrt(l2);
+
+		// unit vector parallel to wire segment
+		double eX = dx / l;
+		double eY = dy / l;
+		double eZ = dz / l;
+
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+			// vector from start of wire segment to eval pos
+			double r0x = evalPos[3 * idxEval + 0] - x_i;
+			double r0y = evalPos[3 * idxEval + 1] - y_i;
+			double r0z = evalPos[3 * idxEval + 2] - z_i;
+
+			// z position along axis of wire segment
+			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire segment
+			double zP = alignedZ / l;
+
+			// vector perpendicular to axis of wire segment, pointing at evaluation pos
+			double rPerpX = r0x - alignedZ * eX;
+			double rPerpY = r0y - alignedZ * eY;
+			double rPerpZ = r0z - alignedZ * eZ;
+
+			// perpendicular distance between evalPos and axis of wire segment
+			double alignedR = sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+			// normalized rho component of evaluation location in coordinate system of wire segment
+			double rhoP = alignedR / l;
+
+			// compute parallel component of magnetic vector potential, including current and mu_0
+			double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
+
+			// add contribution from wire segment to result
+			if (useCompensatedSummation) {
+				compAdd(aParallel * eX, aXSum + 3 * (idxEval - idxEvalStart));
+				compAdd(aParallel * eY, aYSum + 3 * (idxEval - idxEvalStart));
+				compAdd(aParallel * eZ, aZSum + 3 * (idxEval - idxEvalStart));
+			} else {
+				vectorPotential[3 * idxEval + 0] += aParallel * eX;
+				vectorPotential[3 * idxEval + 1] += aParallel * eY;
+				vectorPotential[3 * idxEval + 2] += aParallel * eZ;
+			}
+		}
+
+		// shift to next point
+		x_i = x_f;
+		y_i = y_f;
+		z_i = z_f;
+	}
+
+	if (useCompensatedSummation) {
+		// obtain compensated sums from summation objects
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			int relIdx = 3 * (idxEval - idxEvalStart);
+			vectorPotential[3 * idxEval + 0] = aXSum[relIdx + 0] + aXSum[relIdx + 1] + aXSum[relIdx + 2];
+			vectorPotential[3 * idxEval + 1] = aYSum[relIdx + 0] + aYSum[relIdx + 1] + aYSum[relIdx + 2];
+			vectorPotential[3 * idxEval + 2] = aZSum[relIdx + 0] + aZSum[relIdx + 1] + aZSum[relIdx + 2];
+		}
+
+		free(aXSum);
+		free(aYSum);
+		free(aZSum);
+	}
+}
+
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ * @param idxSourceStart first index in {@code vertices} to take into account
+ * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+ * @param idxEvalStart first index in {@code evalPos} to take into account
+ * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+ * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+ *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+ */
+void kernelVectorPotentialPolygonFilamentVertexSupplier(
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		double *evalPos,
+		double *vectorPotential,
+		int idxSourceStart,
+		int idxSourceEnd,
+		int idxEvalStart,
+		int idxEvalEnd,
+		bool useCompensatedSummation) {
+
+	double aPrefactor = MU_0_BY_2_PI * current;
+
+	// setup compensated summation objects
+	double *aXSum;
+	double *aYSum;
+	double *aZSum;
+	if (useCompensatedSummation) {
+		int numEvalPos = idxEvalEnd - idxEvalStart;
+
+		// need three doubles (s, cs, ccs) per eval pos --> see compsum.h
+		int numBytesToAllocate = 3 * numEvalPos * sizeof(double);
+
+		aXSum = (double *) malloc (numBytesToAllocate);
+		aYSum = (double *) malloc (numBytesToAllocate);
+		aZSum = (double *) malloc (numBytesToAllocate);
+
+		memset(aXSum, 0, numBytesToAllocate);
+		memset(aYSum, 0, numBytesToAllocate);
+		memset(aZSum, 0, numBytesToAllocate);
+	} else {
+		aXSum = NULL;
+		aYSum = NULL;
+		aZSum = NULL;
+	}
+
+	// get first point from vertexSupplier
+	double *pointData = (double *) malloc(3 * sizeof(double));
+	vertexSupplier(idxSourceStart, pointData);
+	double x_i = pointData[0];
+	double y_i = pointData[1];
+	double z_i = pointData[2];
+
+	for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+		// get next point from vertexSupplier
+		vertexSupplier(idxSource+1, pointData);
+		double x_f = pointData[0];
+		double y_f = pointData[1];
+		double z_f = pointData[2];
+
+		// vector from start to end of i:th wire segment
+		double dx = x_f - x_i;
+		double dy = y_f - y_i;
+		double dz = z_f - z_i;
+
+		// squared length of wire segment
+		double l2 = dx * dx + dy * dy + dz * dz;
+		if (l2 == 0.0) {
+			// skip zero-length segments: no contribution
+			continue;
+		}
+
+		// length of wire segment
+		double l = sqrt(l2);
+
+		// unit vector parallel to wire segment
+		double eX = dx / l;
+		double eY = dy / l;
+		double eZ = dz / l;
+
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+			// vector from start of wire segment to eval pos
+			double r0x = evalPos[3 * idxEval + 0] - x_i;
+			double r0y = evalPos[3 * idxEval + 1] - y_i;
+			double r0z = evalPos[3 * idxEval + 2] - z_i;
+
+			// z position along axis of wire segment
+			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire segment
+			double zP = alignedZ / l;
+
+			// vector perpendicular to axis of wire segment, pointing at evaluation pos
+			double rPerpX = r0x - alignedZ * eX;
+			double rPerpY = r0y - alignedZ * eY;
+			double rPerpZ = r0z - alignedZ * eZ;
+
+			// perpendicular distance between evalPos and axis of wire segment
+			double alignedR = sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ);
+
+			// normalized rho component of evaluation location in coordinate system of wire segment
+			double rhoP = alignedR / l;
+
+			// compute parallel component of magnetic vector potential, including current and mu_0
+			double aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP);
+
+			// add contribution from wire segment to result
+			if (useCompensatedSummation) {
+				compAdd(aParallel * eX, aXSum + 3 * (idxEval - idxEvalStart));
+				compAdd(aParallel * eY, aYSum + 3 * (idxEval - idxEvalStart));
+				compAdd(aParallel * eZ, aZSum + 3 * (idxEval - idxEvalStart));
+			} else {
+				vectorPotential[3 * idxEval + 0] += aParallel * eX;
+				vectorPotential[3 * idxEval + 1] += aParallel * eY;
+				vectorPotential[3 * idxEval + 2] += aParallel * eZ;
+			}
+		}
+
+		// shift to next point
+		x_i = x_f;
+		y_i = y_f;
+		z_i = z_f;
+	}
+
+	// return target for vertexSupplier not needed anymore
+	free(pointData);
+
+	if (useCompensatedSummation) {
+		// obtain compensated sums from summation objects
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			int relIdx = 3 * (idxEval - idxEvalStart);
+			vectorPotential[3 * idxEval + 0] = aXSum[relIdx + 0] + aXSum[relIdx + 1] + aXSum[relIdx + 2];
+			vectorPotential[3 * idxEval + 1] = aYSum[relIdx + 0] + aYSum[relIdx + 1] + aYSum[relIdx + 2];
+			vectorPotential[3 * idxEval + 2] = aZSum[relIdx + 0] + aZSum[relIdx + 1] + aZSum[relIdx + 2];
+		}
+
+		free(aXSum);
+		free(aYSum);
+		free(aZSum);
+	}
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+ * @param idxSourceStart first index in {@code vertices} to take into account
+ * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+ * @param idxEvalStart first index in {@code evalPos} to take into account
+ * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+ * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+ *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+ */
+void kernelMagneticFieldPolygonFilament(
+		double *vertices,
+		double current,
+		double *evalPos,
+		double *magneticField,
+		int idxSourceStart,
+		int idxSourceEnd,
+		int idxEvalStart,
+		int idxEvalEnd,
+		bool useCompensatedSummation) {
+
+	// needs additional division by length of wire segment!
+	double bPrefactorL = MU_0_BY_4_PI * current;
+
+	// setup compensated summation targets
+	double *bXSum;
+	double *bYSum;
+	double *bZSum;
+	if (useCompensatedSummation) {
+		int numEvalPos = idxEvalEnd - idxEvalStart;
+
+		// need three doubles (s, cs, ccs) per eval pos --> see compsum.h
+		int numBytesToAllocate = 3 * numEvalPos * sizeof(double);
+
+		bXSum = (double *) malloc (numBytesToAllocate);
+		bYSum = (double *) malloc (numBytesToAllocate);
+		bZSum = (double *) malloc (numBytesToAllocate);
+
+		memset(bXSum, 0, numBytesToAllocate);
+		memset(bYSum, 0, numBytesToAllocate);
+		memset(bZSum, 0, numBytesToAllocate);
+	} else {
+		bXSum = NULL;
+		bYSum = NULL;
+		bZSum = NULL;
+	}
+
+	double x_i = vertices[3 * idxSourceStart + 0];
+	double y_i = vertices[3 * idxSourceStart + 1];
+	double z_i = vertices[3 * idxSourceStart + 2];
+
+	for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+		double x_f = vertices[3 * (idxSource + 1) + 0];
+		double y_f = vertices[3 * (idxSource + 1) + 1];
+		double z_f = vertices[3 * (idxSource + 1) + 2];
+
+		// vector from start to end of i:th wire segment
+		double dx = x_f - x_i;
+		double dy = y_f - y_i;
+		double dz = z_f - z_i;
+
+		// squared length of wire segment
+		double l2 = dx * dx + dy * dy + dz * dz;
+		if (l2 == 0.0) {
+			// skip zero-length segments: no contribution
+			continue;
+		}
+
+		// length of wire segment
+		double l = sqrt(l2);
+
+		// assemble full prefactor for B_phi
+		double bPrefactor = bPrefactorL / l;
+
+		// unit vector parallel to wire segment
+		double eX = dx / l;
+		double eY = dy / l;
+		double eZ = dz / l;
+
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+			// vector from start of wire segment to eval pos
+			double r0x = evalPos[3 * idxEval + 0] - x_i;
+			double r0y = evalPos[3 * idxEval + 1] - y_i;
+			double r0z = evalPos[3 * idxEval + 2] - z_i;
+
+			// z position along axis of wire segment
+			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire segment
+			double zP = alignedZ / l;
+
+			// vector perpendicular to axis of wire segment, pointing at evaluation pos
+			double rPerpX = r0x - alignedZ * eX;
+			double rPerpY = r0y - alignedZ * eY;
+			double rPerpZ = r0z - alignedZ * eZ;
+
+			// perpendicular distance squared between evalPos and axis of wire segment
+			double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
+
+			// B_phi is zero along axis of filament
+			if (alignedRSq > 0.0) {
+
+				// perpendicular distance between evalPos and axis of wire segment
+				double alignedR = sqrt(alignedRSq);
+
+				// normalized rho component of evaluation location in coordinate system of wire segment
+				double rhoP = alignedR / l;
+
+				// compute tangential component of magnetic vector potential, including current and mu_0
+				double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
+
+				// unit vector in radial direction
+				double eRX = rPerpX / alignedR;
+				double eRY = rPerpY / alignedR;
+				double eRZ = rPerpZ / alignedR;
+
+				// compute cross product between e_z and e_rho to get e_phi
+				double ePhiX = eY * eRZ - eZ * eRY;
+				double ePhiY = eZ * eRX - eX * eRZ;
+				double ePhiZ = eX * eRY - eY * eRX;
+
+				// add contribution from wire segment to result
+				if (useCompensatedSummation) {
+					compAdd(bPhi * ePhiX, bXSum + 3 * (idxEval - idxEvalStart));
+					compAdd(bPhi * ePhiY, bYSum + 3 * (idxEval - idxEvalStart));
+					compAdd(bPhi * ePhiZ, bZSum + 3 * (idxEval - idxEvalStart));
+				} else {
+					magneticField[3 * idxEval + 0] += bPhi * ePhiX;
+					magneticField[3 * idxEval + 1] += bPhi * ePhiY;
+					magneticField[3 * idxEval + 2] += bPhi * ePhiZ;
+				}
+			}
+		}
+
+		// shift to next point
+		x_i = x_f;
+		y_i = y_f;
+		z_i = z_f;
+	}
+
+	if (useCompensatedSummation) {
+		// obtain compensated sums from summation objects
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			int relIdx = 3 * (idxEval - idxEvalStart);
+			magneticField[3 * idxEval + 0] = bXSum[relIdx + 0] + bXSum[relIdx + 1] + bXSum[relIdx + 2];
+			magneticField[3 * idxEval + 1] = bYSum[relIdx + 0] + bYSum[relIdx + 1] + bYSum[relIdx + 2];
+			magneticField[3 * idxEval + 2] = bZSum[relIdx + 0] + bZSum[relIdx + 1] + bZSum[relIdx + 2];
+		}
+
+		free(bXSum);
+		free(bYSum);
+		free(bZSum);
+	}
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+ * @param idxSourceStart first index in {@code vertices} to take into account
+ * @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+ * @param idxEvalStart first index in {@code evalPos} to take into account
+ * @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+ * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+ *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+ */
+void kernelMagneticFieldPolygonFilamentVertexSupplier(
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		double *evalPos,
+		double *magneticField,
+		int idxSourceStart,
+		int idxSourceEnd,
+		int idxEvalStart,
+		int idxEvalEnd,
+		bool useCompensatedSummation) {
+
+	// needs additional division by length of wire segment!
+	double bPrefactorL = MU_0_BY_4_PI * current;
+
+	// setup compensated summation targets
+	double *bXSum;
+	double *bYSum;
+	double *bZSum;
+	if (useCompensatedSummation) {
+		int numEvalPos = idxEvalEnd - idxEvalStart;
+
+		// need three doubles (s, cs, ccs) per eval pos --> see compsum.h
+		int numBytesToAllocate = 3 * numEvalPos * sizeof(double);
+
+		bXSum = (double *) malloc (numBytesToAllocate);
+		bYSum = (double *) malloc (numBytesToAllocate);
+		bZSum = (double *) malloc (numBytesToAllocate);
+
+		memset(bXSum, 0, numBytesToAllocate);
+		memset(bYSum, 0, numBytesToAllocate);
+		memset(bZSum, 0, numBytesToAllocate);
+	} else {
+		bXSum = NULL;
+		bYSum = NULL;
+		bZSum = NULL;
+	}
+
+	// get first point from vertexSupplier
+	double *pointData = (double *) malloc(3 * sizeof(double));
+	vertexSupplier(idxSourceStart, pointData);
+	double x_i = pointData[0];
+	double y_i = pointData[1];
+	double z_i = pointData[2];
+
+	for (int idxSource = idxSourceStart; idxSource < idxSourceEnd; ++idxSource) {
+
+		// get next point from vertexSupplier
+		vertexSupplier(idxSource+1, pointData);
+		double x_f = pointData[0];
+		double y_f = pointData[1];
+		double z_f = pointData[2];
+
+		// vector from start to end of i:th wire segment
+		double dx = x_f - x_i;
+		double dy = y_f - y_i;
+		double dz = z_f - z_i;
+
+		// squared length of wire segment
+		double l2 = dx * dx + dy * dy + dz * dz;
+		if (l2 == 0.0) {
+			// skip zero-length segments: no contribution
+			continue;
+		}
+
+		// length of wire segment
+		double l = sqrt(l2);
+
+		// assemble full prefactor for B_phi
+		double bPrefactor = bPrefactorL / l;
+
+		// unit vector parallel to wire segment
+		double eX = dx / l;
+		double eY = dy / l;
+		double eZ = dz / l;
+
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+
+			// vector from start of wire segment to eval pos
+			double r0x = evalPos[3 * idxEval + 0] - x_i;
+			double r0y = evalPos[3 * idxEval + 1] - y_i;
+			double r0z = evalPos[3 * idxEval + 2] - z_i;
+
+			// z position along axis of wire segment
+			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+			// normalized z component of evaluation location in coordinate system of wire segment
+			double zP = alignedZ / l;
+
+			// vector perpendicular to axis of wire segment, pointing at evaluation pos
+			double rPerpX = r0x - alignedZ * eX;
+			double rPerpY = r0y - alignedZ * eY;
+			double rPerpZ = r0z - alignedZ * eZ;
+
+			// perpendicular distance squared between evalPos and axis of wire segment
+			double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
+
+			// B_phi is zero along axis of filament
+			if (alignedRSq > 0.0) {
+
+				// perpendicular distance between evalPos and axis of wire segment
+				double alignedR = sqrt(alignedRSq);
+
+				// normalized rho component of evaluation location in coordinate system of wire segment
+				double rhoP = alignedR / l;
+
+				// compute tangential component of magnetic vector potential, including current and mu_0
+				double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
+
+				// unit vector in radial direction
+				double eRX = rPerpX / alignedR;
+				double eRY = rPerpY / alignedR;
+				double eRZ = rPerpZ / alignedR;
+
+				// compute cross product between e_z and e_rho to get e_phi
+				double ePhiX = eY * eRZ - eZ * eRY;
+				double ePhiY = eZ * eRX - eX * eRZ;
+				double ePhiZ = eX * eRY - eY * eRX;
+
+				// add contribution from wire segment to result
+				if (useCompensatedSummation) {
+					compAdd(bPhi * ePhiX, bXSum + 3 * (idxEval - idxEvalStart));
+					compAdd(bPhi * ePhiY, bYSum + 3 * (idxEval - idxEvalStart));
+					compAdd(bPhi * ePhiZ, bZSum + 3 * (idxEval - idxEvalStart));
+				} else {
+					magneticField[3 * idxEval + 0] += bPhi * ePhiX;
+					magneticField[3 * idxEval + 1] += bPhi * ePhiY;
+					magneticField[3 * idxEval + 2] += bPhi * ePhiZ;
+				}
+			}
+		}
+
+		// shift to next point
+		x_i = x_f;
+		y_i = y_f;
+		z_i = z_f;
+	}
+
+	// return target for vertexSupplier not needed anymore
+	free(pointData);
+
+	if (useCompensatedSummation) {
+		// obtain compensated sums from summation objects
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			int relIdx = 3 * (idxEval - idxEvalStart);
+			magneticField[3 * idxEval + 0] = bXSum[relIdx + 0] + bXSum[relIdx + 1] + bXSum[relIdx + 2];
+			magneticField[3 * idxEval + 1] = bYSum[relIdx + 0] + bYSum[relIdx + 1] + bYSum[relIdx + 2];
+			magneticField[3 * idxEval + 2] = bZSum[relIdx + 0] + bZSum[relIdx + 1] + bZSum[relIdx + 2];
+		}
+
+		free(bXSum);
+		free(bYSum);
+		free(bZSum);
+	}
+}
 
 #endif // ABSCAB_H
