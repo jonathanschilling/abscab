@@ -6,10 +6,10 @@
 #include <math.h>
 
 /** half of pi */
-double PI_2 = M_PI / 2.0;
+const double PI_2 = M_PI / 2.0;
 
 /** sqrt of machine epsilon */
-double SQRT_EPS = sqrt(DBL_EPSILON);
+const double SQRT_EPS = sqrt(DBL_EPSILON);
 
 /**
  * Compute the complete elliptic integral introduced in

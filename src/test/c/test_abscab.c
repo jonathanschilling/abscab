@@ -78,8 +78,8 @@ int testStraightWireSegment() {
 
 	double toleranceAZ   = 1.0e-15;
 	double toleranceBPhi = 1.0e-15;
-	int status = 0;
 
+	int status = 0;
 	for (int i = 0; i < numCases && !status; ++i) {
 
 		double rp = test_points_rp[i];
@@ -109,7 +109,6 @@ int testStraightWireSegment() {
 		}
 		status |= bPhiStatus;
 	}
-
 	return status;
 }
 
@@ -205,8 +204,8 @@ int testCircularWireLoop() {
 	double toleranceAPhi = 1.0e-15;
 	double toleranceBRho = 1.0e-13;
 	double toleranceBZ   = 1.0e-14;
-	int status = 0;
 
+	int status = 0;
 	for (int i = 0; i < numCases && !status; ++i) {
 
 		double rp = test_points_rp[i];
@@ -247,11 +246,10 @@ int testCircularWireLoop() {
 		}
 		status |= bZStatus;
 	}
-
 	return status;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
 	int status = 0;
 

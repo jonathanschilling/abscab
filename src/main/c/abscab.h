@@ -3,6 +3,18 @@
 
 #include "cel.h"
 
+/** vacuum magnetic permeability in Vs/Am (CODATA-2018) */
+const double MU_0 = 1.25663706212e-6;
+
+/** vacuum magnetic permeability, divided by pi */
+const double MU_0_BY_PI = MU_0 / M_PI;
+
+/** vacuum magnetic permeability, divided by 2 pi */
+const double MU_0_BY_2_PI = MU_0 / (2.0 * M_PI);
+
+/** vacuum magnetic permeability, divided by 4 pi */
+const double MU_0_BY_4_PI = MU_0 / (4.0 * M_PI);
+
 /////// A_z of straight wire segment
 
 /**
@@ -595,9 +607,202 @@ double circularWireLoop_B_z(double rhoP, double zP) {
 
 // --------------------------------------------------
 
+/**
+ * Compute the magnetic vector potential of a circular wire loop.
+ *
+ * @param center  [3: x, y, z] origin of loop (in meters)
+ * @param normal  [3: x, y, z] normal vector of loop (in meters); will be
+ *                normalized internally
+ * @param radius  radius of the wire loop (in meters)
+ * @param current loop current (in A)
+ * @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+ * @param vectorPotential [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
+ *         vector potential evaluated at the given locations (in Tm); has to be allocated on entry
+ */
+void vectorPotentialCircularFilament(double *center, double *normal, double radius,
+		double current, int nEvalPos, double *evalPos, double *vectorPotential) {
 
+	if (!isfinite(radius) || radius <= 0.0) {
+		printf("radius must be finite and positive, but is %g\n", radius);
+		return;
+	}
 
+	double aPrefactor = MU_0_BY_PI * current;
 
+	// squared length of normal vector
+	double nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2];
+
+	if (nLen2 == 0.0) {
+		printf("length of normal vector must not be zero");
+		return;
+	}
+
+	// length of normal vector
+	double nLen = sqrt(nLen2);
+
+	// unit normal vector of wire loop
+	double eX = normal[0] / nLen;
+	double eY = normal[1] / nLen;
+	double eZ = normal[2] / nLen;
+
+	for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+
+		// vector from center of wire loop to eval pos
+		double r0x = evalPos[3 * idxEval + 0] - center[0];
+		double r0y = evalPos[3 * idxEval + 1] - center[1];
+		double r0z = evalPos[3 * idxEval + 2] - center[2];
+
+		// z position along normal of wire loop
+		double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+		// normalized z component of evaluation location in coordinate system of wire loop
+		double zP = alignedZ / radius;
+
+		// r0 projected onto axis of wire loop
+		double rParallelX = alignedZ * eX;
+		double rParallelY = alignedZ * eY;
+		double rParallelZ = alignedZ * eZ;
+
+		// vector perpendicular to axis of wire loop, pointing at evaluation pos
+		double rPerpX = r0x - rParallelX;
+		double rPerpY = r0y - rParallelY;
+		double rPerpZ = r0z - rParallelZ;
+
+		// perpendicular distance squared between evalPos and axis of wire loop
+		double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
+
+		// prevent division-by-zero when computing radial unit vector
+		// A_phi is zero anyway on-axis --> no contribution expected
+		if (alignedRSq > 0.0) {
+
+			// perpendicular distance between evalPos and axis of wire loop
+			double alignedR = sqrt(alignedRSq);
+
+			// unit vector in radial direction
+			double eRX = rPerpX / alignedR;
+			double eRY = rPerpY / alignedR;
+			double eRZ = rPerpZ / alignedR;
+
+			// normalized rho component of evaluation location in coordinate system of wire loop
+			double rhoP = alignedR / radius;
+
+			// compute tangential component of magnetic vector potential, including current and mu_0
+			double aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP);
+
+			// compute cross product between e_z and e_rho to get e_phi
+			double ePhiX = eRY * eZ - eRZ * eY;
+			double ePhiY = eRZ * eX - eRX * eZ;
+			double ePhiZ = eRX * eY - eRY * eX;
+
+			// add contribution from wire loop to result
+			vectorPotential[3 * idxEval + 0] = aPhi * ePhiX;
+			vectorPotential[3 * idxEval + 1] = aPhi * ePhiY;
+			vectorPotential[3 * idxEval + 2] = aPhi * ePhiZ;
+		}
+	}
+}
+
+/**
+ * Compute the magnetic field of a circular wire loop.
+ *
+ * @param center  [3: x, y, z] origin of loop (in meters)
+ * @param normal  [3: x, y, z] normal vector of loop (in meters); will be
+ *                normalized internally
+ * @param radius  radius of the wire loop (in meters)
+ * @param current loop current (in A)
+ * @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+ * @param magneticField [3: B_x, B_y, B_z][nEvalPos] Cartesian components of the magnetic
+ *         field evaluated at the given locations (in T); has to be allocated on entry
+ */
+void magneticFieldCircularFilament(double *center, double *normal, double radius,
+		double current, int nEvalPos, double *evalPos, double *magneticField) {
+
+	if (!isfinite(radius) || radius <= 0.0) {
+		printf("radius must be finite and positive, but is %g\n", radius);
+		return;
+	}
+
+	double bPrefactor = MU_0_BY_PI * current / radius;
+
+	// squared length of normal vector
+	double nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2];
+
+	if (nLen2 == 0.0) {
+		printf("length of normal vector must not be zero");
+		return;
+	}
+
+	// length of normal vector
+	double nLen = sqrt(nLen2);
+
+	// unit normal vector of wire loop
+	double eX = normal[0] / nLen;
+	double eY = normal[1] / nLen;
+	double eZ = normal[2] / nLen;
+
+	for (int idxEval = 0; idxEval < nEvalPos; ++idxEval) {
+
+		// vector from center of wire loop to eval pos
+		double r0x = evalPos[3 * idxEval + 0] - center[0];
+		double r0y = evalPos[3 * idxEval + 1] - center[1];
+		double r0z = evalPos[3 * idxEval + 2] - center[2];
+
+		// z position along normal of wire loop
+		double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
+
+		// normalized z component of evaluation location in coordinate system of wire loop
+		double zP = alignedZ / radius;
+
+		// r0 projected onto axis of wire loop
+		double rParallelX = alignedZ * eX;
+		double rParallelY = alignedZ * eY;
+		double rParallelZ = alignedZ * eZ;
+
+		// vector perpendicular to axis of wire loop, pointing at evaluation pos
+		double rPerpX = r0x - rParallelX;
+		double rPerpY = r0y - rParallelY;
+		double rPerpZ = r0z - rParallelZ;
+
+		// perpendicular distance squared between evalPos and axis of wire loop
+		double alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ;
+
+		double rhoP;
+		if (alignedRSq > 0.0) {
+			// radial unit vector is only defined if evaluation pos is off-axis
+
+			// perpendicular distance between evalPos and axis of wire loop
+			double alignedR = sqrt(alignedRSq);
+
+			// unit vector in radial direction
+			double eRX = rPerpX / alignedR;
+			double eRY = rPerpY / alignedR;
+			double eRZ = rPerpZ / alignedR;
+
+			// normalized rho component of evaluation location in coordinate system of wire loop
+			rhoP = alignedR / radius;
+
+			// compute radial component of normalized magnetic field
+			// and scale by current and mu_0
+			double bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP);
+
+			// add contribution from B_rho of wire loop to result
+			magneticField[3 * idxEval + 0] = bRho * eRX;
+			magneticField[3 * idxEval + 1] = bRho * eRY;
+			magneticField[3 * idxEval + 2] = bRho * eRZ;
+		} else {
+			rhoP = 0.0;
+		}
+
+		// compute vertical component of normalized magnetic field
+		// and scale by current and mu_0
+		double bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP);
+
+		// add contribution from B_z of wire loop to result
+		magneticField[3 * idxEval + 0] += bZ * eX;
+		magneticField[3 * idxEval + 1] += bZ * eY;
+		magneticField[3 * idxEval + 2] += bZ * eZ;
+	}
+}
 
 
 

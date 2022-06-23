@@ -29,7 +29,7 @@ int test_cel() {
 	return status;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
 	int status = 0;
 
