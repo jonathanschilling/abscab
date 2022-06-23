@@ -82,6 +82,7 @@ void demoMcGreivy() {
 
 		omega = 2.0 * M_PI / (numPhi-1);
 
+		memset(magneticField, 0, 3*sizeof(double));
 		magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(numPhi, vertexSupplierStd, current, 1, evalPos, magneticField, numProcessors, useCompensatedSummation);
 		double bZStd = magneticField[2];
 
@@ -100,6 +101,7 @@ void demoMcGreivy() {
 		// == 4 pi^2 / (12 R)
 		rCorr = radius * (1.0 + dPhi*dPhi/ 12);
 
+		memset(magneticField, 0, 3*sizeof(double));
 		magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(numPhi, vertexSupplierMcG, current, 1, evalPos, magneticField, numProcessors, useCompensatedSummation);
 		double bZMcG = magneticField[2];
 

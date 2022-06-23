@@ -860,6 +860,7 @@ void kernelVectorPotentialPolygonFilament(
 		aYSum = (double *) malloc (numBytesToAllocate);
 		aZSum = (double *) malloc (numBytesToAllocate);
 
+		// initialize target array to zero
 		memset(aXSum, 0, numBytesToAllocate);
 		memset(aYSum, 0, numBytesToAllocate);
 		memset(aZSum, 0, numBytesToAllocate);
@@ -867,6 +868,11 @@ void kernelVectorPotentialPolygonFilament(
 		aXSum = NULL;
 		aYSum = NULL;
 		aZSum = NULL;
+
+		// initialize target array to zero
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			memset(vectorPotential + 3 * idxEval, 0, 3 * sizeof(double));
+		}
 	}
 
 	double x_i = vertices[3 * idxSourceStart + 0];
@@ -1001,6 +1007,7 @@ void kernelVectorPotentialPolygonFilamentVertexSupplier(
 		aYSum = (double *) malloc (numBytesToAllocate);
 		aZSum = (double *) malloc (numBytesToAllocate);
 
+		// initialize target array to zero
 		memset(aXSum, 0, numBytesToAllocate);
 		memset(aYSum, 0, numBytesToAllocate);
 		memset(aZSum, 0, numBytesToAllocate);
@@ -1008,6 +1015,11 @@ void kernelVectorPotentialPolygonFilamentVertexSupplier(
 		aXSum = NULL;
 		aYSum = NULL;
 		aZSum = NULL;
+
+		// initialize target array to zero
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			memset(vectorPotential + 3 * idxEval, 0, 3 * sizeof(double));
+		}
 	}
 
 	// get first point from vertexSupplier
@@ -1151,6 +1163,7 @@ void kernelMagneticFieldPolygonFilament(
 		bYSum = (double *) malloc (numBytesToAllocate);
 		bZSum = (double *) malloc (numBytesToAllocate);
 
+		// initialize target array to zero
 		memset(bXSum, 0, numBytesToAllocate);
 		memset(bYSum, 0, numBytesToAllocate);
 		memset(bZSum, 0, numBytesToAllocate);
@@ -1158,6 +1171,11 @@ void kernelMagneticFieldPolygonFilament(
 		bXSum = NULL;
 		bYSum = NULL;
 		bZSum = NULL;
+
+		// initialize target array to zero
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			memset(magneticField + 3 * idxEval, 0, 3 * sizeof(double));
+		}
 	}
 
 	double x_i = vertices[3 * idxSourceStart + 0];
@@ -1313,6 +1331,7 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
 		bYSum = (double *) malloc (numBytesToAllocate);
 		bZSum = (double *) malloc (numBytesToAllocate);
 
+		// initialize target array to zero
 		memset(bXSum, 0, numBytesToAllocate);
 		memset(bYSum, 0, numBytesToAllocate);
 		memset(bZSum, 0, numBytesToAllocate);
@@ -1320,6 +1339,11 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
 		bXSum = NULL;
 		bYSum = NULL;
 		bZSum = NULL;
+
+		// initialize target array to zero
+		for (int idxEval = idxEvalStart; idxEval < idxEvalEnd; ++idxEval) {
+			memset(magneticField + 3 * idxEval, 0, 3 * sizeof(double));
+		}
 	}
 
 	// get first point from vertexSupplier
@@ -2056,9 +2080,9 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 			} else {
 				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 					for (int i=0; i<numEvalPos; ++i) {
-						magneticField[3 * i + 0] += magneticFieldContributions[idxThread * 3 * numEvalPos + 3 * i + 0];
-						magneticField[3 * i + 1] += magneticFieldContributions[idxThread * 3 * numEvalPos + 3 * i + 1];
-						magneticField[3 * i + 2] += magneticFieldContributions[idxThread * 3 * numEvalPos + 3 * i + 2];
+						magneticField[3 * i + 0] += magneticFieldContributions[3 * (numEvalPos * idxThread + i) + 0];
+						magneticField[3 * i + 1] += magneticFieldContributions[3 * (numEvalPos * idxThread + i) + 1];
+						magneticField[3 * i + 2] += magneticFieldContributions[3 * (numEvalPos * idxThread + i) + 2];
 					}
 				}
 			}
