@@ -14,17 +14,17 @@ public class DemoABSCAB {
 //		demoStraightWireSegmentAlongRhoP0();
 //		demoStraightWireSegmentAlongZP01();
 
-//		demoMcGreivy();
+		demoMcGreivy();
 //		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
 //		demoMagneticFieldOnAxisOfCircularWireLoop();
 
-		demoStraightWireSegment();
-		demoCircularWireLoop();
-
-		dumpInternalResultsStraightWireSegment();
-		dumpInternalResultsCircularWireLoop();
+//		demoStraightWireSegment();
+//		demoCircularWireLoop();
+//
+//		dumpInternalResultsStraightWireSegment();
+//		dumpInternalResultsCircularWireLoop();
 	}
 
 	public static void demoDoubleParts() {
@@ -146,7 +146,10 @@ public class DemoABSCAB {
 
 	}
 
+	// 32 threads: 18 s --> equally fast as optimized C program !
 	public static void demoMcGreivy() {
+
+		long startTime = -System.nanoTime();
 
 		double radius = 1.23; // m
 		double current = 17.0; // A
@@ -192,7 +195,7 @@ public class DemoABSCAB {
 		for (int i=0; i<numCases; ++i) {
 
 			int numPhi = allNumPhi[i];
-			System.out.printf("numPhi = %d\n", numPhi);
+			System.out.printf("case %2d/%2d: numPhi = %d\n", i+1, numCases, numPhi);
 
 			double omega = 2.0*Math.PI / (numPhi-1);
 			IntFunction<double[]> vertexSupplierStd = idxVertex -> {
@@ -246,11 +249,14 @@ public class DemoABSCAB {
 			TestABSCABUtils.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
 		}
 
+		long duration = startTime + System.nanoTime();
+		System.out.printf("duration: %.3f s\n", duration/1e9);
+
 		JyPlot plt = new JyPlot();
 
 		plt.figure();
-		plt.loglog(allNumPhi, allBzStdErr, ".-", "label='standard'");
-		plt.loglog(allNumPhi, allBzMcGErr, ".-", "label='McGreivy'");
+		plt.semilogx(allNumPhi, allBzStdErr, ".-", "label='standard'");
+		plt.semilogx(allNumPhi, allBzMcGErr, ".-", "label='McGreivy'");
 		plt.grid(true);
 		plt.xlabel("numPhi");
 		plt.ylabel("rel. err");
