@@ -4,8 +4,16 @@
 // for memset()
 #include <string.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#else // _OPENMP
+#define omp_num_theads() 1
+#endif // _OPENMP
+
 #include "cel.h"
 #include "compsum.h"
+
+#define min(x,y) ((x) < (y) ? (x) : (y))
 
 /** vacuum magnetic permeability in Vs/Am (CODATA-2018) */
 const double MU_0 = 1.25663706212e-6;
@@ -1431,5 +1439,176 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
 		free(bZSum);
 	}
 }
+
+// --------------------------------------------------
+
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ * @param numProcessors number of processors to use for parallelization
+ * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+ *                                of the contributions from the polygon vertices; otherwise, use standard += summation
+ */
+void vectorPotentialPolygonFilament(
+		int numVertices,
+		double *vertices,
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *vectorPotential,
+		int numProcessors,
+		bool useCompensatedSummation) {
+
+	if (numVertices < 2) {
+		printf("need at least 2 vertices, but only got %d\n", numVertices);
+		return;
+	}
+
+	if (numProcessors < 1) {
+		printf("need at least 1 processor, but only got %d\n", numProcessors);
+		return;
+	}
+
+	if (current == 0.0) {
+		return;
+	}
+
+	if (numProcessors == 1) {
+		// single-threaded call
+		int idxSourceStart = 0;
+		int idxSourceEnd   = numVertices-1;
+		int idxEvalStart   = 0;
+		int idxEvalEnd     = numEvalPos;
+		kernelVectorPotentialPolygonFilament(
+				vertices, current,
+				evalPos,
+				vectorPotential,
+				idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+				useCompensatedSummation);
+	} else {
+		// use multithreading
+
+		if (numVertices-1 > numEvalPos) {
+			// parallelize over nSource-1
+
+			// Note that each thread needs its own copy of the vectorPotential array,
+			// so this approach might need quite some memory in case the number of
+			// threads and the number of evaluation points is large.
+
+			int nThreads;
+			int nSourcePerThread;
+			if (numVertices-1 < numProcessors) {
+				nThreads = numVertices-1;
+				nSourcePerThread = 1;
+			} else {
+				nThreads = numProcessors;
+
+				// It is better that many threads do more
+				// than one thread needs to do more.
+				nSourcePerThread = (int) ceil( (numVertices-1.0) / nThreads) ;
+			}
+
+			double *vectorPotentialContributions = (double *) malloc(nThreads * 3 * numEvalPos * sizeof(double));
+
+			// parallelized evaluation
+			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
+#ifdef _OPENMP
+#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#endif // _OPENMP
+			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+				idxSourceStart =      idxThread    * nSourcePerThread;
+				idxSourceEnd   = min((idxThread+1) * nSourcePerThread, numVertices-1);
+				idxEvalStart   = 0;
+				idxEvalEnd     = numEvalPos;
+
+				kernelVectorPotentialPolygonFilament(
+						vertices, current,
+						evalPos,
+						vectorPotentialContributions + idxThread * 3 * numEvalPos,
+						idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+						useCompensatedSummation);
+			}
+
+			// sum up contributions from source chunks
+			if (useCompensatedSummation) {
+				double *sumX = (double *) malloc(3 * sizeof(double));
+				double *sumY = (double *) malloc(3 * sizeof(double));
+				double *sumZ = (double *) malloc(3 * sizeof(double));
+				for (int i=0; i<numEvalPos; ++i) {
+					memset(sumX, 0, 3 * sizeof(*sumX));
+					memset(sumY, 0, 3 * sizeof(*sumY));
+					memset(sumZ, 0, 3 * sizeof(*sumZ));
+					// TODO: bad memory access pattern here --> potential bottleneck !!!
+					for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+						compAdd(vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 0], sumX);
+						compAdd(vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 1], sumY);
+						compAdd(vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 2], sumZ);
+					}
+					vectorPotential[3 * i + 0] = sumX[0] + sumX[1] + sumX[2];
+					vectorPotential[3 * i + 1] = sumY[0] + sumY[1] + sumY[2];
+					vectorPotential[3 * i + 2] = sumZ[0] + sumZ[1] + sumZ[2];
+				}
+				free(sumX);
+				free(sumY);
+				free(sumZ);
+			} else {
+				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+					for (int i=0; i<numEvalPos; ++i) {
+						vectorPotential[3 * i + 0] += vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 0];
+						vectorPotential[3 * i + 1] += vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 1];
+						vectorPotential[3 * i + 2] += vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 2];
+					}
+				}
+			}
+
+			free(vectorPotentialContributions);
+		} else { // nEval > nSource
+			// parallelize over nEval
+
+			int nThreads;
+			int nEvalPerThread;
+			if (numEvalPos < numProcessors) {
+				nThreads = numEvalPos;
+				nEvalPerThread = 1;
+			} else {
+				nThreads = numProcessors;
+				nEvalPerThread = (int) ceil( ((double) numEvalPos) / nThreads );
+			}
+
+			// parallelized evaluation
+			int idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd;
+#ifdef _OPENMP
+#pragma omp parallel private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+#endif // _OPENMP
+			for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
+				idxSourceStart = 0;
+				idxSourceEnd   = numVertices-1;
+				idxEvalStart   =      idxThread    * nEvalPerThread;
+				idxEvalEnd     = min((idxThread+1) * nEvalPerThread, numEvalPos);
+
+				kernelVectorPotentialPolygonFilament(
+						vertices, current,
+						evalPos,
+						vectorPotential,
+						idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd,
+						useCompensatedSummation);
+			}
+		} // parallelize over nSource or nEval
+	} // parallelization
+}
+
+
+
+
+
+
+
+
+
 
 #endif // ABSCAB_H
