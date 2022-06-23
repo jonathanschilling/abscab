@@ -264,12 +264,48 @@ int testCircularWireLoop() {
 	return status;
 }
 
+int testMagneticFieldInfiniteLineFilament() {
+	double tolerance = 1.0e-15;
+
+	// Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+	// B(r) = mu_0 * I / (2 pi r)
+	// Test this here with:
+	// I = 123.0 A
+	// r = 0.132 m
+	// => B = 0.186 mT
+	double current = 123.0;
+	double r = 0.132;
+	double bPhiRef = MU_0 * current / (2.0 * M_PI * r);
+//	printf("ref bPhi = %.5e\n", bPhiRef);
+
+	double vertices[] = {
+			0.0, 0.0, -1.0e6,
+			0.0, 0.0,  1.0e6
+	};
+
+	double evalPos[] = {
+			r, 0.0, 0.0
+	};
+
+	// y component is B_phi
+	double magneticField[3];
+	magneticFieldPolygonFilament(2, vertices, current, 1, evalPos, magneticField);
+	double bPhi = magneticField[1];
+//	printf("act bPhi = %.5e\n", bPhi);
+
+	double relAbsErr = fabs(bPhi - bPhiRef) / (1.0 + fabs(bPhiRef));
+//	printf("raErr = %.5e\n", relAbsErr);
+
+	return assertRelAbsEquals(bPhiRef, bPhi, tolerance);
+}
+
 int main(int argc, char **argv) {
 
 	int status = 0;
 
 	status |= testStraightWireSegment();
 	status |= testCircularWireLoop();
+	status |= testMagneticFieldInfiniteLineFilament();
 
 	if (status != 0) {
 		printf("%s: some test(s) failed :-(\n", argv[0]);

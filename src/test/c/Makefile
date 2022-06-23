@@ -16,7 +16,7 @@ clean:
 	rm -f test_cel test_abscab
 
 test_cel: $(ABSCAB_DIR)/cel.h util.h test_cel.c
-	$(CC) $(CFLAGS) test_cel.c -I$(ABSCAB_DIR) -o test_cel -lm  -g -Og
+	$(CC) $(CFLAGS) test_cel.c -I$(ABSCAB_DIR) -o test_cel -lm
 
 test_abscab: $(ABSCAB_DIR)/abscab.h util.h test_abscab.c
-	$(CC) $(CFLAGS) test_abscab.c -I$(ABSCAB_DIR) -o test_abscab -lm -g -Og
+	$(CC) $(CFLAGS) test_abscab.c -I$(ABSCAB_DIR) -o test_abscab -lm
