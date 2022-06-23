@@ -7,7 +7,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #else // _OPENMP
-#define omp_num_theads() 1
+#define omp_get_num_threads() 1
 #endif // _OPENMP
 
 #include "cel.h"
@@ -1454,7 +1454,7 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
  * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
  *                                of the contributions from the polygon vertices; otherwise, use standard += summation
  */
-void vectorPotentialPolygonFilament(
+void vectorPotentialPolygonFilament_specPar_specSum(
 		int numVertices,
 		double *vertices,
 		double current,
@@ -1606,7 +1606,6 @@ void vectorPotentialPolygonFilament(
 	} // parallelization
 }
 
-
 /**
  * Compute the magnetic vector potential of a polygon filament
  * at a number of evaluation locations.
@@ -1619,7 +1618,7 @@ void vectorPotentialPolygonFilament(
  * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
  *                                of the contributions from the polygon vertices; otherwise, use standard += summation
  */
-void vectorPotentialPolygonFilamentVertexSupplier(
+void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 		int numVertices,
 		void (*vertexSupplier)(int i, double *point),
 		double current,
@@ -1783,7 +1782,7 @@ void vectorPotentialPolygonFilamentVertexSupplier(
  * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
  *                                of the contributions from the polygon vertices; otherwise, use standard += summation
  */
-void magneticFieldPolygonFilament(
+void magneticFieldPolygonFilament_specPar_specSum(
 		int numVertices,
 		double *vertices,
 		double current,
@@ -1948,7 +1947,7 @@ void magneticFieldPolygonFilament(
  * @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
  *                                of the contributions from the polygon vertices; otherwise, use standard += summation
  */
-void magneticFieldPolygonFilamentVertexSupplier(
+void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 		int numVertices,
 		void (*vertexSupplier)(int i, double *point),
 		double current,
@@ -2102,7 +2101,238 @@ void magneticFieldPolygonFilamentVertexSupplier(
 
 // --------------------------------------------------
 
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ * @param numProcessors number of processors to use for parallelization
+ */
+void vectorPotentialPolygonFilament_specPar(
+		int numVertices,
+		double *vertices,
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *vectorPotential,
+		int numProcessors) {
 
+	bool useCompensatedSummation = true;
+	vectorPotentialPolygonFilament_specPar_specSum(
+			numVertices, vertices, current,
+			numEvalPos, evalPos,
+			vectorPotential,
+			numProcessors,
+			useCompensatedSummation);
+}
 
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ * @param numProcessors number of processors to use for parallelization
+ */
+void vectorPotentialPolygonFilamentVertexSupplier_specPar(
+		int numVertices,
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *vectorPotential,
+		int numProcessors) {
+
+	bool useCompensatedSummation = true;
+	vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
+			numVertices, vertexSupplier, current,
+			numEvalPos, evalPos,
+			vectorPotential,
+			numProcessors,
+			useCompensatedSummation);
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; inT
+ * @param numProcessors number of processors to use for parallelization
+ */
+void magneticFieldPolygonFilament_specPar(
+		int numVertices,
+		double *vertices,
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *magneticField,
+		int numProcessors) {
+
+	bool useCompensatedSummation = true;
+	magneticFieldPolygonFilament_specPar_specSum(
+			numVertices, vertices, current,
+			numEvalPos, evalPos,
+			magneticField,
+			numProcessors,
+			useCompensatedSummation);
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; inT
+ * @param numProcessors number of processors to use for parallelization
+ */
+void magneticFieldPolygonFilamentVertexSupplier_specPar(
+		int numVertices,
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *magneticField,
+		int numProcessors) {
+
+	bool useCompensatedSummation = true;
+	magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
+			numVertices, vertexSupplier, current,
+			numEvalPos, evalPos,
+			magneticField,
+			numProcessors,
+			useCompensatedSummation);
+}
+
+// --------------------------------------------------
+
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ * The computation is parallelized over all available processors.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ */
+void vectorPotentialPolygonFilament(
+		int numVertices,
+		double *vertices,
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *vectorPotential) {
+
+	int numProcessors = omp_get_num_threads();
+	vectorPotentialPolygonFilament_specPar(
+			numVertices, vertices, current,
+			numEvalPos, evalPos,
+			vectorPotential,
+			numProcessors);
+}
+
+/**
+ * Compute the magnetic vector potential of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ * The computation is parallelized over all available processors.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+ */
+void vectorPotentialPolygonFilamentVertexSupplier(
+		int numVertices,
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *vectorPotential) {
+
+	int numProcessors = omp_get_num_threads();
+	vectorPotentialPolygonFilamentVertexSupplier_specPar(
+			numVertices, vertexSupplier, current,
+			numEvalPos, evalPos,
+			vectorPotential,
+			numProcessors);
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ * The computation is parallelized over all available processors.
+ *
+ * @param vertices [3: x, y, z][numVertices] points along polygon; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; inT
+ */
+void magneticFieldPolygonFilament(
+		int numVertices,
+		double *vertices,
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *magneticField) {
+
+	int numProcessors = omp_get_num_threads();
+	magneticFieldPolygonFilament_specPar(
+			numVertices, vertices, current,
+			numEvalPos, evalPos,
+			magneticField,
+			numProcessors);
+}
+
+/**
+ * Compute the magnetic field of a polygon filament
+ * at a number of evaluation locations.
+ * Kahan-Babuska compensated summation is used to compute the superposition
+ * of the contributions from the polygon vertices.
+ * The computation is parallelized over all available processors.
+ *
+ * @param void (*vertexSupplier)(int i, double *point): callback to put i-th current carrier polygon vertex into point as [3: x, y, z]; in m
+ * @param current current along polygon; in A
+ * @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+ * @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; inT
+ */
+void magneticFieldPolygonFilamentVertexSupplier(
+		int numVertices,
+		void (*vertexSupplier)(int i, double *point),
+		double current,
+		int numEvalPos,
+		double *evalPos,
+		double *magneticField) {
+
+	int numProcessors = omp_get_num_threads();
+	magneticFieldPolygonFilamentVertexSupplier_specPar(
+			numVertices, vertexSupplier, current,
+			numEvalPos, evalPos,
+			magneticField,
+			numProcessors);
+}
 
 #endif // ABSCAB_H
