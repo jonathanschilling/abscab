@@ -29,9 +29,17 @@ void vertexSupplierMcG(int idxVertex, double *point) {
 	point[2] = 0.0;
 }
 
-//  1 thread : 9 min, 21 s
+// GCC 12.1.0 on HP Z820, Arch Linux, 2022-06-23
+// no compiler optimization flags specified:
+//  1 thread : 9 min, 21 s (reference)
 // 16 threads: 0 min, 38 s --> 15x speedup
 // 32 threads: 0 min, 26 s --> 22x speedup
+// -O3 (full optimizations, no loss is accuracy)
+//  1 thread : 5 min, 56 s --> 60% speedup
+// 32 threads: 0 min, 18 s --> 31x speedup on 16 physical cores with HT !!!
+// -Ofast (at the expense of accuracy, but still not extremely off: 10 correct digits for binary64)
+//  1 thread : 4 min, 28 s -->  2x speedup
+// 32 threads: 0 min, 13 s --> 43x speedup
 void demoMcGreivy() {
 
 	radius = 1.23; // m

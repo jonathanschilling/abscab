@@ -3,3 +3,5 @@ test_abscab
 
 # outputs from demo programs
 *.dat
+
+*gprof*

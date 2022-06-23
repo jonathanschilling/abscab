@@ -29,5 +29,4 @@ test_abscab: $(ABSCAB_DIR)/abscab.h util.h test_abscab.c
 	$(CC) $(CFLAGS) test_abscab.c -I$(ABSCAB_DIR) -o test_abscab -lm
 
 demo_abscab: $(ABSCAB_DIR)/abscab.h util.h demo_abscab.c
-	$(CC) $(CFLAGS) demo_abscab.c -I$(ABSCAB_DIR) -o demo_abscab -lm -fopenmp
-	
+	$(CC) $(CFLAGS) demo_abscab.c -I$(ABSCAB_DIR) -o demo_abscab -lm -O3 -fopenmp
