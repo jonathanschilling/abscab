@@ -1,6 +1,18 @@
 module abscab
-use mod_kinds, only: wp => dp
+use mod_cel
 implicit none
+
+!> vacuum magnetic permeability in Vs/Am (CODATA-2018)
+real(wp), parameter :: MU_0 = 1.25663706212e-6_wp;
+
+!> vacuum magnetic permeability, divided by pi
+real(wp), parameter :: MU_0_BY_PI = MU_0 / PI;
+
+!> vacuum magnetic permeability, divided by 2 pi
+real(wp), parameter :: MU_0_BY_2_PI = MU_0 / (2.0_wp * PI);
+
+!> vacuum magnetic permeability, divided by 4 pi
+real(wp), parameter :: MU_0_BY_4_PI = MU_0 / (4.0_wp * PI);
 
 contains
 

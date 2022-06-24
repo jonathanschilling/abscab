@@ -32,4 +32,6 @@ implicit none
         stop 1
     end if
 
+    print *, "test_cel: all test(s) passed :-)"
+
 end program test_cel

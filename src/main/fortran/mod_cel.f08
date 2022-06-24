@@ -3,8 +3,11 @@ use mod_kinds, only: wp => dp
 use, intrinsic :: ieee_arithmetic
 implicit none
 
+! pi
+real(wp), parameter :: PI = 4.0_wp * atan(1.0_wp)
+
 ! half of pi
-real(wp), parameter :: PI_2 = 2.0_wp * atan(1.0_wp)
+real(wp), parameter :: PI_2 = PI / 2.0_wp
 
 ! sqrt of machine precision
 real(wp), parameter :: sqrt_eps = sqrt(epsilon(1.0_wp))
