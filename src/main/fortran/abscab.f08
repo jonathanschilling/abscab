@@ -547,12 +547,125 @@ function cwl_B_z_v(zP)
     cwl_B_z_v = prefac * cel(kC, kCSq, 2.0_wp, 0.0_wp)
 end function ! cwl_B_z_v
 
+! --------------------------------------------------
 
+!> Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
+!>
+!> @param rhoP normalized radial coordinate of evaluation location
+!> @param zP normalized axial coordinate of evaluation location
+!> @return normalized axial component of magnetic vector potential
+function straightWireSegment_A_z(rhoP, zP)
+    real(wp) :: straightWireSegment_A_z
+    real(wp) :: rhoP
+    real(wp) :: zP
+    if (rhoP .eq. 0.0_wp) then
+        straightWireSegment_A_z = sws_A_z_ax(zP)
+    else if (zP .eq. 0.0_wp .or. zP .eq. 1.0_wp) then
+        straightWireSegment_A_z = sws_A_z_rad(rhoP)
+    else if (rhoP .ge. 1.0_wp .or. zP .le. -1.0_wp .or. zP .gt. 2.0_wp) then
+        straightWireSegment_A_z = sws_A_z_f(rhoP, zP)
+    else
+        straightWireSegment_A_z = sws_A_z_n(rhoP, zP)
+    end if
+end function ! straightWireSegment_A_z
 
+!> Compute the normalized tangential component of the magnetic field of a straight wire segment.
+!>
+!> @param rhoP normalized radial coordinate of evaluation location
+!> @param zP normalized axial coordinate of evaluation location
+!> @return normalized tangential component of magnetic field
+function straightWireSegment_B_phi(rhoP, zP)
+    real(wp) :: straightWireSegment_B_phi
+    real(wp) :: rhoP
+    real(wp) :: zP
+    if (rhoP .eq. 0.0_wp) then
+        straightWireSegment_B_phi = 0.0_wp
+    else if (zP .eq. 0.0_wp .or. zP .eq. 1.0_wp) then
+        straightWireSegment_B_phi = sws_B_phi_rad(rhoP)
+    else if (rhoP .ge. 1.0_wp .or. zP .le. 0.0_wp .or. zP .ge. 1.0_wp .or. &
+             rhoP / (1.0_wp - zP) .ge. 1.0_wp .or. rhoP / zP .ge. 1.0_wp) then
+        straightWireSegment_B_phi = sws_B_phi_f(rhoP, zP)
+    else
+        straightWireSegment_B_phi = sws_B_phi_n(rhoP, zP)
+    end if
+end function ! straightWireSegment_B_phi
 
+!> Geometric part of magnetic vector potential computation for circular wire
+!> loop at rho'=1, z'=0 (normalized coordinates). This routine selects special
+!> case routines to get the most accurate formulation for given evaluation
+!> coordinates.
+!>
+!> @param rhoP normalized radial evaluation position
+!> @param zP   normalized vertical evaluation position
+!> @return A_phi: toroidal component of magnetic vector potential: geometric
+!>         part (no mu0*I/pi factor included)
+function circularWireLoop_A_phi(rhoP, zP)
+    real(wp) :: circularWireLoop_A_phi
+    real(wp) :: rhoP
+    real(wp) :: zP
+    if (rhoP .eq. 0.0_wp) then
+        circularWireLoop_A_phi = 0.0_wp
+    else if (rhoP .lt. 0.5_wp .or. rhoP .gt. 2.0_wp .or. &
+             abs(zP) .ge. 1.0_wp) then
+        circularWireLoop_A_phi = cwl_A_phi_f(rhoP, zP)
+    else if (rhoP .ne. 1.0_wp) then
+        circularWireLoop_A_phi = cwl_A_phi_n(rhoP, zP)
+    else
+        circularWireLoop_A_phi = cwl_A_phi_v(zP)
+    end if
+end function ! circularWireLoop_A_phi
 
+!> Geometric part of radial magnetic field computation for circular wire loop at
+!> rho'=1, z'=0 (normalized coordinates). This routine selects special case
+!> routines to get the most accurate formulation for given evaluation
+!> coordinates.
+!>
+!> @param rhoP normalized radial evaluation position
+!> @param zP   normalized vertical evaluation position
+!> @return B_rho: radial component of magnetic field: geometric part (no
+!>         mu0*I/(pi*a) factor included)
+function circularWireLoop_B_rho(rhoP, zP)
+    real(wp) :: circularWireLoop_B_rho
+    real(wp) :: rhoP
+    real(wp) :: zP
+    if (rhoP .eq. 0.0_wp .or. zP .eq. 0.0_wp) then
+        circularWireLoop_B_rho = 0.0_wp
+    else if (rhoP .lt. 0.5_wp .or. rhoP .gt. 2.0_wp .or. &
+             abs(zP) .ge. 1.0_wp) then
+        circularWireLoop_B_rho = cwl_B_rho_f(rhoP, zP)
+    else if (rhoP .ne. 1.0_wp) then
+        circularWireLoop_B_rho = cwl_B_rho_n(rhoP, zP)
+    else
+        circularWireLoop_B_rho = cwl_B_rho_v(zP)
+    end if
+end function ! circularWireLoop_B_rho
 
+!> Geometric part of vertical magnetic field computation for circular wire loop
+!> at rho'=1, z'=0 (normalized coordinates). This routine selects special case
+!> routines to get the most accurate formulation for given evaluation
+!> coordinates.
+!>
+!> @param rhoP normalized radial evaluation position
+!> @param zP   normalized vertical evaluation position
+!> @return B_z: vertical component of magnetic field: geometric part (no
+!>         mu0*I/(pi*a) factor included)
+function circularWireLoop_B_z(rhoP, zP)
+    real(wp) :: circularWireLoop_B_z
+    real(wp) :: rhoP
+    real(wp) :: zP
+    if (rhoP .lt. 0.5_wp .or. &
+        (rhoP .le. 2.0_wp .and. abs(zP) .gt. 1.0_wp)) then
+        circularWireLoop_B_z = cwl_B_z_f1(rhoP, zP)
+    else if (rhoP .gt. 2.0_wp) then
+        circularWireLoop_B_z = cwl_B_z_f2(rhoP, zP)
+    else if (rhoP .ne. 1.0_wp) then
+        circularWireLoop_B_z = cwl_B_z_n(rhoP, zP)
+    else
+        circularWireLoop_B_z = cwl_B_z_v(zP)
+    end if
+end function
 
+! --------------------------------------------------
 
 
 
