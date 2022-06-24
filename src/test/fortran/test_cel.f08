@@ -13,7 +13,7 @@ implicit none
     real(wp), parameter :: cel1 =  1.5464442694017956_wp
     real(wp), parameter :: cel2 = -6.7687378198360556e-1_wp
 
-    real(wp) :: c1, c2
+    real(wp) :: c1,  c2
     real(wp) :: ra1, ra2
 
     c1 = cel(k_c, p1, a, b)
@@ -22,7 +22,14 @@ implicit none
     ra1 = abs(cel1 - c1)/(1.0_wp + abs(cel1))
     ra2 = abs(cel2 - c2)/(1.0_wp + abs(cel2))
 
-    print *, "case 1: rel/abs deviation = ", ra1
-    print *, "case 2: rel/abs deviation = ", ra2
+    if (ra1 .ge. tolerance) then
+        print *, "case 1: rel/abs deviation = ", ra1
+        stop 1
+    end if
+
+    if (ra2 .ge. tolerance) then
+        print *, "case 2: rel/abs deviation = ", ra2
+        stop 1
+    end if
 
 end program test_cel

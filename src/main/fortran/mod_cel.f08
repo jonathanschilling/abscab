@@ -26,16 +26,17 @@ contains
 !> @param a   parameter a of cel()
 !> @param b   parameter b of cel()
 !> @return value of cel(k_c, p, a, b)
-function cel(k_c, p, a, b)
+function cel(k_c_in, p_in, a_in, b_in)
     real(wp) :: cel
-    real(wp) :: k_c
-    real(wp) :: p
-    real(wp) :: a
-    real(wp) :: b
+    real(wp) :: k_c_in
+    real(wp) :: p_in
+    real(wp) :: a_in
+    real(wp) :: b_in
 
+    real(wp) :: k_c, p, a, b
     real(wp) :: m, e, f, g, q
 
-    if (k_c .eq. 0.0_wp) then
+    if (k_c_in .eq. 0.0_wp) then
         if (b .eq. 0.0_wp) then
             ! when k_c is zero and b != 0, cel diverges (?)
             cel = ieee_value(1.0_wp, IEEE_POSITIVE_INF)
@@ -44,8 +45,11 @@ function cel(k_c, p, a, b)
             k_c = sqrt_eps*sqrt_eps
         end if
     else
-        k_c = abs(k_c)
+        k_c = abs(k_c_in)
     end if
+    p = p_in
+    a = a_in
+    b = b_in
 
     m = 1.0_wp ! \mu
     e = k_c    ! \nu * \mu
@@ -56,14 +60,14 @@ function cel(k_c, p, a, b)
         p = sqrt(p)
         b = b / p
     else ! q <= 0
-        f = k_c * k_c ! f = kc^2 (re-used here; later f = a_i)
-        q = 1.0_wp - f ! 1 - kc^2
-        g = 1.0_wp - p
-        f = f - p ! kc^2 - p
-        q = q * (b - a * p) ! (1 - kc^2)*(b-a*p)
-        p = sqrt(f / g) ! sqrt((kc^2 - p)/(1-p)) --> p0
-        a = (a - b) / g ! (a-b)/(1-p)            --> a0
-        b = -q / (g * g * p) + a * p ! -(1 - kc^2)*(b-a*p)/( (1-p)^2 * p ) --> b0
+        f = k_c*k_c        ! f = kc^2 (re-used here; later f = a_i)
+        q = 1.0_wp-f       ! 1 - kc^2
+        g = 1.0_wp-p
+        f = f-p            ! kc^2 - p
+        q = q*(b-a*p)      ! (1 - kc^2)*(b-a*p)
+        p = sqrt(f/g)      ! sqrt((kc^2 - p)/(1-p))            --> p0
+        a = (a-b)/g        ! (a-b)/(1-p)                       --> a0
+        b = -q/(g*g*p)+a*p ! -(1-kc^2)*(b-a*p)/( (1-p)^2 * p ) --> b0
     end if
 
     ! iteration until convergence
@@ -88,7 +92,6 @@ function cel(k_c, p, a, b)
     ! final approximation:
     ! \pi/2 * (a * \mu + b)/(\mu * (\mu + p))
     cel = PI_2 * (a*m + b) / (m*(m+p))
-
 end function ! cel
 
 end module ! mod_cel
