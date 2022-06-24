@@ -39,8 +39,9 @@ function cel(k_c, p, a, b)
         if (b .eq. 0.0_wp) then
             ! when k_c is zero and b != 0, cel diverges (?)
             cel = ieee_value(1.0_wp, IEEE_POSITIVE_INF)
+            return
         else
-            cel = sqrt_eps*sqrt_eps
+            k_c = sqrt_eps*sqrt_eps
         end if
     else
         k_c = abs(k_c)
