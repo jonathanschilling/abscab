@@ -1035,9 +1035,11 @@ subroutine kernelVectorPotentialPolygonFilament ( &
             vectorPotential(3, idxEval) = sum(aZSum(:, idxEval - idxEvalStart))
         end do
 
-        deallocate(aXSum)
-        deallocate(aYSum)
-        deallocate(aZSum)
+        deallocate(aXSum, aYSum, aZSum, stat=istat)
+        if (istat .ne. 0) then
+            print *, "failed to deallocate compensated summation buffers"
+            return
+        end if
     end if
 end subroutine ! kernelVectorPotentialPolygonFilament
 
