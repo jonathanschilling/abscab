@@ -1046,7 +1046,7 @@ end subroutine ! kernelVectorPotentialPolygonFilament
 !> Compute the magnetic vector potential of a polygon filament
 !> at a number of evaluation locations.
 !>
-!> @param vertices [3: x, y, z][numVertices] points along polygon; in m
+!> @param vertexSupplier callback to put i-th current carrier polygon vertex into pointData as [3: x, y, z]; in m
 !> @param current current along polygon; in A
 !> @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
 !> @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
