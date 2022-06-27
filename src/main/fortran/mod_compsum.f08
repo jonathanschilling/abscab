@@ -4,6 +4,12 @@ implicit none
 
 contains
 
+!> Add a single contribution to the sum.
+!> The compensated sum is obtained by summing the final values of s, cs and ccs
+!> after this method has been called for all contributions.
+!>
+!> @param contribution contribution to add to the sum
+!> @param compSum[3]: {s, cs, ccs}: target for output
 subroutine compAdd(contribution, compSum)
     real(wp), intent(in)                  :: contribution
     real(wp), intent(inout), dimension(3) :: compSum
