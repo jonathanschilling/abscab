@@ -1221,9 +1221,6 @@ void kernelMagneticFieldPolygonFilament(
 			// z position along axis of wire segment
 			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
 
-			// normalized z component of evaluation location in coordinate system of wire segment
-			double zP = alignedZ / l;
-
 			// vector perpendicular to axis of wire segment, pointing at evaluation pos
 			double rPerpX = r0x - alignedZ * eX;
 			double rPerpY = r0y - alignedZ * eY;
@@ -1240,6 +1237,9 @@ void kernelMagneticFieldPolygonFilament(
 
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				double rhoP = alignedR / l;
+
+				// normalized z component of evaluation location in coordinate system of wire segment
+				double zP = alignedZ / l;
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
 				double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
@@ -1394,9 +1394,6 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
 			// z position along axis of wire segment
 			double alignedZ = eX * r0x + eY * r0y + eZ * r0z;
 
-			// normalized z component of evaluation location in coordinate system of wire segment
-			double zP = alignedZ / l;
-
 			// vector perpendicular to axis of wire segment, pointing at evaluation pos
 			double rPerpX = r0x - alignedZ * eX;
 			double rPerpY = r0y - alignedZ * eY;
@@ -1413,6 +1410,9 @@ void kernelMagneticFieldPolygonFilamentVertexSupplier(
 
 				// normalized rho component of evaluation location in coordinate system of wire segment
 				double rhoP = alignedR / l;
+
+				// normalized z component of evaluation location in coordinate system of wire segment
+				double zP = alignedZ / l;
 
 				// compute tangential component of magnetic vector potential, including current and mu_0
 				double bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP);
