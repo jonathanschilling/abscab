@@ -1377,7 +1377,188 @@ subroutine kernelMagneticFieldPolygonFilament ( &
     end if
 end subroutine ! kernelMagneticFieldPolygonFilament
 
+!> Compute the magnetic field of a polygon filament
+!> at a number of evaluation locations.
+!>
+!> @param vertexSupplier callback to put i-th current carrier polygon vertex into pointData as [3: x, y, z]; in m
+!> @param current current along polygon; in A
+!> @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+!> @param magneticField [3: x, y, z][numEvalPos] target array for magnetic field at evaluation locations; in T
+!> @param idxSourceStart first index in {@code vertices} to take into account
+!> @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+!> @param idxEvalStart first index in {@code evalPos} to take into account
+!> @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+!> @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+!>                                of the contributions from the polygon vertices; otherwise, use standard += summation
+subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
+        vertexSupplier, current, evalPos, magneticField, &
+        idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+        useCompensatedSummation)
 
+    interface
+        subroutine vertexSupplier(i, pointData)
+            use mod_kinds, only: wp => dp
+            implicit none
+            integer,  intent(in)                :: i
+            real(wp), intent(out), dimension(3) :: pointData
+        end subroutine
+    end interface
+
+    real(wp), intent(in)                   :: current
+    real(wp), intent(in),  dimension(3, *) :: evalPos
+    real(wp), intent(out), dimension(3, *) :: magneticField
+    integer,  intent(in)                   :: idxSourceStart
+    integer,  intent(in)                   :: idxSourceEnd
+    integer,  intent(in)                   :: idxEvalStart
+    integer,  intent(in)                   :: idxEvalEnd
+    logical,  intent(in)                   :: useCompensatedSummation
+
+    real(wp) :: bPrefactorL, x_i, y_i, z_i, x_f, y_f, z_f, &
+                dx, dy, dz, l2, l, eX, eY, eZ, r0x, r0y, r0z, &
+                alignedZ, zP, rPerpX, rPerpY, rPerpZ, &
+                alignedR, alignedRSq, rhoP, bPrefactor, bPhi, &
+                eRX, eRY, eRZ, ePhiX, ePhiY, ePhiZ
+    real(wp), dimension(3) :: pointData
+
+    integer :: istat, idxEval, numEvalPos, idxSource
+    real(wp), dimension(:,:), allocatable :: bXSum, bYSum, bZSum
+
+    ! needs additional division by length of wire segment!
+    bPrefactorL = MU_0_BY_4_PI * current
+
+    ! setup compensated summation
+    if (useCompensatedSummation) then
+        numEvalPos = idxEvalEnd - idxEvalStart
+
+        ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
+        allocate(bXSum(3, numEvalPos), &
+                 bYSum(3, numEvalPos), &
+                 bZSum(3, numEvalPos), stat=istat)
+        if (istat .ne. 0) then
+            print *, "failed to allocate compensated summation buffers: stat=", istat
+            return
+        end if
+
+        ! initialize target array to zero
+        bXSum(:,:) = 0.0_wp
+        bYSum(:,:) = 0.0_wp
+        bZSum(:,:) = 0.0_wp
+    else
+        ! initialize target array to zero
+        magneticField(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+    end if ! useCompensatedSummation
+
+    call vertexSupplier(idxSourceStart, pointData)
+    x_i = pointData(1)
+    y_i = pointData(2)
+    z_i = pointData(3)
+
+    do idxSource = idxSourceStart, idxSourceEnd-1
+
+        call vertexSupplier(idxSource + 1, pointData)
+        x_f = pointData(1)
+        y_f = pointData(2)
+        z_f = pointData(3)
+
+        ! vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        ! squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if (l2 .eq. 0.0_wp) then
+            ! skip zero-length segments: no contribution
+            continue
+        end if
+
+        ! length of wire segment
+        l = sqrt(l2)
+
+        ! assemble full prefactor for B_phi
+        bPrefactor = bPrefactorL / l;
+
+        ! unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+
+        do idxEval = idxEvalStart, idxEvalEnd-1
+
+            ! vector from start of wire segment to eval pos
+            r0x = evalPos(1, idxEval) - x_i
+            r0y = evalPos(2, idxEval) - y_i
+            r0z = evalPos(3, idxEval) - z_i
+
+            ! z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            ! vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            ! perpendicular distance squared between evalPos and axis of wire segment
+            alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+
+            if (alignedRSq .gt. 0.0_wp) then
+
+                ! perpendicular distance between evalPos and axis of wire segment
+                alignedR = sqrt(alignedRSq)
+
+                ! normalized rho component of evaluation location in coordinate system of wire segment
+                rhoP = alignedR / l
+
+                ! normalized z component of evaluation location in coordinate system of wire segment
+                zP = alignedZ / l
+
+                ! compute parallel component of magnetic vector potential, including current and mu_0
+                bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP)
+
+                ! unit vector in radial direction
+                eRX = rPerpX / alignedR
+                eRY = rPerpY / alignedR
+                eRZ = rPerpZ / alignedR
+
+                ! compute cross product between e_z and e_rho to get e_phi
+                ePhiX = eY * eRZ - eZ * eRY
+                ePhiY = eZ * eRX - eX * eRZ
+                ePhiZ = eX * eRY - eY * eRX
+
+                ! add contribution from wire segment to result
+                if (useCompensatedSummation) then
+                    call compAdd(bPhi * ePhiX, bXSum(:, idxEval - idxEvalStart + 1))
+                    call compAdd(bPhi * ePhiY, bYSum(:, idxEval - idxEvalStart + 1))
+                    call compAdd(bPhi * ePhiZ, bZSum(:, idxEval - idxEvalStart + 1))
+                else
+                    magneticField(1, idxEval) = magneticField(1, idxEval) + bPhi * ePhiX
+                    magneticField(2, idxEval) = magneticField(2, idxEval) + bPhi * ePhiY
+                    magneticField(3, idxEval) = magneticField(3, idxEval) + bPhi * ePhiZ
+                end if ! useCompensatedSummation
+            end if ! alignedRSq .gt. 0.0_wp
+        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+
+        ! shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+
+    if (useCompensatedSummation) then
+        ! obtain compensated sums from summation objects
+        do idxEval = idxEvalStart, idxEvalEnd-1
+            magneticField(1, idxEval) = sum(bXSum(:, idxEval - idxEvalStart + 1))
+            magneticField(2, idxEval) = sum(bYSum(:, idxEval - idxEvalStart + 1))
+            magneticField(3, idxEval) = sum(bZSum(:, idxEval - idxEvalStart + 1))
+        end do
+
+        deallocate(bXSum, bYSum, bZSum, stat=istat)
+        if (istat .ne. 0) then
+            print *, "failed to deallocate compensated summation buffers: stat=", istat
+            return
+        end if
+    end if
+end subroutine ! kernelMagneticFieldPolygonFilamentVertexSupplier
 
 ! --------------------------------------------------
 
