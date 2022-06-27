@@ -1,5 +1,6 @@
 module abscab
 use mod_cel
+use mod_compsum
 implicit none
 
 !> vacuum magnetic permeability in Vs/Am (CODATA-2018)
@@ -891,7 +892,154 @@ subroutine magneticFieldCircularFilament(center, normal, radius, current, &
     end do ! idxEval = 1, nEvalPos
 end subroutine ! magneticFieldCircularFilament
 
+!> Compute the magnetic vector potential of a polygon filament
+!> at a number of evaluation locations.
+!>
+!> @param vertices [3: x, y, z][numVertices] points along polygon; in m
+!> @param current current along polygon; in A
+!> @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
+!> @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
+!> @param idxSourceStart first index in {@code vertices} to take into account
+!> @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+!> @param idxEvalStart first index in {@code evalPos} to take into account
+!> @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+!> @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
+!>                                of the contributions from the polygon vertices; otherwise, use standard += summation
+subroutine kernelVectorPotentialPolygonFilament ( &
+        vertices, current, evalPos, vectorPotential, &
+        idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+        useCompensatedSummation)
 
+    real(wp), intent(in),  dimension(3, *) :: vertices
+    real(wp), intent(in)                           :: current
+    real(wp), intent(in),  dimension(3, *)  :: evalPos
+    real(wp), intent(out), dimension(3, *)  :: vectorPotential
+    integer,  intent(in)                           :: idxSourceStart
+    integer,  intent(in)                           :: idxSourceEnd
+    integer,  intent(in)                           :: idxEvalStart
+    integer,  intent(in)                           :: idxEvalEnd
+    logical,  intent(in)                           :: useCompensatedSummation
+
+    real(wp) :: aPrefactor, x_i, y_i, z_i, x_f, y_f, z_f, &
+                dx, dy, dz, l2, l, eX, eY, eZ, r0x, r0y, r0z, &
+                alignedZ, zP, rPerpX, rPerpY, rPerpZ, &
+                alignedR, rhoP, aParallel
+
+    integer :: istat, idxEval, numEvalPos, idxSource
+    real(wp), dimension(:,:), allocatable :: aXSum, aYSum, aZSum
+
+    aPrefactor = MU_0_BY_2_PI * current
+
+    ! setup compensated summation
+    if (useCompensatedSummation) then
+        numEvalPos = idxEvalEnd - idxEvalStart
+
+        ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
+        allocate(aXSum(3, numEvalPos), &
+                 aYSum(3, numEvalPos), &
+                 aZSum(3, numEvalPos), stat=istat)
+        if (istat .ne. 0) then
+            print *, "failed to allocate compensated summation buffers"
+            return
+        end if
+
+        ! initialize target array to zero
+        aXSum(:,:) = 0.0_wp
+        aYSum(:,:) = 0.0_wp
+        aZSum(:,:) = 0.0_wp
+    else
+        ! initialize target array to zero
+        vectorPotential(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+    end if ! useCompensatedSummation
+
+    x_i = vertices(1, idxSourceStart)
+    y_i = vertices(2, idxSourceStart)
+    z_i = vertices(3, idxSourceStart)
+
+    do idxSource = idxSourceStart, idxSourceEnd-1
+
+        x_f = vertices(1, idxSource + 1)
+        y_f = vertices(2, idxSource + 1)
+        z_f = vertices(3, idxSource + 1)
+
+        ! vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        ! squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if (l2 .eq. 0.0_wp) then
+            ! skip zero-length segments: no contribution
+            continue
+        end if
+
+        ! length of wire segment
+        l = sqrt(l2)
+
+        ! unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+
+        do idxEval = idxEvalStart, idxEvalEnd-1
+
+            ! vector from start of wire segment to eval pos
+            r0x = evalPos(1, idxEval) - x_i
+            r0y = evalPos(2, idxEval) - y_i
+            r0z = evalPos(3, idxEval) - z_i
+
+            ! z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            ! normalized z component of evaluation location in coordinate system of wire segment
+            zP = alignedZ / l
+
+            ! vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            ! perpendicular distance between evalPos and axis of wire segment
+            alignedR = sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ)
+
+            ! normalized rho component of evaluation location in coordinate system of wire segment
+            rhoP = alignedR / l
+
+            ! compute parallel component of magnetic vector potential, including current and mu_0
+            aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP)
+
+            ! add contribution from wire segment to result
+            if (useCompensatedSummation) then
+                call compAdd(aParallel * eX, aXSum(:, idxEval - idxEvalStart))
+                call compAdd(aParallel * eY, aYSum(:, idxEval - idxEvalStart))
+                call compAdd(aParallel * eZ, aZSum(:, idxEval - idxEvalStart))
+            else
+                vectorPotential(1, idxEval) = vectorPotential(1, idxEval) + aParallel * eX
+                vectorPotential(2, idxEval) = vectorPotential(2, idxEval) + aParallel * eY
+                vectorPotential(3, idxEval) = vectorPotential(3, idxEval) + aParallel * eZ
+            end if ! useCompensatedSummation
+        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+
+        ! shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+
+    if (useCompensatedSummation) then
+        ! obtain compensated sums from summation objects
+        do idxEval = idxEvalStart, idxEvalEnd-1
+            vectorPotential(1, idxEval) = sum(aXSum(:, idxEval - idxEvalStart))
+            vectorPotential(2, idxEval) = sum(aYSum(:, idxEval - idxEvalStart))
+            vectorPotential(3, idxEval) = sum(aZSum(:, idxEval - idxEvalStart))
+        end do
+
+        deallocate(aXSum)
+        deallocate(aYSum)
+        deallocate(aZSum)
+    end if
+end subroutine ! kernelVectorPotentialPolygonFilament
 
 
 
