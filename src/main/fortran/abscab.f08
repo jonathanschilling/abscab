@@ -971,7 +971,7 @@ subroutine kernelVectorPotentialPolygonFilament ( &
         l2 = dx * dx + dy * dy + dz * dz
         if (l2 .eq. 0.0_wp) then
             ! skip zero-length segments: no contribution
-            continue
+            cycle
         end if
 
         ! length of wire segment
@@ -1133,7 +1133,7 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
         l2 = dx * dx + dy * dy + dz * dz
         if (l2 .eq. 0.0_wp) then
             ! skip zero-length segments: no contribution
-            continue
+            cycle
         end if
 
         ! length of wire segment
@@ -1286,7 +1286,7 @@ subroutine kernelMagneticFieldPolygonFilament ( &
         l2 = dx * dx + dy * dy + dz * dz
         if (l2 .eq. 0.0_wp) then
             ! skip zero-length segments: no contribution
-            continue
+            cycle
         end if
 
         ! length of wire segment
@@ -1469,7 +1469,7 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
         l2 = dx * dx + dy * dy + dz * dz
         if (l2 .eq. 0.0_wp) then
             ! skip zero-length segments: no contribution
-            continue
+            cycle
         end if
 
         ! length of wire segment
@@ -1562,7 +1562,173 @@ end subroutine ! kernelMagneticFieldPolygonFilamentVertexSupplier
 
 ! --------------------------------------------------
 
+subroutine vectorPotentialPolygonFilament( &
+        numVertices, vertices, current, &
+        numEvalPos, evalPos, vectorPotential, &
+        numProcessors, useCompensatedSummation)
 
+    integer,  intent(in)                             :: numVertices
+    real(wp), intent(in),  dimension(3, numVertices) :: vertices
+    real(wp), intent(in)                             :: current
+    integer,  intent(in)                             :: numEvalPos
+    real(wp), intent(in),  dimension(3, numEvalPos)  :: evalPos
+    real(wp), intent(out), dimension(3, numEvalPos)  :: vectorPotential
+    integer,  intent(in), optional                   :: numProcessors
+    logical,  intent(in), optional            :: useCompensatedSummation
+
+    integer :: actNumProc
+    logical :: actUseCompSum
+
+    integer :: i, idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+               nThreads, nSourcePerThread, nEvalPerThread, istat, idxThread
+    real(wp), dimension(3) :: sumX, sumY, sumZ
+    real(wp), dimension(:, :, :), allocatable :: vecPotContribs
+
+    ! handle optional arguments
+    if (present(numProcessors)) then
+        actNumProc = numProcessors
+    else
+        ! default: single-threaded
+        actNumProc = 1
+    end if ! present(numProcessors)
+
+    if (present(useCompensatedSummation)) then
+        actUseCompSum = useCompensatedSummation
+    else
+        ! default: use compensated summation
+        actUseCompSum = .true.
+    end if
+
+    if (numVertices .lt. 2) then
+        print *, "need at least 2 vertices, but got only ", numVertices
+        return
+    end if
+
+    if (actNumProc .lt. 1) then
+        print *, "need at least 1 processor, but got only ", actNumProc
+        return
+    end if
+
+    if (current .eq. 0.0_wp) then
+        vectorPotential(:, :) = 0.0_wp
+        return
+    end if
+
+    if (actNumProc .eq. 1) then
+        ! single-threaded call
+        idxSourceStart = 1
+        idxSourceEnd   = numVertices + 1
+        idxEvalStart   = 1
+        idxEvalEnd     = numEvalPos + 1
+        call kernelVectorPotentialPolygonFilament( &
+            vertices, current, &
+            evalPos, &
+            vectorPotential, &
+            idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+            actUseCompSum)
+    else
+        ! use multithreading
+
+        if (numVertices-1 .gt. numEvalPos) then
+            ! parallelize over nSource-1
+
+            ! Note that each thread needs its own copy of the vectorPotential array,
+            ! so this approach might need quite some memory in case the number of
+            ! threads and the number of evaluation points is large.
+
+            if (numVertices-1 .lt. actNumProc) then
+                nThreads       = numVertices-1
+                nSourcePerThread = 1
+            else
+                nThreads = actNumProc
+
+                ! It is better that many threads do more than one thread needs to do more.
+                nSourcePerThread = int(ceiling(real(numVertices-1, kind=wp) / &
+                                          nThreads))
+            end if
+
+            allocate(vecPotContribs(3, numEvalPos, nThreads), stat=istat)
+            if (istat .ne. 0) then
+                print *, "could not allocate vecPotContribs: stat=", istat
+                return
+            end if
+
+            ! parallelized evaluation
+!$ifdef _OPENMP
+!$omp parallel do private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+!$endif // _OPENMP
+            do idxThread = 0, nThreads-1
+                idxSourceStart =      idxThread    * nSourcePerThread + 1
+                idxSourceEnd   = min((idxThread+1) * nSourcePerThread, &
+                                     numVertices-1) + 1
+                idxEvalStart   = 1
+                idxEvalEnd     = numEvalPos + 1
+
+                call kernelVectorPotentialPolygonFilament( &
+                        vertices, current, &
+                        evalPos, &
+                        vecPotContribs(:, :, idxThread+1), &
+                        idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+                        actUseCompSum)
+            end do ! idxThread = 0, nThreads-1
+
+            ! sum up contributions from source chunks
+            if (actUseCompSum) then
+                do i = 1, numEvalPos
+                    ! TODO: bad memory access pattern here --> potential bottleneck !!!
+                    sumX(:) = 0.0_wp
+                    sumY(:) = 0.0_wp
+                    sumZ(:) = 0.0_wp
+                    do idxThread = 0, nThreads-1
+                        call compAdd(vecPotContribs(1, i, idxThread+1), sumX)
+                        call compAdd(vecPotContribs(2, i, idxThread+1), sumY)
+                        call compAdd(vecPotContribs(3, i, idxThread+1), sumZ)
+                    end do ! idxThread = 0, nThreads-1
+                    vectorPotential(1, i) = sum(sumX)
+                    vectorPotential(2, i) = sum(sumY)
+                    vectorPotential(3, i) = sum(sumZ)
+                end do ! i = 1, numEvalPos
+            else
+                do idxThread = 0, nThreads-1
+                    do i = 1, numEvalPos
+                        vectorPotential(:, i) = vectorPotential(:, i) &
+                                              + vecPotContribs(:, i, idxThread+1)
+                    end do ! i = 1, numEvalPos
+                end do ! idxThread = 0, nThreads-1
+            end if ! actUseCompSum
+        else ! numVertices-1 .gt. numEvalPos
+            ! parallelize over nEval
+
+            if (numEvalPos .lt. actNumProc) then
+                nThreads       = numEvalPos
+                nEvalPerThread = 1
+            else
+                nThreads = actNumProc
+                nEvalPerThread = int(ceiling(real(numEvalPos, kind=wp) / &
+                                          nThreads))
+            end if
+
+            ! parallelized evaluation
+!$ifdef _OPENMP
+!$omp parallel do private(idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd)
+!$endif // _OPENMP
+            do idxThread = 0, nThreads-1
+                idxSourceStart = 1
+                idxSourceEnd   = numVertices
+                idxEvalStart   =      idxThread    * nEvalPerThread + 1
+                idxEvalEnd     = min((idxThread+1) * nEvalPerThread, &
+                                     numEvalPos) + 1
+
+                call kernelVectorPotentialPolygonFilament( &
+                        vertices, current, &
+                        evalPos, &
+                        vectorPotential, &
+                        idxSourceStart, idxSourceEnd, idxEvalStart, idxEvalEnd, &
+                        actUseCompSum)
+            end do ! idxThread = 0, nThreads-1
+        end if ! numVertices-1 .gt. numEvalPos
+    end if ! actNumProc .eq. 1
+end subroutine ! vectorPotentialPolygonFilament
 
 
 

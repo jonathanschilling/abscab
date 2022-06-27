@@ -338,6 +338,7 @@ public class ABSCAB {
 		}
 
 		if (current == 0.0) {
+			// TODO: Arrays.fill(vectorPotential, 0.0)
 			return;
 		}
 
@@ -539,6 +540,7 @@ public class ABSCAB {
 		}
 
 		if (current == 0.0) {
+			// TODO: Arrays.fill(vectorPotential, 0.0)
 			return;
 		}
 
@@ -743,6 +745,7 @@ public class ABSCAB {
 		}
 
 		if (current == 0.0) {
+			// TODO: Arrays.fill(magneticField, 0.0)
 			return;
 		}
 
@@ -944,6 +947,7 @@ public class ABSCAB {
 		}
 
 		if (current == 0.0) {
+			// TODO: Arrays.fill(magneticField, 0.0)
 			return;
 		}
 

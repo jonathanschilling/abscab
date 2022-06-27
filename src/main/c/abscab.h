@@ -1499,6 +1499,7 @@ void vectorPotentialPolygonFilament_specPar_specSum(
 	}
 
 	if (current == 0.0) {
+		// TODO: memset(0, vectorPotential)
 		return;
 	}
 
@@ -1585,6 +1586,7 @@ void vectorPotentialPolygonFilament_specPar_specSum(
 				free(sumY);
 				free(sumZ);
 			} else {
+				// TODO: memset(vectorPotential, 0)
 				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 					for (int i=0; i<numEvalPos; ++i) {
 						vectorPotential[3 * i + 0] += vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 0];
@@ -1663,6 +1665,7 @@ void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 	}
 
 	if (current == 0.0) {
+		// TODO: memset(0, vectorPotential)
 		return;
 	}
 
@@ -1749,6 +1752,7 @@ void vectorPotentialPolygonFilamentVertexSupplier_specPar_specSum(
 				free(sumY);
 				free(sumZ);
 			} else {
+				// TODO: memset(vectorPotential, 0)
 				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 					for (int i=0; i<numEvalPos; ++i) {
 						vectorPotential[3 * i + 0] += vectorPotentialContributions[idxThread * 3 * numEvalPos + 3 * i + 0];
@@ -1827,6 +1831,7 @@ void magneticFieldPolygonFilament_specPar_specSum(
 	}
 
 	if (current == 0.0) {
+		// TODO: memset(0, magneticField)
 		return;
 	}
 
@@ -1913,6 +1918,7 @@ void magneticFieldPolygonFilament_specPar_specSum(
 				free(sumY);
 				free(sumZ);
 			} else {
+				// TODO: memset(magneticField, 0)
 				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 					for (int i=0; i<numEvalPos; ++i) {
 						magneticField[3 * i + 0] += magneticFieldContributions[idxThread * 3 * numEvalPos + 3 * i + 0];
@@ -1992,6 +1998,7 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 	}
 
 	if (current == 0.0) {
+		// TODO: memset(0, magneticField)
 		return;
 	}
 
@@ -2078,6 +2085,7 @@ void magneticFieldPolygonFilamentVertexSupplier_specPar_specSum(
 				free(sumY);
 				free(sumZ);
 			} else {
+				// TODO: memset(magneticField, 0)
 				for (int idxThread = 0; idxThread < nThreads; ++idxThread) {
 					for (int i=0; i<numEvalPos; ++i) {
 						magneticField[3 * i + 0] += magneticFieldContributions[3 * (numEvalPos * idxThread + i) + 0];
