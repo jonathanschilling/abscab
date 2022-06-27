@@ -1011,9 +1011,9 @@ subroutine kernelVectorPotentialPolygonFilament ( &
 
             ! add contribution from wire segment to result
             if (useCompensatedSummation) then
-                call compAdd(aParallel * eX, aXSum(:, idxEval - idxEvalStart))
-                call compAdd(aParallel * eY, aYSum(:, idxEval - idxEvalStart))
-                call compAdd(aParallel * eZ, aZSum(:, idxEval - idxEvalStart))
+                call compAdd(aParallel * eX, aXSum(:, idxEval - idxEvalStart + 1))
+                call compAdd(aParallel * eY, aYSum(:, idxEval - idxEvalStart + 1))
+                call compAdd(aParallel * eZ, aZSum(:, idxEval - idxEvalStart + 1))
             else
                 vectorPotential(1, idxEval) = vectorPotential(1, idxEval) + aParallel * eX
                 vectorPotential(2, idxEval) = vectorPotential(2, idxEval) + aParallel * eY
@@ -1030,9 +1030,9 @@ subroutine kernelVectorPotentialPolygonFilament ( &
     if (useCompensatedSummation) then
         ! obtain compensated sums from summation objects
         do idxEval = idxEvalStart, idxEvalEnd-1
-            vectorPotential(1, idxEval) = sum(aXSum(:, idxEval - idxEvalStart))
-            vectorPotential(2, idxEval) = sum(aYSum(:, idxEval - idxEvalStart))
-            vectorPotential(3, idxEval) = sum(aZSum(:, idxEval - idxEvalStart))
+            vectorPotential(1, idxEval) = sum(aXSum(:, idxEval - idxEvalStart + 1))
+            vectorPotential(2, idxEval) = sum(aYSum(:, idxEval - idxEvalStart + 1))
+            vectorPotential(3, idxEval) = sum(aZSum(:, idxEval - idxEvalStart + 1))
         end do
 
         deallocate(aXSum, aYSum, aZSum, stat=istat)
