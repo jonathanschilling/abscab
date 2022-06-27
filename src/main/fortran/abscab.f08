@@ -663,9 +663,140 @@ function circularWireLoop_B_z(rhoP, zP)
     else
         circularWireLoop_B_z = cwl_B_z_v(zP)
     end if
-end function
+end function ! circularWireLoop_B_z
 
 ! --------------------------------------------------
+
+!> Compute the magnetic vector potential of a circular wire loop.
+!>
+!> @param center  [3: x, y, z] origin of loop (in meters)
+!> @param normal  [3: x, y, z] normal vector of loop (in meters); will be
+!>                normalized internally
+!> @param radius  radius of the wire loop (in meters)
+!> @param current loop current (in A)
+!> @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+!> @param vectorPotential [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
+!>         vector potential evaluated at the given locations (in Tm); has to be allocated on entry
+subroutine vectorPotentialCircularFilament(center, normal, radius, &
+        current, nEvalPos, evalPos, vectorPotential)
+
+    real(wp), intent(in),  dimension(3)           :: center
+    real(wp), intent(in),  dimension(3)           :: normal
+    real(wp), intent(in)                          :: radius
+    real(wp), intent(in)                          :: current
+    integer,  intent(in)                          :: nEvalPos
+    real(wp), intent(in),  dimension(3, nEvalPos) :: evalPos
+    real(wp), intent(out), dimension(3, nEvalPos) :: vectorPotential
+
+    integer  :: idxEval
+    real(wp) :: aPrefactor, nLen2, nLen, eX, eY, eZ, &
+                r0x, r0y, r0z, alignedZ, zP, &
+                rParallelX, rParallelY, rParallelZ, &
+                rPerpX, rPerpY, rPerpZ, &
+                alignedRSq, alignedR, eRX, eRY, eRZ, &
+                rhoP, aPhi, ePhiX, ePhiY, ePhiZ
+
+    if (.not. ieee_is_finite(radius) .or. radius .le. 0.0) then
+        print *, "radius must be finite and positive, but is ", radius
+        return
+    end if
+
+    aPrefactor = MU_0_BY_PI * current
+
+    ! squared length of normal vector
+    nLen2 = normal(1) * normal(1) + normal(2) * normal(2) + normal(3) * normal(3)
+
+    if (nLen2 .eq. 0.0_wp) then
+        print *, "length of normal vector must not be zero"
+        return
+    end if
+
+    ! length of normal vector
+    nLen = sqrt(nLen2)
+
+    ! unit normal vector of wire loop
+    eX = normal(1) / nLen
+    eY = normal(2) / nLen
+    eZ = normal(3) / nLen
+
+    do idxEval = 1, nEvalPos
+
+        ! vector from center of wire loop to eval pos
+        r0x = evalPos(1, idxEval) - center(1)
+        r0y = evalPos(2, idxEval) - center(2)
+        r0z = evalPos(3, idxEval) - center(3)
+
+        ! z position along normal of wire loop
+        alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+        ! normalized z component of evaluation location in coordinate system of wire loop
+        zP = alignedZ / radius
+
+        ! r0 projected onto axis of wire loop
+        rParallelX = alignedZ * eX
+        rParallelY = alignedZ * eY
+        rParallelZ = alignedZ * eZ
+
+        ! vector perpendicular to axis of wire loop, pointing at evaluation pos
+        rPerpX = r0x - rParallelX
+        rPerpY = r0y - rParallelY
+        rPerpZ = r0z - rParallelZ
+
+        ! perpendicular distance squared between evalPos and axis of wire loop
+        alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+
+        ! prevent division-by-zero when computing radial unit vector
+        ! A_phi is zero anyway on-axis --> no contribution expected
+        if (alignedRSq .gt. 0.0) then
+
+            ! perpendicular distance between evalPos and axis of wire loop
+            alignedR = sqrt(alignedRSq)
+
+            ! unit vector in radial direction
+            eRX = rPerpX / alignedR
+            eRY = rPerpY / alignedR
+            eRZ = rPerpZ / alignedR
+
+            ! normalized rho component of evaluation location in coordinate system of wire loop
+            rhoP = alignedR / radius
+
+            ! compute tangential component of magnetic vector potential, including current and mu_0
+            aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP)
+
+            ! compute cross product between e_z and e_rho to get e_phi
+            ePhiX = eRY * eZ - eRZ * eY
+            ePhiY = eRZ * eX - eRX * eZ
+            ePhiZ = eRX * eY - eRY * eX
+
+            ! add contribution from wire loop to result
+            vectorPotential(1, idxEval) = aPhi * ePhiX
+            vectorPotential(2, idxEval) = aPhi * ePhiY
+            vectorPotential(3, idxEval) = aPhi * ePhiZ
+        end if ! alignedRSq .gt. 0.0
+    end do ! idxEval = 1, nEvalPos
+end subroutine ! vectorPotentialCircularFilament
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
