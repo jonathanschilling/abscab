@@ -50,9 +50,8 @@ double sws_A_z_ax_f(double zP) {
  * @return normalized axial component of magnetic vector potential
  */
 double sws_A_z_ax_n(double zP) {
-	// Must not use copysign here,
-	// since two negative signs must be able to cancel each other here!
-	return zP/fabs(zP) * log(zP / (zP - 1)) / 2;
+	// Two negative signs must be able to cancel each other here!
+	return copysign(1.0, zP) * log(zP / (zP - 1)) / 2;
 }
 
 /**

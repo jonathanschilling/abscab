@@ -40,9 +40,8 @@ end function ! sws_A_z_ax_f
 function sws_A_z_ax_n(zP)
     real(wp) :: sws_A_z_ax_n
     real(wp) :: zP
-    ! Must not use sign() here,
-    ! since two negative signs must be able to cancel each other here!
-    sws_A_z_ax_n = zP/abs(zP) * log(zP / (zP - 1.0_wp)) / 2.0_wp
+    ! Two negative signs must be able to cancel each other here!
+    sws_A_z_ax_n = sign(1.0_wp, zP) * log(zP / (zP - 1.0_wp)) / 2.0_wp
 end function ! sws_A_z_ax_n
 
 !> Compute the normalized axial component of magnetic vector potential of straight wire segment,
