@@ -677,8 +677,8 @@ end function ! circularWireLoop_B_z
 !> @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
 !> @param vectorPotential [3: A_x, A_y, A_z][nEvalPos] Cartesian components of the magnetic
 !>         vector potential evaluated at the given locations (in Tm); has to be allocated on entry
-subroutine vectorPotentialCircularFilament(center, normal, radius, &
-        current, nEvalPos, evalPos, vectorPotential)
+subroutine vectorPotentialCircularFilament(center, normal, radius, current, &
+        nEvalPos, evalPos, vectorPotential)
 
     real(wp), intent(in),  dimension(3)           :: center
     real(wp), intent(in),  dimension(3)           :: normal
@@ -696,7 +696,7 @@ subroutine vectorPotentialCircularFilament(center, normal, radius, &
                 alignedRSq, alignedR, eRX, eRY, eRZ, &
                 rhoP, aPhi, ePhiX, ePhiY, ePhiZ
 
-    if (.not. ieee_is_finite(radius) .or. radius .le. 0.0) then
+    if (.not. ieee_is_finite(radius) .or. radius .le. 0.0_wp) then
         print *, "radius must be finite and positive, but is ", radius
         return
     end if
@@ -747,7 +747,7 @@ subroutine vectorPotentialCircularFilament(center, normal, radius, &
 
         ! prevent division-by-zero when computing radial unit vector
         ! A_phi is zero anyway on-axis --> no contribution expected
-        if (alignedRSq .gt. 0.0) then
+        if (alignedRSq .gt. 0.0_wp) then
 
             ! perpendicular distance between evalPos and axis of wire loop
             alignedR = sqrt(alignedRSq)
@@ -776,7 +776,120 @@ subroutine vectorPotentialCircularFilament(center, normal, radius, &
     end do ! idxEval = 1, nEvalPos
 end subroutine ! vectorPotentialCircularFilament
 
+!> Compute the magnetic field of a circular wire loop.
+!>
+!> @param center  [3: x, y, z] origin of loop (in meters)
+!> @param normal  [3: x, y, z] normal vector of loop (in meters); will be
+!>                normalized internally
+!> @param radius  radius of the wire loop (in meters)
+!> @param current loop current (in A)
+!> @param evalPos [3: x, y, z][nEvalPos] evaluation locations (in meters)
+!> @param magneticField [3: B_x, B_y, B_z][nEvalPos] Cartesian components of the magnetic
+!>         field evaluated at the given locations (in T); has to be allocated on entry
+subroutine magneticFieldCircularFilament(center, normal, radius, current, &
+        nEvalPos, evalPos, magneticField)
 
+    real(wp), intent(in),  dimension(3)           :: center
+    real(wp), intent(in),  dimension(3)           :: normal
+    real(wp), intent(in)                          :: radius
+    real(wp), intent(in)                          :: current
+    integer,  intent(in)                          :: nEvalPos
+    real(wp), intent(in),  dimension(3, nEvalPos) :: evalPos
+    real(wp), intent(out), dimension(3, nEvalPos) :: magneticField
+
+    integer  :: idxEval
+    real(wp) :: bPrefactor, nLen2, nLen, eX, eY, eZ, &
+                r0x, r0y, r0z, alignedZ, zP, &
+                rParallelX, rParallelY, rParallelZ, &
+                rPerpX, rPerpY, rPerpZ, &
+                alignedRSq, alignedR, eRX, eRY, eRZ, &
+                rhoP, bRho, bZ, ePhiX, ePhiY, ePhiZ
+
+    if (.not. ieee_is_finite(radius) .or. radius .le. 0.0_wp) then
+        print *, "radius must be finite and positive, but is ", radius
+        return
+    end if
+
+    bPrefactor = MU_0_BY_PI * current / radius
+
+    ! squared length of normal vector
+    nLen2 = normal(1) * normal(1) + normal(2) * normal(2) + normal(3) * normal(3)
+
+    if (nLen2 .eq. 0.0_wp) then
+        print *, "length of normal vector must not be zero"
+        return
+    end if
+
+    ! length of normal vector
+    nLen = sqrt(nLen2)
+
+    ! unit normal vector of wire loop
+    eX = normal(1) / nLen
+    eY = normal(2) / nLen
+    eZ = normal(3) / nLen
+
+    do idxEval = 1, nEvalPos
+
+        ! vector from center of wire loop to eval pos
+        r0x = evalPos(1, idxEval) - center(1)
+        r0y = evalPos(2, idxEval) - center(2)
+        r0z = evalPos(3, idxEval) - center(3)
+
+        ! z position along normal of wire loop
+        alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+        ! normalized z component of evaluation location in coordinate system of wire loop
+        zP = alignedZ / radius
+
+        ! r0 projected onto axis of wire loop
+        rParallelX = alignedZ * eX
+        rParallelY = alignedZ * eY
+        rParallelZ = alignedZ * eZ
+
+        ! vector perpendicular to axis of wire loop, pointing at evaluation pos
+        rPerpX = r0x - rParallelX
+        rPerpY = r0y - rParallelY
+        rPerpZ = r0z - rParallelZ
+
+        ! perpendicular distance squared between evalPos and axis of wire loop
+        alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+
+        if (alignedRSq .gt. 0.0_wp) then
+            ! radial unit vector is only defined if evaluation pos is off-axis
+
+            ! perpendicular distance between evalPos and axis of wire loop
+            alignedR = sqrt(alignedRSq)
+
+            ! unit vector in radial direction
+            eRX = rPerpX / alignedR
+            eRY = rPerpY / alignedR
+            eRZ = rPerpZ / alignedR
+
+            ! normalized rho component of evaluation location in coordinate system of wire loop
+            rhoP = alignedR / radius
+
+            ! compute radial component of normalized magnetic field
+            ! and scale by current and mu_0
+            bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP)
+
+            ! add contribution from B_rho of wire loop to result
+            magneticField(1, idxEval) = bRho * eRX
+            magneticField(2, idxEval) = bRho * eRY
+            magneticField(3, idxEval) = bRho * eRZ
+        else
+            rhoP = 0.0_wp
+        end if
+
+        ! compute vertical component of normalized magnetic field
+        ! and scale by current and mu_0
+        bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP)
+
+        ! add contribution from B_z of wire loop to result
+        magneticField(1, idxEval) = magneticField(1, idxEval) + bZ * eX
+        magneticField(2, idxEval) = magneticField(2, idxEval) + bZ * eY
+        magneticField(3, idxEval) = magneticField(3, idxEval) + bZ * eZ
+    end do ! idxEval = 1, nEvalPos
+end subroutine ! magneticFieldCircularFilament
 
 
 
