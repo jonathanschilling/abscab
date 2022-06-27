@@ -939,7 +939,7 @@ subroutine kernelVectorPotentialPolygonFilament ( &
                  aYSum(3, numEvalPos), &
                  aZSum(3, numEvalPos), stat=istat)
         if (istat .ne. 0) then
-            print *, "failed to allocate compensated summation buffers"
+            print *, "failed to allocate compensated summation buffers: stat=", istat
             return
         end if
 
@@ -1037,7 +1037,7 @@ subroutine kernelVectorPotentialPolygonFilament ( &
 
         deallocate(aXSum, aYSum, aZSum, stat=istat)
         if (istat .ne. 0) then
-            print *, "failed to deallocate compensated summation buffers"
+            print *, "failed to deallocate compensated summation buffers: stat=", istat
             return
         end if
     end if
