@@ -9,7 +9,7 @@ The main article on this software can be found here: [abscab_main.pdf](article/a
 Various implementations are provided in this repository.
 Here is an overview:
 
-|   Language   |            main `abscab` file                                  |                test code                    | demo code |
+|   Language   |            main `abscab` file                                  |                unit tests                   | demo code |
 | ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- |
 | C99          | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) |
 | Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](src/test/java/de/labathome/abscab/DemoABSCAB.java)
