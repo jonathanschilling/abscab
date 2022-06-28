@@ -1,6 +1,6 @@
 
 F08?=gfortran
-CFLAGS=-std=f2008
+CFLAGS=-std=f2008 -Og -g
 
 ABSCAB_DIR=../../main/fortran
 

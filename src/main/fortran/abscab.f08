@@ -899,9 +899,9 @@ end subroutine ! magneticFieldCircularFilament
 !> @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
 !> @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
 !> @param idxSourceStart first index in {@code vertices} to take into account
-!> @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+!> @param idxSourceEnd last index in {@code vertices} to take into account
 !> @param idxEvalStart first index in {@code evalPos} to take into account
-!> @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+!> @param idxEvalEnd last index in {@code evalPos} to take into account
 !> @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
 !>                                of the contributions from the polygon vertices; otherwise, use standard += summation
 subroutine kernelVectorPotentialPolygonFilament ( &
@@ -931,7 +931,7 @@ subroutine kernelVectorPotentialPolygonFilament ( &
 
     ! setup compensated summation
     if (useCompensatedSummation) then
-        numEvalPos = idxEvalEnd - idxEvalStart
+        numEvalPos = idxEvalEnd - idxEvalStart + 1
 
         ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
         allocate(aXSum(3, numEvalPos), &
@@ -948,14 +948,14 @@ subroutine kernelVectorPotentialPolygonFilament ( &
         aZSum(:,:) = 0.0_wp
     else
         ! initialize target array to zero
-        vectorPotential(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+        vectorPotential(:, idxEvalStart:idxEvalEnd) = 0.0_wp
     end if ! useCompensatedSummation
 
     x_i = vertices(1, idxSourceStart)
     y_i = vertices(2, idxSourceStart)
     z_i = vertices(3, idxSourceStart)
 
-    do idxSource = idxSourceStart, idxSourceEnd-1
+    do idxSource = idxSourceStart, idxSourceEnd
 
         x_f = vertices(1, idxSource + 1)
         y_f = vertices(2, idxSource + 1)
@@ -981,7 +981,7 @@ subroutine kernelVectorPotentialPolygonFilament ( &
         eY = dy / l
         eZ = dz / l
 
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
 
             ! vector from start of wire segment to eval pos
             r0x = evalPos(1, idxEval) - x_i
@@ -1018,17 +1018,17 @@ subroutine kernelVectorPotentialPolygonFilament ( &
                 vectorPotential(2, idxEval) = vectorPotential(2, idxEval) + aParallel * eY
                 vectorPotential(3, idxEval) = vectorPotential(3, idxEval) + aParallel * eZ
             end if ! useCompensatedSummation
-        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+        end do ! idxEval = idxEvalStart, idxEvalEnd
 
         ! shift to next point
         x_i = x_f
         y_i = y_f
         z_i = z_f
-    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+    end do ! idxSource = idxSourceStart, idxSourceEnd
 
     if (useCompensatedSummation) then
         ! obtain compensated sums from summation objects
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
             vectorPotential(1, idxEval) = sum(aXSum(:, idxEval - idxEvalStart + 1))
             vectorPotential(2, idxEval) = sum(aYSum(:, idxEval - idxEvalStart + 1))
             vectorPotential(3, idxEval) = sum(aZSum(:, idxEval - idxEvalStart + 1))
@@ -1050,9 +1050,9 @@ end subroutine ! kernelVectorPotentialPolygonFilament
 !> @param evalPos [3: x, y, z][numEvalPos] evaluation locations; in m
 !> @param vectorPotential [3: x, y, z][numEvalPos] target array for magnetic vector potential at evaluation locations; in Tm
 !> @param idxSourceStart first index in {@code vertices} to take into account
-!> @param idxSourceEnd (last+1) index in {@code vertices} to take into account
+!> @param idxSourceEnd last index in {@code vertices} to take into account
 !> @param idxEvalStart first index in {@code evalPos} to take into account
-!> @param idxEvalEnd (last+1) index in {@code evalPos} to take into account
+!> @param idxEvalEnd last index in {@code evalPos} to take into account
 !> @param useCompensatedSummation if true, use Kahan-Babuska compensated summation to compute the superposition
 !>                                of the contributions from the polygon vertices; otherwise, use standard += summation
 subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
@@ -1091,7 +1091,7 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
 
     ! setup compensated summation
     if (useCompensatedSummation) then
-        numEvalPos = idxEvalEnd - idxEvalStart
+        numEvalPos = idxEvalEnd - idxEvalStart + 1
 
         ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
         allocate(aXSum(3, numEvalPos), &
@@ -1108,7 +1108,7 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
         aZSum(:,:) = 0.0_wp
     else
         ! initialize target array to zero
-        vectorPotential(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+        vectorPotential(:, idxEvalStart:idxEvalEnd) = 0.0_wp
     end if ! useCompensatedSummation
 
     call vertexSupplier(idxSourceStart, pointData)
@@ -1116,7 +1116,7 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
     y_i = pointData(2)
     z_i = pointData(3)
 
-    do idxSource = idxSourceStart, idxSourceEnd-1
+    do idxSource = idxSourceStart, idxSourceEnd
 
         call vertexSupplier(idxSource + 1, pointData)
         x_f = pointData(1)
@@ -1143,7 +1143,7 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
         eY = dy / l
         eZ = dz / l
 
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
 
             ! vector from start of wire segment to eval pos
             r0x = evalPos(1, idxEval) - x_i
@@ -1180,13 +1180,13 @@ subroutine kernelVectorPotentialPolygonFilamentVertexSupplier ( &
                 vectorPotential(2, idxEval) = vectorPotential(2, idxEval) + aParallel * eY
                 vectorPotential(3, idxEval) = vectorPotential(3, idxEval) + aParallel * eZ
             end if ! useCompensatedSummation
-        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+        end do ! idxEval = idxEvalStart, idxEvalEnd
 
         ! shift to next point
         x_i = x_f
         y_i = y_f
         z_i = z_f
-    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+    end do ! idxSource = idxSourceStart, idxSourceEnd
 
     if (useCompensatedSummation) then
         ! obtain compensated sums from summation objects
@@ -1246,7 +1246,7 @@ subroutine kernelMagneticFieldPolygonFilament ( &
 
     ! setup compensated summation
     if (useCompensatedSummation) then
-        numEvalPos = idxEvalEnd - idxEvalStart
+        numEvalPos = idxEvalEnd - idxEvalStart + 1
 
         ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
         allocate(bXSum(3, numEvalPos), &
@@ -1263,14 +1263,14 @@ subroutine kernelMagneticFieldPolygonFilament ( &
         bZSum(:,:) = 0.0_wp
     else
         ! initialize target array to zero
-        magneticField(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+        magneticField(:, idxEvalStart:idxEvalEnd) = 0.0_wp
     end if ! useCompensatedSummation
 
     x_i = vertices(1, idxSourceStart)
     y_i = vertices(2, idxSourceStart)
     z_i = vertices(3, idxSourceStart)
 
-    do idxSource = idxSourceStart, idxSourceEnd-1
+    do idxSource = idxSourceStart, idxSourceEnd
 
         x_f = vertices(1, idxSource + 1)
         y_f = vertices(2, idxSource + 1)
@@ -1299,7 +1299,7 @@ subroutine kernelMagneticFieldPolygonFilament ( &
         eY = dy / l
         eZ = dz / l
 
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
 
             ! vector from start of wire segment to eval pos
             r0x = evalPos(1, idxEval) - x_i
@@ -1352,17 +1352,17 @@ subroutine kernelMagneticFieldPolygonFilament ( &
                     magneticField(3, idxEval) = magneticField(3, idxEval) + bPhi * ePhiZ
                 end if ! useCompensatedSummation
             end if ! alignedRSq .gt. 0.0_wp
-        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+        end do ! idxEval = idxEvalStart, idxEvalEnd
 
         ! shift to next point
         x_i = x_f
         y_i = y_f
         z_i = z_f
-    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+    end do ! idxSource = idxSourceStart, idxSourceEnd
 
     if (useCompensatedSummation) then
         ! obtain compensated sums from summation objects
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
             magneticField(1, idxEval) = sum(bXSum(:, idxEval - idxEvalStart + 1))
             magneticField(2, idxEval) = sum(bYSum(:, idxEval - idxEvalStart + 1))
             magneticField(3, idxEval) = sum(bZSum(:, idxEval - idxEvalStart + 1))
@@ -1427,7 +1427,7 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
 
     ! setup compensated summation
     if (useCompensatedSummation) then
-        numEvalPos = idxEvalEnd - idxEvalStart
+        numEvalPos = idxEvalEnd - idxEvalStart + 1
 
         ! need three values (s, cs, ccs) per eval pos --> see mod_compsum
         allocate(bXSum(3, numEvalPos), &
@@ -1444,7 +1444,7 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
         bZSum(:,:) = 0.0_wp
     else
         ! initialize target array to zero
-        magneticField(:, idxSourceStart:idxSourceStart-1) = 0.0_wp
+        magneticField(:, idxEvalStart:idxEvalEnd) = 0.0_wp
     end if ! useCompensatedSummation
 
     call vertexSupplier(idxSourceStart, pointData)
@@ -1452,7 +1452,7 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
     y_i = pointData(2)
     z_i = pointData(3)
 
-    do idxSource = idxSourceStart, idxSourceEnd-1
+    do idxSource = idxSourceStart, idxSourceEnd
 
         call vertexSupplier(idxSource + 1, pointData)
         x_f = pointData(1)
@@ -1482,7 +1482,7 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
         eY = dy / l
         eZ = dz / l
 
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
 
             ! vector from start of wire segment to eval pos
             r0x = evalPos(1, idxEval) - x_i
@@ -1535,17 +1535,17 @@ subroutine kernelMagneticFieldPolygonFilamentVertexSupplier ( &
                     magneticField(3, idxEval) = magneticField(3, idxEval) + bPhi * ePhiZ
                 end if ! useCompensatedSummation
             end if ! alignedRSq .gt. 0.0_wp
-        end do ! idxEval = idxEvalStart, idxEvalEnd-1
+        end do ! idxEval = idxEvalStart, idxEvalEnd
 
         ! shift to next point
         x_i = x_f
         y_i = y_f
         z_i = z_f
-    end do ! idxSource = idxSourceStart, idxSourceEnd-1
+    end do ! idxSource = idxSourceStart, idxSourceEnd
 
     if (useCompensatedSummation) then
         ! obtain compensated sums from summation objects
-        do idxEval = idxEvalStart, idxEvalEnd-1
+        do idxEval = idxEvalStart, idxEvalEnd
             magneticField(1, idxEval) = sum(bXSum(:, idxEval - idxEvalStart + 1))
             magneticField(2, idxEval) = sum(bYSum(:, idxEval - idxEvalStart + 1))
             magneticField(3, idxEval) = sum(bZSum(:, idxEval - idxEvalStart + 1))
@@ -1626,9 +1626,9 @@ subroutine vectorPotentialPolygonFilament( &
     if (actNumProc .eq. 1) then
         ! single-threaded call
         idxSourceStart = 1
-        idxSourceEnd   = numVertices + 1
+        idxSourceEnd   = numVertices-1
         idxEvalStart   = 1
-        idxEvalEnd     = numEvalPos + 1
+        idxEvalEnd     = numEvalPos
         call kernelVectorPotentialPolygonFilament( &
             vertices, current, &
             evalPos, &
@@ -1669,9 +1669,9 @@ subroutine vectorPotentialPolygonFilament( &
             do idxThread = 0, nThreads-1
                 idxSourceStart =      idxThread    * nSourcePerThread + 1
                 idxSourceEnd   = min((idxThread+1) * nSourcePerThread, &
-                                     numVertices-1) + 1
+                                     numVertices-1)
                 idxEvalStart   = 1
-                idxEvalEnd     = numEvalPos + 1
+                idxEvalEnd     = numEvalPos
 
                 call kernelVectorPotentialPolygonFilament( &
                         vertices, current, &
@@ -1730,10 +1730,10 @@ subroutine vectorPotentialPolygonFilament( &
 !$endif // _OPENMP
             do idxThread = 0, nThreads-1
                 idxSourceStart = 1
-                idxSourceEnd   = numVertices
+                idxSourceEnd   = numVertices-1
                 idxEvalStart   =      idxThread    * nEvalPerThread + 1
                 idxEvalEnd     = min((idxThread+1) * nEvalPerThread, &
-                                     numEvalPos) + 1
+                                     numEvalPos)
 
                 call kernelVectorPotentialPolygonFilament( &
                         vertices, current, &
@@ -1819,9 +1819,9 @@ subroutine vectorPotentialPolygonFilamentVertexSupplier( &
     if (actNumProc .eq. 1) then
         ! single-threaded call
         idxSourceStart = 1
-        idxSourceEnd   = numVertices + 1
+        idxSourceEnd   = numVertices-1
         idxEvalStart   = 1
-        idxEvalEnd     = numEvalPos + 1
+        idxEvalEnd     = numEvalPos
         call kernelVectorPotentialPolygonFilamentVertexSupplier( &
             vertexSupplier, current, &
             evalPos, &
@@ -1862,9 +1862,9 @@ subroutine vectorPotentialPolygonFilamentVertexSupplier( &
             do idxThread = 0, nThreads-1
                 idxSourceStart =      idxThread    * nSourcePerThread + 1
                 idxSourceEnd   = min((idxThread+1) * nSourcePerThread, &
-                                     numVertices-1) + 1
+                                     numVertices-1)
                 idxEvalStart   = 1
-                idxEvalEnd     = numEvalPos + 1
+                idxEvalEnd     = numEvalPos
 
                 call kernelVectorPotentialPolygonFilamentVertexSupplier( &
                         vertexSupplier, current, &
@@ -1923,10 +1923,10 @@ subroutine vectorPotentialPolygonFilamentVertexSupplier( &
 !$endif // _OPENMP
             do idxThread = 0, nThreads-1
                 idxSourceStart = 1
-                idxSourceEnd   = numVertices
+                idxSourceEnd   = numVertices-1
                 idxEvalStart   =      idxThread    * nEvalPerThread + 1
                 idxEvalEnd     = min((idxThread+1) * nEvalPerThread, &
-                                     numEvalPos) + 1
+                                     numEvalPos)
 
                 call kernelVectorPotentialPolygonFilamentVertexSupplier( &
                         vertexSupplier, current, &
@@ -2004,9 +2004,9 @@ subroutine magneticFieldPolygonFilament( &
     if (actNumProc .eq. 1) then
         ! single-threaded call
         idxSourceStart = 1
-        idxSourceEnd   = numVertices + 1
+        idxSourceEnd   = numVertices-1
         idxEvalStart   = 1
-        idxEvalEnd     = numEvalPos + 1
+        idxEvalEnd     = numEvalPos
         call kernelMagneticFieldPolygonFilament( &
             vertices, current, &
             evalPos, &
@@ -2047,9 +2047,9 @@ subroutine magneticFieldPolygonFilament( &
             do idxThread = 0, nThreads-1
                 idxSourceStart =      idxThread    * nSourcePerThread + 1
                 idxSourceEnd   = min((idxThread+1) * nSourcePerThread, &
-                                     numVertices-1) + 1
+                                     numVertices-1)
                 idxEvalStart   = 1
-                idxEvalEnd     = numEvalPos + 1
+                idxEvalEnd     = numEvalPos
 
                 call kernelMagneticFieldPolygonFilament( &
                         vertices, current, &
@@ -2108,10 +2108,10 @@ subroutine magneticFieldPolygonFilament( &
 !$endif // _OPENMP
             do idxThread = 0, nThreads-1
                 idxSourceStart = 1
-                idxSourceEnd   = numVertices
+                idxSourceEnd   = numVertices-1
                 idxEvalStart   =      idxThread    * nEvalPerThread + 1
                 idxEvalEnd     = min((idxThread+1) * nEvalPerThread, &
-                                     numEvalPos) + 1
+                                     numEvalPos)
 
                 call kernelMagneticFieldPolygonFilament( &
                         vertices, current, &
@@ -2197,9 +2197,9 @@ subroutine magneticFieldPolygonFilamentVertexSupplier( &
     if (actNumProc .eq. 1) then
         ! single-threaded call
         idxSourceStart = 1
-        idxSourceEnd   = numVertices + 1
+        idxSourceEnd   = numVertices-1
         idxEvalStart   = 1
-        idxEvalEnd     = numEvalPos + 1
+        idxEvalEnd     = numEvalPos
         call kernelMagneticFieldPolygonFilamentVertexSupplier( &
             vertexSupplier, current, &
             evalPos, &
@@ -2240,9 +2240,9 @@ subroutine magneticFieldPolygonFilamentVertexSupplier( &
             do idxThread = 0, nThreads-1
                 idxSourceStart =      idxThread    * nSourcePerThread + 1
                 idxSourceEnd   = min((idxThread+1) * nSourcePerThread, &
-                                     numVertices-1) + 1
+                                     numVertices-1)
                 idxEvalStart   = 1
-                idxEvalEnd     = numEvalPos + 1
+                idxEvalEnd     = numEvalPos
 
                 call kernelMagneticFieldPolygonFilamentVertexSupplier( &
                         vertexSupplier, current, &
@@ -2301,10 +2301,10 @@ subroutine magneticFieldPolygonFilamentVertexSupplier( &
 !$endif // _OPENMP
             do idxThread = 0, nThreads-1
                 idxSourceStart = 1
-                idxSourceEnd   = numVertices
+                idxSourceEnd   = numVertices-1
                 idxEvalStart   =      idxThread    * nEvalPerThread + 1
                 idxEvalEnd     = min((idxThread+1) * nEvalPerThread, &
-                                     numEvalPos) + 1
+                                     numEvalPos)
 
                 call kernelMagneticFieldPolygonFilamentVertexSupplier( &
                         vertexSupplier, current, &

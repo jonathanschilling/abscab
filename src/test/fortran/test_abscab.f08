@@ -288,6 +288,53 @@ subroutine testCircularWireLoop(status)
     deallocate(all_ref_B_z)
 end subroutine
 
+subroutine testMagneticFieldInfiniteLineFilament(status)
+
+    integer, intent(inout) :: status
+
+    real(wp), parameter :: tolerance = 1.0e-15_wp
+
+    !> Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+    !> B(r) = mu_0 * I / (2 pi r)
+    !> Test this here with:
+    !> I = 123.0 A
+    !> r = 0.132 m
+    !> => B = 0.186 mT
+    real(wp), parameter :: current = 123.0_wp
+    real(wp), parameter :: r = 0.132_wp;
+
+    real(wp) :: bPhiRef, bPhi, relAbsErr
+    real(wp), dimension(3,2) :: vertices
+    real(wp), dimension(3,1) :: evalPos
+    real(wp), dimension(3,1) :: magneticField
+
+    if (status .ne. 0) then
+        return
+    end if
+
+    bPhiRef = MU_0 * current / (2.0_wp * PI * r);
+!     print *, "ref bPhi = ", bPhiRef
+
+    vertices = reshape( &
+           (/ 0.0_wp, 0.0_wp, -1.0e6_wp, &
+              0.0_wp, 0.0_wp,  1.0e6_wp /), shape(vertices))
+
+    evalPos = reshape((/ r, 0.0_wp, 0.0_wp/), shape(evalPos))
+
+    ! y component is B_phi
+    call magneticFieldPolygonFilament(2, vertices, current, &
+        1, evalPos, magneticField)
+    bPhi = magneticField(2,1)
+!     print *, "act bPhi = ", bPhi
+
+    relAbsErr = abs(bPhi - bPhiRef) / (1.0_wp + abs(bPhiRef))
+!     print *, "raErr = ", relAbsErr
+
+    status = assertRelAbsEquals(bPhiRef, bPhi, tolerance)
+
+end subroutine ! testMagneticFieldInfiniteLineFilament
+
+
 end module ! mod_abscab_tests
 
 program test_abscab
@@ -298,6 +345,7 @@ program test_abscab
     status = 0
     call testStraightWireSegment(status)
     call testCircularWireLoop(status)
+    call testMagneticFieldInfiniteLineFilament(status)
     if (status .eq. 0) then
         print *, "success: all test(s) passed :-)"
     else
