@@ -24,4 +24,21 @@ subroutine read_data(filename, rows, cols, data)
 
 end subroutine ! read_data
 
+function assertRelAbsEquals(expected, actual, tolerance)
+    integer :: assertRelAbsEquals
+    real(wp) :: expected, actual, tolerance
+
+    real(wp) :: raErr
+
+    raErr = abs(actual - expected) / (1.0_wp + abs(expected))
+    if (raErr .ge. tolerance) then
+        print *, "expected:", expected, "actual:", actual, &
+          "(rel/abs error", raErr, "tolerance:", tolerance, ")"
+        assertRelAbsEquals = 1
+    else
+        assertRelAbsEquals = 0
+    end if
+
+end function ! assertRelAbsEquals
+
 end module ! mod_testutil

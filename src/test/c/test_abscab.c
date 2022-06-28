@@ -108,6 +108,10 @@ int testStraightWireSegment() {
 			printf("  act B_phi = %+.17e\n", bPhi);
 		}
 		status |= bPhiStatus;
+
+		if (status) {
+			break;
+		}
 	}
 
 	// free data loaded from text files
