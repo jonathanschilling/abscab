@@ -29,7 +29,7 @@ subroutine testStraightWireSegment(status)
     if (status .ne. 0) then
         ! skip if any previous test(s) failed
         return
-    end if
+    end if ! status .ne. 0
 
     rows_rP = count_rows(filename_rP)
     cols_rP = count_cols(filename_rP)
@@ -158,7 +158,7 @@ subroutine testCircularWireLoop(status)
     if (status .ne. 0) then
         ! skip if any previous test(s) failed
         return
-    end if
+    end if ! status .ne. 0
 
     rows_rP = count_rows(filename_rP)
     cols_rP = count_cols(filename_rP)
@@ -310,7 +310,7 @@ subroutine testMagneticFieldInfiniteLineFilament(status)
 
     if (status .ne. 0) then
         return
-    end if
+    end if ! status .ne. 0
 
     bPhiRef = MU_0 * current / (2.0_wp * PI * r);
 !     print *, "ref bPhi = ", bPhiRef
@@ -334,6 +334,94 @@ subroutine testMagneticFieldInfiniteLineFilament(status)
 
 end subroutine ! testMagneticFieldInfiniteLineFilament
 
+subroutine testBPhiInfiniteLineFilament(status)
+    integer, intent(inout) :: status
+
+    real(wp), parameter :: tolerance = 1.0e-15_wp
+
+    !> Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+    !> B(r) = mu_0 * I / (2 pi r)
+    !> Test this here with:
+    !> I = 123.0 A
+    !> r = 0.132 m
+    !> => B = 0.186 mT
+    real(wp), parameter :: current = 123.0_wp
+    real(wp), parameter :: r = 0.132_wp
+    real(wp) :: bPhiRef, halfL, L, rhoP, zP, bPhi, relAbsErr
+
+    if (status .ne. 0) then
+        return
+    end if ! status .ne. 0
+
+    bPhiRef = MU_0 * current / (2.0_wp * PI * r)
+!     print *, "ref bPhi = ", bPhiRef
+
+    ! half the length of the wire segment
+    halfL = 1e6_wp
+    L    = 2.0_wp * halfL
+    rhoP = r / L
+    zP   = halfL / L
+    bPhi = MU_0 * current / (4.0_wp * PI * L) * straightWireSegment_B_phi(rhoP, zP)
+!     print *, "act bPhi = ", bPhi
+
+    relAbsErr = abs(bPhi - bPhiRef) / (1.0_wp + abs(bPhiRef))
+!     print *, "raErr = ", relAbsErr
+
+    status = assertRelAbsEquals(bPhiRef, bPhi, tolerance)
+end subroutine ! testBPhiInfiniteLineFilament
+
+subroutine testMagneticFieldInsideLongCoil(status)
+    integer, intent(inout) :: status
+
+    real(wp), parameter :: tolerance = 1.0e-4_wp
+
+
+
+    !> Demtroeder 2, Sec. 3.2.3 ("Magnetic field of a long coil")
+    !> B_z = mu_0 * n * I
+    !> where n is the winding density: n = N / L
+    !> of a coil of N windings over a length L
+    !> Example (which is tested here):
+    !> n = 1e3 m^{-1}
+    !> I = 10 A
+    !> => B = 0.0126T
+    real(wp), parameter :: bZRef = 0.0126_wp
+
+    integer  :: i, numWindings
+    real(wp) :: L, n, current, radius, bZ, z0, prefac, bZContrib, relAbsErr
+
+    if (status .ne. 0) then
+        return
+    end if ! status .ne. 0
+
+    numWindings = 50000 ! windings
+    L = 50.0_wp ! total length of coil in m
+    n = real(numWindings, kind=wp) / L
+
+    current = 10.0_wp ! A
+    radius  = 1.0_wp   ! m
+
+    bZ = 0.0_wp
+    do i = 1, numWindings
+
+        !> axial position of coil
+        z0 = -L/2.0_wp + (real(i, kind=wp) + 0.5_wp) / n;
+
+        !> compute magnetic field
+        prefac = MU_0 * current / (PI * radius);
+        bZContrib = prefac * circularWireLoop_B_z(0.0_wp, z0);
+
+!         print *, "coil ",i," at z0 = ",z0," => contrib = ", bZContrib
+
+        bZ = bZ + bZContrib
+    end do ! i = 1, numWindings
+!     print *, "B_z = ", bZ
+
+    relAbsErr = abs(bZ - bZRef) / (1.0_wp + abs(bZRef))
+!     print *, "raErr = ", relAbsErr
+
+    status = assertRelAbsEquals(bZRef, bZ, tolerance)
+end subroutine ! testMagneticFieldInsideLongCoil
 
 end module ! mod_abscab_tests
 
@@ -346,6 +434,8 @@ program test_abscab
     call testStraightWireSegment(status)
     call testCircularWireLoop(status)
     call testMagneticFieldInfiniteLineFilament(status)
+    call testBPhiInfiniteLineFilament(status)
+    call testMagneticFieldInsideLongCoil(status)
     if (status .eq. 0) then
         print *, "success: all test(s) passed :-)"
     else
