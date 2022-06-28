@@ -437,9 +437,9 @@ program test_abscab
     call testBPhiInfiniteLineFilament(status)
     call testMagneticFieldInsideLongCoil(status)
     if (status .eq. 0) then
-        print *, "success: all test(s) passed :-)"
+        print *, "test_abscab: all test(s) passed :-)"
     else
-        print *, "error: some test(s) failed :-("
+        print *, "test_abscab: some test(s) failed :-("
     end if
 
 end program ! test_abscab
