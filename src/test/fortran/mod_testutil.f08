@@ -131,4 +131,30 @@ function assertRelAbsEquals(expected, actual, tolerance)
 
 end function ! assertRelAbsEquals
 
+function errorMetric(ref, act)
+    real(wp) :: errorMetric
+    real(wp) :: ref, act
+
+    real(wp), parameter :: bad = 0.0_wp, good = -16.0_wp, &
+                           tenToBad = 10**bad
+    real(wp) :: relErr
+
+    if (abs(ref) .gt. 0.0_wp) then
+        if (act .ne. ref) then
+            relErr = abs((act-ref)/ref)
+            if (tenToBad .lt. relErr) then ! limit to max error of O(1)
+                errorMetric = log10(tenToBad)
+            else
+                errorMetric = log10(relErr)
+            end if
+        else
+            errorMetric = good
+        end if
+    else if (abs(act) .gt. 0.0_wp) then
+        errorMetric = bad
+    else
+        errorMetric = good
+    end if
+end function ! errorMetric
+
 end module ! mod_testutil
