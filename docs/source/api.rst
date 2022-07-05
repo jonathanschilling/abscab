@@ -4,7 +4,7 @@ API Reference
 ABSCAB
 ^^^^^^
 
-.. automodule:: abscab.abscab
+.. automodule:: abscab._abscab
    :members:
    :private-members:
    :member-order: groupwise
@@ -12,11 +12,15 @@ ABSCAB
 Bulisch Generalized Complete Elliptic Integral
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: abscab.bulirsch_cel
+.. automodule:: abscab._bulirsch_cel
    :members:
+   :private-members:
+   :member-order: groupwise
 
-Compensated Kahan-Babushka Summation
+Kahan-Babushka Compensated Summation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: abscab.compsum
+.. automodule:: abscab._compsum
    :members:
+   :private-members:
+   :member-order: groupwise

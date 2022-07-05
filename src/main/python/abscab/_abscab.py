@@ -1,7 +1,7 @@
 import numpy as np
 
-from .bulirsch_cel import cel
-from .compsum import compAdd
+from ._bulirsch_cel import cel
+from ._compsum import compAdd
 
 MU_0 = 1.25663706212e-6
 """vacuum magnetic permeability in Vs/Am (CODATA-2018)"""

@@ -63,7 +63,7 @@ def cel(k_c, p, a, b):
         m += k_c # mu_{i+1} <-- mu_i + \nu_i
         if np.abs(g - k_c) > g * SQRT_EPS: # |\mu_i - \nu_i| > \mu_i*EPS == |1 - \nu_i / \mu_i| > EPS, but more robust!
             # not converged yet...
-            k_c = sqrt(e) # k_c = sqrt(\nu_i * \mu_i)
+            k_c = np.sqrt(e) # k_c = sqrt(\nu_i * \mu_i)
             k_c += k_c    # \nu_{i+1} <-- 2*sqrt(\nu_i * \mu_i)
             e = k_c*m     # (\nu * \mu)_{i+1} <-- \nu_{i+1} * mu_{i+1} (also update product explicitly)
         else:
