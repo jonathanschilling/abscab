@@ -2151,8 +2151,7 @@ public class ABSCAB {
 	}
 
 	/**
-	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
-	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
 	 * This formulation is useful for points away from the wire ("far-field")
 	 * at rhoP >= 1 or zP <= -1 or zP > 2.
 	 *
@@ -2167,8 +2166,7 @@ public class ABSCAB {
 	}
 
 	/**
-	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
-	 * evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
+	 * Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
 	 * This formulation is useful for points close to the wire ("near-field")
 	 * at rhoP < 1 and -1 < zP <= 2.
 	 *
