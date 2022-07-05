@@ -33,7 +33,7 @@ int assertRelAbsEquals(double expected, double actual, double tolerance) {
 }
 
 /**
- *
+ * Error metric for computing the "number of matching digits" between two numbers.
  */
 double errorMetric(double ref, double act) {
 	double bad = 0.0;

@@ -23,3 +23,18 @@ def assertRelAbsEquals(expected, actual, tolerance):
               (expected, actual, relAbsError, tolerance))
         return 1
     return 0
+
+def errorMetric(ref, act):
+    bad = 0.0
+    good = -16.0
+
+    tenToBad = 10**bad
+
+    if np.abs(ref) > 0.0:
+        if act != ref:
+            relErr = np.abs((act-ref)/ref)
+            return np.log10(tenToBad if tenToBad < relErr else relErr)
+        else:
+            return good
+    else:
+        return bad if np.abs(act) > 0.0 else good
