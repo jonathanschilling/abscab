@@ -1,5 +1,7 @@
 import numpy as np
+
 from bulirsch_cel import cel
+from compsum import compAdd
 
 """vacuum magnetic permeability in Vs/Am (CODATA-2018)"""
 MU_0 = 1.25663706212e-6
@@ -810,8 +812,486 @@ def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
 
 # --------------------------------------------------
 
+def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSummation = True):
+    """Compute the magnetic vector potential of a polygon filament at a number of evaluation locations.
+    
+    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m                                                     
+    :param float current: current along polygon; in A                                                                               
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+                                         of the contributions from the polygon vertices; otherwise, use standard += summation.
+    :return: [numEvalPos][3: x, y, z] magnetic vector potential at evaluation locations; in Tm
+    :rtype: arr(float)
+    """
+    numEvalPos = len(evalPos)
+    numVertices = len(vertices)
+    if numVertices < 2:
+        raise ValueError("must have at least 2 vertices, not %d"%(numVertices,))
 
+    vectorPotential = np.zeros((numEvalPos, 3))
 
+    if current == 0.0:
+        return vectorPotential
 
+    aPrefactor = MU_0_BY_2_PI * current
 
+    # setup compensated summation objects
+    if useCompensatedSummation:
+        # need three doubles (s, cs, ccs) per eval pos --> see compsum.py
+        aXSum = np.zeros((numEvalPos, 3))
+        aYSum = np.zeros((numEvalPos, 3))
+        aZSum = np.zeros((numEvalPos, 3))
+    
+    x_i = vertices[0, 0]
+    y_i = vertices[0, 1]
+    z_i = vertices[0, 2]
+    
+    for idxSource in range(numVertices-1):
 
+        x_f = vertices[idxSource + 1, 0]
+        y_f = vertices[idxSource + 1, 1]
+        z_f = vertices[idxSource + 1, 2]
+
+        # vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        # squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if l2 == 0.0:
+            # skip zero-length segments: no contribution
+            continue
+
+        # length of wire segment
+        l = np.sqrt(l2)
+
+        # unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+        
+        for idxEval in range(numEvalPos):
+
+            # vector from start of wire segment to eval pos
+            r0x = evalPos[idxEval, 0] - x_i
+            r0y = evalPos[idxEval, 1] - y_i
+            r0z = evalPos[idxEval, 2] - z_i
+
+            # z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            # normalized z component of evaluation location in coordinate system of wire segment
+            zP = alignedZ / l
+
+            # vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            # perpendicular distance between evalPos and axis of wire segment
+            alignedR = np.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ)
+
+            # normalized rho component of evaluation location in coordinate system of wire segment
+            rhoP = alignedR / l
+
+            # compute parallel component of magnetic vector potential, including current and mu_0
+            aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP)
+
+            # add contribution from wire segment to result
+            if useCompensatedSummation:
+                compAdd(aParallel * eX, aXSum[idxEval:idxEval+3])
+                compAdd(aParallel * eY, aYSum[idxEval:idxEval+3])
+                compAdd(aParallel * eZ, aZSum[idxEval:idxEval+3])
+            else:
+                vectorPotential[idxEval, 0] += aParallel * eX
+                vectorPotential[idxEval, 1] += aParallel * eY
+                vectorPotential[idxEval, 2] += aParallel * eZ
+
+        # shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+
+    if useCompensatedSummation:
+        # obtain compensated sums from summation objects
+        for idxEval in range(numEvalPos):
+            vectorPotential[idxEval, 0] = aXSum[idxEval, 0] + aXSum[idxEval, 1] + aXSum[idxEval, 2]
+            vectorPotential[idxEval, 1] = aYSum[idxEval, 0] + aYSum[idxEval, 1] + aYSum[idxEval, 2]
+            vectorPotential[idxEval, 2] = aZSum[idxEval, 0] + aZSum[idxEval, 1] + aZSum[idxEval, 2]
+    
+    return vectorPotential
+
+def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, current, evalPos, useCompensatedSummation = True):
+    """Compute the magnetic vector potential of a polygon filament at a number of evaluation locations.
+    
+    :param int numVertices: number of polygon vertices to take into account
+    :param callable(int i), arr(float) vertexSupplier: should return points along polygon as [3: x, y, z] for i=0,1,...,(numVertices-1); in m
+    :param float current: current along polygon; in A                                                                               
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+                                         of the contributions from the polygon vertices; otherwise, use standard += summation.
+    :return: [numEvalPos][3: x, y, z] magnetic vector potential at evaluation locations; in Tm
+    :rtype: arr(float)
+    """
+    numEvalPos = len(evalPos)
+    if numVertices < 2:
+        raise ValueError("must have at least 2 vertices, not %d"%(numVertices,))
+    
+    vectorPotential = np.zeros((numEvalPos, 3))
+
+    if current == 0.0:
+        return vectorPotential
+
+    aPrefactor = MU_0_BY_2_PI * current
+
+    # setup compensated summation objects
+    if useCompensatedSummation:
+        # need three doubles (s, cs, ccs) per eval pos --> see compsum.py
+        aXSum = np.zeros((numEvalPos, 3))
+        aYSum = np.zeros((numEvalPos, 3))
+        aZSum = np.zeros((numEvalPos, 3))
+    
+    pointData = vertexSupplier(0)
+    x_i = pointData[0]
+    y_i = pointData[1]
+    z_i = pointData[2]
+    
+    for idxSource in range(numVertices-1):
+
+        pointData = vertexSupplier(idxSource + 1)
+        x_f = pointData[0]
+        y_f = pointData[1]
+        z_f = pointData[2]
+
+        # vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        # squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if l2 == 0.0:
+            # skip zero-length segments: no contribution
+            continue
+
+        # length of wire segment
+        l = np.sqrt(l2)
+
+        # unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+        
+        for idxEval in range(numEvalPos):
+
+            # vector from start of wire segment to eval pos
+            r0x = evalPos[idxEval, 0] - x_i
+            r0y = evalPos[idxEval, 1] - y_i
+            r0z = evalPos[idxEval, 2] - z_i
+
+            # z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            # normalized z component of evaluation location in coordinate system of wire segment
+            zP = alignedZ / l
+
+            # vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            # perpendicular distance between evalPos and axis of wire segment
+            alignedR = np.sqrt(rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ)
+
+            # normalized rho component of evaluation location in coordinate system of wire segment
+            rhoP = alignedR / l
+
+            # compute parallel component of magnetic vector potential, including current and mu_0
+            aParallel = aPrefactor * straightWireSegment_A_z(rhoP, zP)
+
+            # add contribution from wire segment to result
+            if useCompensatedSummation:
+                compAdd(aParallel * eX, aXSum[idxEval:idxEval+3])
+                compAdd(aParallel * eY, aYSum[idxEval:idxEval+3])
+                compAdd(aParallel * eZ, aZSum[idxEval:idxEval+3])
+            else:
+                vectorPotential[idxEval, 0] += aParallel * eX
+                vectorPotential[idxEval, 1] += aParallel * eY
+                vectorPotential[idxEval, 2] += aParallel * eZ
+
+        # shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+
+    if useCompensatedSummation:
+        # obtain compensated sums from summation objects
+        for idxEval in range(numEvalPos):
+            vectorPotential[idxEval, 0] = aXSum[idxEval, 0] + aXSum[idxEval, 1] + aXSum[idxEval, 2]
+            vectorPotential[idxEval, 1] = aYSum[idxEval, 0] + aYSum[idxEval, 1] + aYSum[idxEval, 2]
+            vectorPotential[idxEval, 2] = aZSum[idxEval, 0] + aZSum[idxEval, 1] + aZSum[idxEval, 2]
+    
+    return vectorPotential
+
+def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSummation = True):
+    """Compute the magnetic field of a polygon filament at a number of evaluation locations.
+    
+    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m                                                     
+    :param float current: current along polygon; in A                                                                               
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+                                         of the contributions from the polygon vertices; otherwise, use standard += summation.
+    :return: [numEvalPos][3: x, y, z] magnetic field at evaluation locations; in T
+    :rtype: arr(float)
+    """
+    numEvalPos = len(evalPos)
+    numVertices = len(vertices)
+    if numVertices < 2:
+        raise ValueError("must have at least 2 vertices, not %d"%(numVertices,))
+
+    magneticField = np.zeros((numEvalPos, 3))
+
+    if current == 0.0:
+        return magneticField
+
+    # needs additional division by length of wire segment!
+    bPrefactorL = MU_0_BY_4_PI * current
+
+    # setup compensated summation objects
+    if useCompensatedSummation:
+        # need three doubles (s, cs, ccs) per eval pos --> see compsum.py
+        bXSum = np.zeros((numEvalPos, 3))
+        bYSum = np.zeros((numEvalPos, 3))
+        bZSum = np.zeros((numEvalPos, 3))
+    
+    x_i = vertices[0, 0]
+    y_i = vertices[0, 1]
+    z_i = vertices[0, 2]
+    
+    for idxSource in range(numVertices-1):
+
+        x_f = vertices[idxSource + 1, 0]
+        y_f = vertices[idxSource + 1, 1]
+        z_f = vertices[idxSource + 1, 2]
+
+        # vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        # squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if l2 == 0.0:
+            # skip zero-length segments: no contribution
+            continue
+
+        # length of wire segment
+        l = np.sqrt(l2)
+
+        # assemble full prefactor for B_phi
+        bPrefactor = bPrefactorL / l
+
+        # unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+        
+        for idxEval in range(numEvalPos):
+
+            # vector from start of wire segment to eval pos
+            r0x = evalPos[idxEval, 0] - x_i
+            r0y = evalPos[idxEval, 1] - y_i
+            r0z = evalPos[idxEval, 2] - z_i
+
+            # z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            # normalized z component of evaluation location in coordinate system of wire segment
+            zP = alignedZ / l
+
+            # vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            # perpendicular distance squared between evalPos and axis of wire segment
+            alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+            
+            # B_phi is zero along axis of filament
+            if alignedRSq > 0.0:
+
+                # perpendicular distance between evalPos and axis of wire segment
+                alignedR = np.sqrt(alignedRSq)
+
+                # normalized rho component of evaluation location in coordinate system of wire segment
+                rhoP = alignedR / l
+
+                # compute tangential component of magnetic vector potential, including current and mu_0
+                bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP)
+
+                # unit vector in radial direction
+                eRX = rPerpX / alignedR
+                eRY = rPerpY / alignedR
+                eRZ = rPerpZ / alignedR
+
+                # compute cross product between e_z and e_rho to get e_phi
+                ePhiX = eY * eRZ - eZ * eRY
+                ePhiY = eZ * eRX - eX * eRZ
+                ePhiZ = eX * eRY - eY * eRX
+
+                # add contribution from wire segment to result
+                if useCompensatedSummation:
+                    compAdd(bPhi * ePhiX, bXSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiY, bYSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiZ, bZSum[idxEval:idxEval+3])
+                else:
+                    magneticField[idxEval, 0] += bPhi * ePhiX
+                    magneticField[idxEval, 1] += bPhi * ePhiY
+                    magneticField[idxEval, 2] += bPhi * ePhiZ
+
+        # shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+
+    if useCompensatedSummation:
+        # obtain compensated sums from summation objects
+        for idxEval in range(numEvalPos):
+            magneticField[idxEval, 0] = bXSum[idxEval, 0] + bXSum[idxEval, 1] + bXSum[idxEval, 2]
+            magneticField[idxEval, 1] = bYSum[idxEval, 0] + bYSum[idxEval, 1] + bYSum[idxEval, 2]
+            magneticField[idxEval, 2] = bZSum[idxEval, 0] + bZSum[idxEval, 1] + bZSum[idxEval, 2]
+    
+    return magneticField
+
+def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, current, evalPos, useCompensatedSummation = True):
+    """Compute the magnetic field of a polygon filament at a number of evaluation locations.
+    
+    :param int numVertices: number of polygon vertices to take into account
+    :param callable(int i), arr(float) vertexSupplier: should return points along polygon as [3: x, y, z] for i=0,1,...,(numVertices-1); in m
+    :param float current: current along polygon; in A                                                                               
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+                                         of the contributions from the polygon vertices; otherwise, use standard += summation.
+    :return: [numEvalPos][3: x, y, z] magnetic field at evaluation locations; in T
+    :rtype: arr(float)
+    """
+    numEvalPos = len(evalPos)
+    if numVertices < 2:
+        raise ValueError("must have at least 2 vertices, not %d"%(numVertices,))
+
+    magneticField = np.zeros((numEvalPos, 3))
+
+    if current == 0.0:
+        return magneticField
+
+    # needs additional division by length of wire segment!
+    bPrefactorL = MU_0_BY_4_PI * current
+
+    # setup compensated summation objects
+    if useCompensatedSummation:
+        # need three doubles (s, cs, ccs) per eval pos --> see compsum.py
+        bXSum = np.zeros((numEvalPos, 3))
+        bYSum = np.zeros((numEvalPos, 3))
+        bZSum = np.zeros((numEvalPos, 3))
+    
+    pointData = vertexSupplier(0)
+    x_i = pointData[0]
+    y_i = pointData[1]
+    z_i = pointData[2]
+    
+    for idxSource in range(numVertices-1):
+
+        pointData = vertexSupplier(idxSource + 1)
+        x_f = pointData[0]
+        y_f = pointData[1]
+        z_f = pointData[2]
+
+        # vector from start to end of i:th wire segment
+        dx = x_f - x_i
+        dy = y_f - y_i
+        dz = z_f - z_i
+
+        # squared length of wire segment
+        l2 = dx * dx + dy * dy + dz * dz
+        if l2 == 0.0:
+            # skip zero-length segments: no contribution
+            continue
+
+        # length of wire segment
+        l = np.sqrt(l2)
+
+        # assemble full prefactor for B_phi
+        bPrefactor = bPrefactorL / l
+
+        # unit vector parallel to wire segment
+        eX = dx / l
+        eY = dy / l
+        eZ = dz / l
+        
+        for idxEval in range(numEvalPos):
+
+            # vector from start of wire segment to eval pos
+            r0x = evalPos[idxEval, 0] - x_i
+            r0y = evalPos[idxEval, 1] - y_i
+            r0z = evalPos[idxEval, 2] - z_i
+
+            # z position along axis of wire segment
+            alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+            # normalized z component of evaluation location in coordinate system of wire segment
+            zP = alignedZ / l
+
+            # vector perpendicular to axis of wire segment, pointing at evaluation pos
+            rPerpX = r0x - alignedZ * eX
+            rPerpY = r0y - alignedZ * eY
+            rPerpZ = r0z - alignedZ * eZ
+
+            # perpendicular distance squared between evalPos and axis of wire segment
+            alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+            
+            # B_phi is zero along axis of filament
+            if alignedRSq > 0.0:
+
+                # perpendicular distance between evalPos and axis of wire segment
+                alignedR = np.sqrt(alignedRSq)
+
+                # normalized rho component of evaluation location in coordinate system of wire segment
+                rhoP = alignedR / l
+
+                # compute tangential component of magnetic vector potential, including current and mu_0
+                bPhi = bPrefactor * straightWireSegment_B_phi(rhoP, zP)
+
+                # unit vector in radial direction
+                eRX = rPerpX / alignedR
+                eRY = rPerpY / alignedR
+                eRZ = rPerpZ / alignedR
+
+                # compute cross product between e_z and e_rho to get e_phi
+                ePhiX = eY * eRZ - eZ * eRY
+                ePhiY = eZ * eRX - eX * eRZ
+                ePhiZ = eX * eRY - eY * eRX
+
+                # add contribution from wire segment to result
+                if useCompensatedSummation:
+                    compAdd(bPhi * ePhiX, bXSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiY, bYSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiZ, bZSum[idxEval:idxEval+3])
+                else:
+                    magneticField[idxEval, 0] += bPhi * ePhiX
+                    magneticField[idxEval, 1] += bPhi * ePhiY
+                    magneticField[idxEval, 2] += bPhi * ePhiZ
+
+        # shift to next point
+        x_i = x_f
+        y_i = y_f
+        z_i = z_f
+
+    if useCompensatedSummation:
+        # obtain compensated sums from summation objects
+        for idxEval in range(numEvalPos):
+            magneticField[idxEval, 0] = bXSum[idxEval, 0] + bXSum[idxEval, 1] + bXSum[idxEval, 2]
+            magneticField[idxEval, 1] = bYSum[idxEval, 0] + bYSum[idxEval, 1] + bYSum[idxEval, 2]
+            magneticField[idxEval, 2] = bZSum[idxEval, 0] + bZSum[idxEval, 1] + bZSum[idxEval, 2]
+    
+    return magneticField
