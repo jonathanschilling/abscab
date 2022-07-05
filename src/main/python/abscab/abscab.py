@@ -1,23 +1,23 @@
 import numpy as np
 
-from bulirsch_cel import cel
-from compsum import compAdd
+from .bulirsch_cel import cel
+from .compsum import compAdd
 
-"""vacuum magnetic permeability in Vs/Am (CODATA-2018)"""
 MU_0 = 1.25663706212e-6
+"""vacuum magnetic permeability in Vs/Am (CODATA-2018)"""
 
-"""vacuum magnetic permeability, divided by pi"""
 MU_0_BY_PI = MU_0 / np.pi
+r"""vacuum magnetic permeability, divided by :math:`\pi`"""
 
-"""vacuum magnetic permeability, divided by 2 pi"""
 MU_0_BY_2_PI = MU_0 / (2.0 * np.pi)
+r"""vacuum magnetic permeability, divided by :math:`2 \pi`"""
 
-"""vacuum magnetic permeability, divided by 4 pi"""
 MU_0_BY_4_PI = MU_0 / (4.0 * np.pi)
+r"""vacuum magnetic permeability, divided by :math:`4 \pi`"""
 
 ############## A_z of straight wire segment
 
-def sws_A_z_ax_f(zP):
+def _sws_A_z_ax_f(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0, far-field.
     
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
@@ -27,10 +27,11 @@ def sws_A_z_ax_f(zP):
     :param float zP: normalized vertical coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     return np.arctanh(1 / (np.abs(zP) + np.abs(1 - zP)))
 
-def sws_A_z_ax_n(zP):
+def _sws_A_z_ax_n(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0, near-field.
     
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
@@ -40,12 +41,13 @@ def sws_A_z_ax_n(zP):
     :param float zP: normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     
     # Two negative signs must be able to cancel each other here!
     return np.copysign(1.0, zP) * np.log(zP / (zP - 1)) / 2
 
-def sws_A_z_ax(zP):
+def _sws_A_z_ax(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0.
     
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
@@ -54,13 +56,14 @@ def sws_A_z_ax(zP):
     :param float zP: normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     if zP < -1 or zP >= 2:
         return sws_A_z_ax_f(zP)
     else:
         return sws_A_z_ax_n(zP)
 
-def sws_A_z_rad_f(rhoP):
+def _sws_A_z_rad_f(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1, far-field.
     
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
@@ -70,10 +73,11 @@ def sws_A_z_rad_f(rhoP):
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     return np.arctanh(1 / (rhoP + np.hypot(rhoP, 1)))
 
-def sws_A_z_rad_n(rhoP):
+def _sws_A_z_rad_n(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1, near-field.
     
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
@@ -83,6 +87,7 @@ def sws_A_z_rad_n(rhoP):
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     cat = 1 / np.hypot(rhoP, 1)  # cos(atan(...)  )
     sat = np.sin(np.arctan(rhoP) / 2) # sin(atan(...)/2)
@@ -91,7 +96,7 @@ def sws_A_z_rad_n(rhoP):
     den = rc + 2 * sat * sat
     return np.log(num / den) / 2
 
-def sws_A_z_rad(rhoP):
+def _sws_A_z_rad(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1.
     
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
@@ -100,13 +105,14 @@ def sws_A_z_rad(rhoP):
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     if rhoP > 1:
         return sws_A_z_rad_f(rhoP)
     else:
         return sws_A_z_rad_n(rhoP)
 
-def sws_A_z_f(rhoP, zP):
+def _sws_A_z_f(rhoP, zP):
     """Normalized A_z of Straight Wire Segment, far-field.
     
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
@@ -117,12 +123,13 @@ def sws_A_z_f(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     r_i = np.hypot(rhoP, zP)
     r_f = np.hypot(rhoP, 1 - zP)
     return np.arctanh(1 / (r_i + r_f))
 
-def sws_A_z_n(rhoP, zP):
+def _sws_A_z_n(rhoP, zP):
     """Normalized A_z of Straight Wire Segment, near-field.
     
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
@@ -133,6 +140,7 @@ def sws_A_z_n(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     omz = 1 - zP
 
@@ -154,7 +162,7 @@ def sws_A_z_n(rhoP, zP):
 
 ############## B_phi of straight wire segment
 
-def sws_B_phi_rad(rhoP):
+def _sws_B_phi_rad(rhoP):
     """Normalized B_phi of Straight Wire Segment, along zP=0 or zP=1.
     
     Compute the normalized tangential component of the magnetic field of a straight wire segment,
@@ -163,10 +171,11 @@ def sws_B_phi_rad(rhoP):
     :param float rhoP: normalized radial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
     :rtype: float
+    :meta private:
     """
     return 1 / (rhoP * np.hypot(rhoP, 1))
 
-def sws_B_phi_f(rhoP, zP):
+def _sws_B_phi_f(rhoP, zP):
     """Normalized B_phi of Straight Wire Segment, far-field.
     
     Compute the normalized tangential component of the magnetic field of a straight wire segment.
@@ -177,6 +186,7 @@ def sws_B_phi_f(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
     :rtype: float
+    :meta private:
     """
     omz = 1 - zP
 
@@ -188,7 +198,7 @@ def sws_B_phi_f(rhoP, zP):
 
     return num / den
 
-def sws_B_phi_n(rhoP, zP):
+def _sws_B_phi_n(rhoP, zP):
     """Normalized B_phi of Straight Wire Segment, near-field.
     
     Compute the normalized tangential component of the magnetic field of a straight wire segment.
@@ -199,6 +209,7 @@ def sws_B_phi_n(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
     :rtype: float
+    :meta private:
     """
     omz = 1 - zP
 
@@ -229,17 +240,18 @@ def sws_B_phi_n(rhoP, zP):
 
 ############## A_phi of circular wire loop
 
-def cwl_A_phi_f(rhoP, zP):
+def _cwl_A_phi_f(rhoP, zP):
     """Normalized A_phi of Circular Wire Loop, far-field.
     
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points away from the wire ("far-field")
-    at rhoP < 1/2 or rhoP > 2 or |zP| >= 1.
+    at rhoP < 1/2 or rhoP > 2 or :math:`|zP| >= 1`.
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     sqrt_kCSqNum = np.hypot(zP, 1 - rhoP)
     sqrt_kCSqDen = np.hypot(zP, 1 + rhoP)
@@ -254,17 +266,18 @@ def cwl_A_phi_f(rhoP, zP):
 
     return kSq/sqrt_kCSqDen * C
 
-def cwl_A_phi_n(rhoP, zP):
+def _cwl_A_phi_n(rhoP, zP):
     """Normalized A_phi of Circular Wire Loop, near-field.
     
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
-    at 1/2 <= rhoP <= 2 and |zP| < 1.
+    at 1/2 <= rhoP <= 2 and :math:`|zP| < 1`.
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     rhoP_m_1 = rhoP - 1
 
@@ -280,15 +293,16 @@ def cwl_A_phi_n(rhoP, zP):
     celPart = cel(np.sqrt(kCSq), 1, -1, 1)
     return prefac * celPart
 
-def cwl_A_phi_v(zP):
+def _cwl_A_phi_v(zP):
     """Normalized A_phi of Circular Wire Loop, along rhoP=1, near-field.
     
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
-    This formulation is useful for points along rhoP=1 with |zP| < 1.
+    This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
  
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     absZp = np.abs(zP)
 
@@ -299,17 +313,18 @@ def cwl_A_phi_v(zP):
 
 ############## B_rho of circular wire loop
 
-def cwl_B_rho_f(rhoP, zP):
+def _cwl_B_rho_f(rhoP, zP):
     """Normalized B_rho of Circular Wire Loop, far-field.
     
     Compute the normalized radial component of the magnetic field of a circular wire loop.
     This formulation is useful for points away from the wire ("far-field")
-    at rhoP < 1/2 or rhoP > 2 or |zP| >= 1.
+    at rhoP < 1/2 or rhoP > 2 or :math:`|zP| >= 1`.
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     sqrt_kCSqNum = np.hypot(zP, 1 - rhoP)
     sqrt_kCSqDen = np.hypot(zP, 1 + rhoP)
@@ -331,17 +346,18 @@ def cwl_B_rho_f(rhoP, zP):
 
     return prefac * zP * (D - C)
 
-def cwl_B_rho_n(rhoP, zP):
+def _cwl_B_rho_n(rhoP, zP):
     """Normalized B_rho of Circular Wire Loop, near-field.
     
     Compute the normalized radial component of the magnetic field of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
-    at 1/2 <= rhoP <= 2 and |zP| < 1.
+    at 1/2 <= rhoP <= 2 and :math:`|zP| < 1`.
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     rhoP_m_1 = rhoP - 1
     rd2 = rhoP_m_1 * rhoP_m_1
@@ -371,15 +387,16 @@ def cwl_B_rho_n(rhoP, zP):
 
     return prefac * zP_rd5 * (D - C)
 
-def cwl_B_rho_v(zP):
+def _cwl_B_rho_v(zP):
     """Normalized B_rho of Circular Wire Loop, along rhoP=1, near-field.
     
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
-    This formulation is useful for points along rhoP=1 with |zP| < 1.
+    This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
  
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     zPSq = zP * zP
 
@@ -393,17 +410,18 @@ def cwl_B_rho_v(zP):
 
 ############## B_z of circular wire loop
 
-def cwl_B_z_f1(rhoP, zP):
+def _cwl_B_z_f1(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, far-field (1).
     
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
     This formulation is useful for certain points away from the wire ("far-field")
-    at rhoP < 1/2 or (rhoP <= 2 and |zP| >= 1).
+    at rhoP < 1/2 or (rhoP <= 2 and :math:`|zP| >= 1`).
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
     :rtype: float
+    :meta private:
     """
     sqrt_kCSqNum = np.hypot(zP, 1 - rhoP)
     sqrt_kCSqDen = np.hypot(zP, 1 + rhoP)
@@ -419,7 +437,7 @@ def cwl_B_z_f1(rhoP, zP):
 
     return prefac * (E + rhoP * comb)
 
-def cwl_B_z_f2(rhoP, zP):
+def _cwl_B_z_f2(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, far-field (2).
     
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
@@ -430,6 +448,7 @@ def cwl_B_z_f2(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
     :rtype: float
+    :meta private:
     """
     sqrt_kCSqNum = np.hypot(zP, 1 - rhoP)
     sqrt_kCSqDen = np.hypot(zP, 1 + rhoP)
@@ -467,17 +486,18 @@ def cwl_B_z_f2(rhoP, zP):
     # use C - D for (2 * D - E)/kSq
     return prefac * (E + 4 * (C - D) / cdScale)
 
-def cwl_B_z_n(rhoP, zP):
+def _cwl_B_z_n(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, near-field.
     
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
-    at 1/2 <= rhoP <= 2, but not rhoP=1, and |zP| <= 1.
+    at 1/2 <= rhoP <= 2, but not rhoP=1, and :math:`|zP| <= 1`.
  
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
     :rtype: float
+    :meta private:
     """
     rp1 = rhoP - 1
 
@@ -495,15 +515,16 @@ def cwl_B_z_n(rhoP, zP):
 
     return prefac * cel(kC, kC * kC, 1 + rhoP, 1 - rhoP)
 
-def cwl_B_z_v(zP):
+def _cwl_B_z_v(zP):
     """Normalized B_z of Circular Wire Loop, along rhoP=1, near-field.
     
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
-    This formulation is useful for points along rhoP=1 with |zP| < 1.
+    This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
  
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     kCSq = zP * zP / (4 + zP * zP)
     kC = np.sqrt(kCSq)
@@ -526,15 +547,16 @@ def straightWireSegment_A_z(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     if rhoP == 0.0:
-        return sws_A_z_ax(zP)
+        return _sws_A_z_ax(zP)
     elif zP == 0.0 or zP == 1.0:
-        return sws_A_z_rad(rhoP)
+        return _sws_A_z_rad(rhoP)
     elif rhoP >= 1.0 or zP <= -1.0 or zP > 2.0:
-        return sws_A_z_f(rhoP, zP)
+        return _sws_A_z_f(rhoP, zP)
     else:
-        return sws_A_z_n(rhoP, zP)
+        return _sws_A_z_n(rhoP, zP)
 
 def straightWireSegment_B_phi(rhoP, zP):
     """Compute the normalized tangential component of the magnetic field of a straight wire segment.
@@ -547,15 +569,16 @@ def straightWireSegment_B_phi(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
     :rtype: float
+    :meta private:
     """
     if rhoP == 0.0:
         return 0.0
     elif zP == 0.0 or zP == 1.0:
-        return sws_B_phi_rad(rhoP)
+        return _sws_B_phi_rad(rhoP)
     elif rhoP >= 1.0 or zP <= 0.0 or zP >= 1.0 or rhoP / (1 - zP) >= 1.0 or rhoP / zP >= 1.0:
-        return sws_B_phi_f(rhoP, zP)
+        return _sws_B_phi_f(rhoP, zP)
     else:
-        return sws_B_phi_n(rhoP, zP)
+        return _sws_B_phi_n(rhoP, zP)
 
 def circularWireLoop_A_phi(rhoP, zP):
     """Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
@@ -568,15 +591,16 @@ def circularWireLoop_A_phi(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
     :rtype: float
+    :meta private:
     """
     if rhoP == 0.0:
         return 0.0
     elif rhoP < 0.5 or rhoP > 2.0 or np.abs(zP) >= 1.0:
-        return cwl_A_phi_f(rhoP, zP)
+        return _cwl_A_phi_f(rhoP, zP)
     elif rhoP != 1.0:
-        return cwl_A_phi_n(rhoP, zP)
+        return _cwl_A_phi_n(rhoP, zP)
     else:
-        return cwl_A_phi_v(zP)
+        return _cwl_A_phi_v(zP)
 
 def circularWireLoop_B_rho(rhoP, zP):
     """Compute the normalized radial component of the magnetic field of a circular wire loop.
@@ -589,15 +613,16 @@ def circularWireLoop_B_rho(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     if rhoP == 0.0 or zP == 0.0:
         return 0.0
     elif rhoP < 0.5 or rhoP > 2.0 or np.abs(zP) >= 1.0:
-        return cwl_B_rho_f(rhoP, zP)
+        return _cwl_B_rho_f(rhoP, zP)
     elif rhoP != 1.0:
-        return cwl_B_rho_n(rhoP, zP)
+        return _cwl_B_rho_n(rhoP, zP)
     else:
-        return cwl_B_rho_v(zP)
+        return _cwl_B_rho_v(zP)
 
 def circularWireLoop_B_z(rhoP, zP):
     """Compute the normalized vertical component of the magnetic field of a circular wire loop.
@@ -610,15 +635,16 @@ def circularWireLoop_B_z(rhoP, zP):
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
+    :meta private:
     """
     if rhoP < 0.5 or (rhoP <= 2 and np.abs(zP) > 1):
-        return cwl_B_z_f1(rhoP, zP)
+        return _cwl_B_z_f1(rhoP, zP)
     elif rhoP > 2:
-        return cwl_B_z_f2(rhoP, zP)
+        return _cwl_B_z_f2(rhoP, zP)
     elif rhoP != 1.0:
-        return cwl_B_z_n(rhoP, zP)
+        return _cwl_B_z_n(rhoP, zP)
     else:
-        return cwl_B_z_v(zP)
+        return _cwl_B_z_v(zP)
 
 # --------------------------------------------------
 

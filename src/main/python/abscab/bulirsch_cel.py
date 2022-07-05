@@ -1,23 +1,21 @@
 import numpy as np
 
-"""half of pi"""
 PI_2 = np.pi / 2.0
+"""half of pi"""
 
-"""sqrt of machine epsilon"""
 SQRT_EPS = np.sqrt(np.finfo(float).eps)
+"""sqrt of machine epsilon"""
 
 def cel(k_c, p, a, b):
-    """Generalized Complete Elliptic Integral by Bulirsch (1969).
+    r"""Generalized Complete Elliptic Integral by Bulirsch (1969).
     
     The generalized complete elliptic integral is computed using an iterative algorithm
     presented by R. Bulirsch in "Numerical Calculation of Elliptic Integrals and Elliptic Functions. III"
     in "Numerische Mathematik" 13, 305-315 (1969):
     
-    cel(k_c, p, a, b) =
-    \int_0^{\pi/2} \frac{a \cos^2{\varphi} + b \sin^2{\varphi}}
-                        {  \cos^2{\varphi} + p \sin^2{\varphi}}
-                   \frac{\mathrm{d}\varphi}
-                        {\sqrt{\cos^2{\varphi} + k_c^2 \sin^2{\varphi}}}
+    .. math::
+    
+      cel(k_c, p, a, b) = \int\limits_0^{\pi/2} \frac{a \cos^2{\varphi} + b \sin^2{\varphi}}{  \cos^2{\varphi} + p \sin^2{\varphi}} \frac{\mathrm{d}\varphi}{\sqrt{\cos^2{\varphi} + k_c^2 \sin^2{\varphi}}}
     
     :param float k_c: parameter k_c of cel(); absolute value must not be 0
     :param float p: parameter p of cel()

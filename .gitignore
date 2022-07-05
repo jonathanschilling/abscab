@@ -21,3 +21,6 @@ wire_segment_Hanson_Hirshman_2002_Fig_1.png
 
 # demo outputs
 /data/*
+
+# sphinx output
+/docs/build/*
