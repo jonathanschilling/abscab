@@ -3,12 +3,12 @@
 # Plot the comparison between the outputs of the Java ABSCAB implementation
 # and the reference data provided in this repository
 # for A_z and B_phi of the Straight Wire Segment.
-    
+
 import numpy as np
 import matplotlib.pyplot as plt
 
-savefigFilename = None
 savefigFilename = "../../../article/img/StraightWireSegment_results.pdf"
+#savefigFilename = "../../../article/img/StraightWireSegment_results.png"
 
 # machine precision (ca. 2.22e-16 for 64-bit double)
 eps = np.finfo(np.float64).eps
@@ -82,7 +82,7 @@ yTicksAndLabels = [
     [-1e+15,    r"$-10^{15}$"],
     [-1.0,      r"$-1$"],
     [-1e-15,    r"$-10^{-15}$"],
-    [-1e-30,    r"$-10^{-30}$"], 
+    [-1e-30,    r"$-10^{-30}$"],
     [0.0,       r"$0$"],
     [1e-30,     r"$10^{-30}$"],
     [1e-15,     r"$10^{-15}$"],
@@ -188,19 +188,19 @@ def drawCustomAxisLabels(ax, im, drawXTickLabels, drawYTickLabels):
 
                 elif k == 1e-30:
                     # move "1e-30" tick to bottom right
-                    
+
                     # draw major x tick
                     ax.plot([i, i, i+xAddLR, i+xAddLR],
                             [y0, -majorTickLength, -(majorTickLength+xAddUD), -(majorTickLength+xAddUD+xAddTL)],
                             "k-", lw=0.8)
-                    
+
                     if drawXTickLabels:
                         # print ticklabel
                         # -1.5: need additional y space to account for dist from centerline to top
                         ax.text(i+xAddLR, -majorTickLength - 1.5 - labelOffsetY - (xAddUD+xAddTL),
                                 tl[1], ha='center', va='center_baseline')
-                        
-                else:                
+
+                else:
                     # draw major x tick
                     ax.plot([i, i], [y0, -majorTickLength], "k-", lw=0.8)
 
@@ -244,7 +244,7 @@ def drawCustomAxisLabels(ax, im, drawXTickLabels, drawYTickLabels):
 
                     if drawYTickLabels:
                         # move down-left by 1
-                        
+
                         # draw major x tick
                         ax.plot([x0, -majorTickLength, -(majorTickLength+yAddLR), -(majorTickLength+yAddLR+yAddLR)],
                                 [i, i, i-yAddUD, i-yAddUD],
@@ -257,12 +257,12 @@ def drawCustomAxisLabels(ax, im, drawXTickLabels, drawYTickLabels):
                     else:
                         # draw minor y tick
                         ax.plot([x0, -minorTickLength], [i, i], "k-", lw=0.5)
-                    
+
                 elif k in [0.0, 0.5, 1, 2]:
 
                     if drawYTickLabels:
                         # move left
-                        
+
                         # draw major x tick
                         ax.plot([x0, -(majorTickLength+yAddLR+yAddLR)],
                                 [i, i],
@@ -275,7 +275,7 @@ def drawCustomAxisLabels(ax, im, drawXTickLabels, drawYTickLabels):
                     else:
                         # draw major y tick
                         ax.plot([x0, -majorTickLength], [i, i], "k-", lw=0.8)
-                    
+
                 elif k in [1e-30, 1-1e-1, 1+eps, 1e1]:
 
                     if drawYTickLabels:
@@ -322,7 +322,7 @@ def drawCustomAxisLabels(ax, im, drawXTickLabels, drawYTickLabels):
 
                 # no need to search further...
                 break
-            
+
         if not found:
             # draw minor y tick
             ax.plot([x0, -minorTickLength], [i, i], "k-", lw=0.5)
@@ -339,5 +339,5 @@ plt.subplots_adjust(left=0.1,
 
 if savefigFilename is not None:
     plt.savefig(savefigFilename, dpi=300)
-else:    
+else:
     plt.show()
