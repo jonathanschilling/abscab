@@ -10,7 +10,9 @@ from abscab import straightWireSegment_A_z,   \
                    straightWireSegment_B_phi, \
                    circularWireLoop_A_phi,    \
                    circularWireLoop_B_rho,    \
-                   circularWireLoop_B_z
+                   circularWireLoop_B_z,      \
+                   MU_0, \
+                   magneticFieldPolygonFilament
                    
 from abscab_util import assertRelAbsEquals
 
@@ -121,10 +123,113 @@ def testCircularWireLoop():
             break
         
     return status
+
+def testMagneticFieldInfiniteLineFilament():
+    tolerance = 1.0e-15
+
+    # Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+    # B(r) = mu_0 * I / (2 pi r)
+    # Test this here with:
+    # I = 123.0 A
+    # r = 0.132 m
+    # => B = 0.186 mT
+    current = 123.0
+    r = 0.132
+    bPhiRef = MU_0 * current / (2.0 * np.pi * r)
+    # print("ref bPhi = %.5e"%(bPhiRef,))
+
+    vertices = np.array([
+            [0.0, 0.0, -1.0e6],
+            [0.0, 0.0,  1.0e6]
+    ])
+
+    evalPos = np.array([
+            [r, 0.0, 0.0]
+    ])
+
+    # y component is B_phi
+    magneticField = magneticFieldPolygonFilament(vertices, current, evalPos)
+    bPhi = magneticField[0, 1]
+    # print("act bPhi = %.5e"%(bPhi,))
+
+    relAbsErr = np.abs(bPhi - bPhiRef) / (1.0 + np.abs(bPhiRef))
+    # print("raErr = %.5e"%(relAbsErr,))
+
+    return assertRelAbsEquals(bPhiRef, bPhi, tolerance)
+
+def testBPhiInfiniteLineFilament():
+    tolerance = 1.0e-15
+
+    # Demtroeder 2, Sec. 3.2.2 ("Magnetic field of a straight wire")
+    # B(r) = mu_0 * I / (2 pi r)
+    # Test this here with:
+    # I = 123.0 A
+    # r = 0.132 m
+    # => B = 0.186 mT
+    current = 123.0
+    r = 0.132
+    bPhiRef = MU_0 * current / (2.0 * np.pi * r)
+    # print("ref bPhi = %.5e"%(bPhiRef,))
+
+    # half the length of the wire segment
+    halfL = 1e6
+    L = 2*halfL
+    rhoP = r / L
+    zP = halfL / L
+    bPhi = MU_0 * current / (4.0 * np.pi * L) * straightWireSegment_B_phi(rhoP, zP)
+    # print("act bPhi = %.5e"%(bPhi,))
+
+    relAbsErr = np.abs(bPhi - bPhiRef) / (1.0 + np.abs(bPhiRef))
+    # print("raErr = %.5e"%(relAbsErr,))
+
+    return assertRelAbsEquals(bPhiRef, bPhi, tolerance)
+
+def testMagneticFieldInsideLongCoil():
+    tolerance = 1.0e-4
+
+    # Demtroeder 2, Sec. 3.2.3 ("Magnetic field of a long coil")
+    # B_z = mu_0 * n * I
+    # where n is the winding density: n = N / L
+    # of a coil of N windings over a length L
+    # Example (which is tested here):
+    # n = 1e3 m^{-1}
+    # I = 10 A
+    # => B = 0.0126T
+    bZRef = 0.0126
+
+    N       = 50000 # windings
+    L       = 50.0  # total length of coil in m
+    current = 10.0  # A
+    radius  = 1.0   # m
+    
+    n = N/L   # winding density: windings per m
+
+    bZ = 0.0;
+    for i in range(N):
+
+        # axial position of coil
+        z0 = -L/2.0 + (i + 0.5) / n
+
+        # compute magnetic field
+        prefac = MU_0 * current / (np.pi * radius)
+        bZContrib = prefac * circularWireLoop_B_z(0.0, z0)
+
+        # print("coil %d at z0 = % .3e => contrib = %.3e"%(i, z0, bZContrib,))
+
+        bZ += bZContrib
+    # print("B_z = %.5e"%(bZ,))
+
+    relAbsErr = np.abs(bZ - bZRef) / (1.0 + np.abs(bZRef))
+    # print("raErr = %.5e"%(relAbsErr,))
+
+    return assertRelAbsEquals(bZRef, bZ, tolerance)
         
 if __name__ == "__main__":
     status = 0
     status |= testStraightWireSegment()
     status |= testCircularWireLoop()
+    status |= testMagneticFieldInfiniteLineFilament()
+    status |= testBPhiInfiniteLineFilament()
+    status |= testMagneticFieldInsideLongCoil()
     sys.exit(status)
     

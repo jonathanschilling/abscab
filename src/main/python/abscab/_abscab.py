@@ -926,9 +926,9 @@ def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSum
 
             # add contribution from wire segment to result
             if useCompensatedSummation:
-                compAdd(aParallel * eX, aXSum[idxEval:idxEval+3])
-                compAdd(aParallel * eY, aYSum[idxEval:idxEval+3])
-                compAdd(aParallel * eZ, aZSum[idxEval:idxEval+3])
+                compAdd(aParallel * eX, aXSum[idxEval, :])
+                compAdd(aParallel * eY, aYSum[idxEval, :])
+                compAdd(aParallel * eZ, aZSum[idxEval, :])
             else:
                 vectorPotential[idxEval, 0] += aParallel * eX
                 vectorPotential[idxEval, 1] += aParallel * eY
@@ -1038,9 +1038,9 @@ def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, cu
 
             # add contribution from wire segment to result
             if useCompensatedSummation:
-                compAdd(aParallel * eX, aXSum[idxEval:idxEval+3])
-                compAdd(aParallel * eY, aYSum[idxEval:idxEval+3])
-                compAdd(aParallel * eZ, aZSum[idxEval:idxEval+3])
+                compAdd(aParallel * eX, aXSum[idxEval, :])
+                compAdd(aParallel * eY, aYSum[idxEval, :])
+                compAdd(aParallel * eZ, aZSum[idxEval, :])
             else:
                 vectorPotential[idxEval, 0] += aParallel * eX
                 vectorPotential[idxEval, 1] += aParallel * eY
@@ -1168,9 +1168,9 @@ def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSumma
 
                 # add contribution from wire segment to result
                 if useCompensatedSummation:
-                    compAdd(bPhi * ePhiX, bXSum[idxEval:idxEval+3])
-                    compAdd(bPhi * ePhiY, bYSum[idxEval:idxEval+3])
-                    compAdd(bPhi * ePhiZ, bZSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiX, bXSum[idxEval, :])
+                    compAdd(bPhi * ePhiY, bYSum[idxEval, :])
+                    compAdd(bPhi * ePhiZ, bZSum[idxEval, :])
                 else:
                     magneticField[idxEval, 0] += bPhi * ePhiX
                     magneticField[idxEval, 1] += bPhi * ePhiY
@@ -1300,9 +1300,9 @@ def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, curr
 
                 # add contribution from wire segment to result
                 if useCompensatedSummation:
-                    compAdd(bPhi * ePhiX, bXSum[idxEval:idxEval+3])
-                    compAdd(bPhi * ePhiY, bYSum[idxEval:idxEval+3])
-                    compAdd(bPhi * ePhiZ, bZSum[idxEval:idxEval+3])
+                    compAdd(bPhi * ePhiX, bXSum[idxEval, :])
+                    compAdd(bPhi * ePhiY, bYSum[idxEval, :])
+                    compAdd(bPhi * ePhiZ, bZSum[idxEval, :])
                 else:
                     magneticField[idxEval, 0] += bPhi * ePhiX
                     magneticField[idxEval, 1] += bPhi * ePhiY
