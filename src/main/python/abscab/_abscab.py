@@ -59,9 +59,9 @@ def _sws_A_z_ax(zP):
     :meta private:
     """
     if zP < -1 or zP >= 2:
-        return sws_A_z_ax_f(zP)
+        return _sws_A_z_ax_f(zP)
     else:
-        return sws_A_z_ax_n(zP)
+        return _sws_A_z_ax_n(zP)
 
 def _sws_A_z_rad_f(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1, far-field.
@@ -108,9 +108,9 @@ def _sws_A_z_rad(rhoP):
     :meta private:
     """
     if rhoP > 1:
-        return sws_A_z_rad_f(rhoP)
+        return _sws_A_z_rad_f(rhoP)
     else:
-        return sws_A_z_rad_n(rhoP)
+        return _sws_A_z_rad_n(rhoP)
 
 def _sws_A_z_f(rhoP, zP):
     """Normalized A_z of Straight Wire Segment, far-field.
@@ -147,10 +147,10 @@ def _sws_A_z_n(rhoP, zP):
     r_i = np.hypot(rhoP, zP)
     r_f = np.hypot(rhoP, omz)
 
-    alpha = np.atan2(rhoP, zP)
+    alpha = np.arctan2(rhoP, zP)
     sinAlphaHalf = np.sin(alpha / 2)
 
-    beta = np.atan2(rhoP, omz)
+    beta = np.arctan2(rhoP, omz)
     sinBetaHalf = np.sin(beta / 2)
 
     Ri_zP    = 2 * r_i * sinAlphaHalf * sinAlphaHalf # r_i - z'
@@ -218,10 +218,10 @@ def _sws_B_phi_n(rhoP, zP):
 
     num = rhoP * (1/r_i + 1/r_f)
 
-    alpha = np.atan2(rhoP, zP)
+    alpha = np.arctan2(rhoP, zP)
     sinAlphaHalf = np.sin(alpha / 2)
 
-    beta = np.atan2(rhoP, omz)
+    beta = np.arctan2(rhoP, omz)
     sinBetaHalf = np.sin(beta / 2)
 
     # r_f * sin^2(beta/2) + (1 - z') * sin^2(alpha/2)
