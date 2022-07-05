@@ -620,4 +620,198 @@ def circularWireLoop_B_z(rhoP, zP):
 
 # --------------------------------------------------
 
+def vectorPotentialCircularFilament(center, normal, radius, current, evalPos):
+    """Compute the magnetic vector potential of a circular wire loop.
+    
+    :param arr(float) center: [3: x, y, z] origin of loop (in meters)
+    :param arr(float) normal: [3: x, y, z]  normal vector of loop (in meters); will be normalized internally
+    :param float radius: radius of the wire loop (in meters)
+    :param float current: loop current (in A)
+    :param arr(float) evalPos: [nEvalPos][3: x, y, z] evaluation locations (in meters)
+    :return: [nEvalPos][3: A_x, A_y, A_z] Cartesian components of the magnetic
+             vector potential evaluated at the given locations (in Tm)
+    :rtype: arr(float)
+    """
+    if not np.isfinite(radius) or radius <= 0.0:
+        raise ValueError("radius must be finite and positive, but is %g"%(radius,))
+
+    aPrefactor = MU_0_BY_PI * current
+
+    # squared length of normal vector
+    nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]
+
+    if nLen2 == 0.0:
+        raise ValueError("length of normal vector must not be zero")
+
+    # length of normal vector
+    nLen = np.sqrt(nLen2)
+
+    # unit normal vector of wire loop
+    eX = normal[0] / nLen
+    eY = normal[1] / nLen
+    eZ = normal[2] / nLen
+    
+    nEvalPos = len(evalPos)
+
+    vectorPotential = np.zeros((nEvalPos, 3))
+
+    for idxEval in range(nEvalPos):
+
+        # vector from center of wire loop to eval pos
+        r0x = evalPos[idxEval, 0] - center[0]
+        r0y = evalPos[idxEval, 1] - center[1]
+        r0z = evalPos[idxEval, 2] - center[2]
+
+        # z position along normal of wire loop
+        alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+        # normalized z component of evaluation location in coordinate system of wire loop
+        zP = alignedZ / radius
+
+        # r0 projected onto axis of wire loop
+        rParallelX = alignedZ * eX
+        rParallelY = alignedZ * eY
+        rParallelZ = alignedZ * eZ
+
+        # vector perpendicular to axis of wire loop, pointing at evaluation pos
+        rPerpX = r0x - rParallelX
+        rPerpY = r0y - rParallelY
+        rPerpZ = r0z - rParallelZ
+
+        # perpendicular distance squared between evalPos and axis of wire loop
+        alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+
+        # prevent division-by-zero when computing radial unit vector
+        # A_phi is zero anyway on-axis --> no contribution expected
+        if alignedRSq > 0.0:
+
+            # perpendicular distance between evalPos and axis of wire loop
+            alignedR = np.sqrt(alignedRSq)
+
+            # unit vector in radial direction
+            eRX = rPerpX / alignedR
+            eRY = rPerpY / alignedR
+            eRZ = rPerpZ / alignedR
+
+            # normalized rho component of evaluation location in coordinate system of wire loop
+            rhoP = alignedR / radius
+
+            # compute tangential component of magnetic vector potential, including current and mu_0
+            aPhi = aPrefactor * circularWireLoop_A_phi(rhoP, zP)
+
+            # compute cross product between e_z and e_rho to get e_phi
+            ePhiX = eRY * eZ - eRZ * eY
+            ePhiY = eRZ * eX - eRX * eZ
+            ePhiZ = eRX * eY - eRY * eX
+
+            # add contribution from wire loop to result
+            vectorPotential[idxEval, 0] = aPhi * ePhiX
+            vectorPotential[idxEval, 1] = aPhi * ePhiY
+            vectorPotential[idxEval, 2] = aPhi * ePhiZ
+    
+    return vectorPotential
+
+def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
+    """Compute the magnetic field of a circular wire loop.
+    
+    :param arr(float) center: [3: x, y, z] origin of loop (in meters)
+    :param arr(float) normal: [3: x, y, z]  normal vector of loop (in meters); will be normalized internally
+    :param float radius: radius of the wire loop (in meters)
+    :param float current: loop current (in A)
+    :param arr(float) evalPos: [nEvalPos][3: x, y, z] evaluation locations (in meters)
+    :return: [nEvalPos][3: B_x, B_y, B_z] Cartesian components of the magnetic
+             field evaluated at the given locations (in T)
+    :rtype: arr(float)
+    """
+    if not np.isfinite(radius) or radius <= 0.0:
+        raise ValueError("radius must be finite and positive, but is %g"%(radius,))
+    
+    bPrefactor = MU_0_BY_PI * current / radius
+
+    # squared length of normal vector
+    nLen2 = normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]
+
+    if nLen2 == 0.0:
+        raise ValueError("length of normal vector must not be zero")
+
+    # length of normal vector
+    nLen = np.sqrt(nLen2)
+
+    # unit normal vector of wire loop
+    eX = normal[0] / nLen
+    eY = normal[1] / nLen
+    eZ = normal[2] / nLen
+
+    nEvalPos = len(evalPos)
+
+    magneticField = np.zeros((nEvalPos, 3))
+
+    for idxEval in range(nEvalPos):
+
+        # vector from center of wire loop to eval pos
+        r0x = evalPos[idxEval, 0] - center[0]
+        r0y = evalPos[idxEval, 1] - center[1]
+        r0z = evalPos[idxEval, 2] - center[2]
+
+        # z position along normal of wire loop
+        alignedZ = eX * r0x + eY * r0y + eZ * r0z
+
+        # normalized z component of evaluation location in coordinate system of wire loop
+        zP = alignedZ / radius
+
+        # r0 projected onto axis of wire loop
+        rParallelX = alignedZ * eX
+        rParallelY = alignedZ * eY
+        rParallelZ = alignedZ * eZ
+
+        # vector perpendicular to axis of wire loop, pointing at evaluation pos
+        rPerpX = r0x - rParallelX
+        rPerpY = r0y - rParallelY
+        rPerpZ = r0z - rParallelZ
+
+        # perpendicular distance squared between evalPos and axis of wire loop
+        alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
+
+        if alignedRSq > 0.0:
+            # radial unit vector is only defined if evaluation pos is off-axis
+
+            # perpendicular distance between evalPos and axis of wire loop
+            alignedR = np.sqrt(alignedRSq)
+
+            # unit vector in radial direction
+            eRX = rPerpX / alignedR
+            eRY = rPerpY / alignedR
+            eRZ = rPerpZ / alignedR
+
+            # normalized rho component of evaluation location in coordinate system of wire loop
+            rhoP = alignedR / radius
+
+            # compute radial component of normalized magnetic field
+            # and scale by current and mu_0
+            bRho = bPrefactor * circularWireLoop_B_rho(rhoP, zP)
+
+            # add contribution from B_rho of wire loop to result
+            magneticField[idxEval, 0] = bRho * eRX
+            magneticField[idxEval, 1] = bRho * eRY
+            magneticField[idxEval, 2] = bRho * eRZ
+        else:
+            rhoP = 0.0
+            
+        # compute vertical component of normalized magnetic field
+        # and scale by current and mu_0
+        bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP)
+
+        # add contribution from B_z of wire loop to result
+        magneticField[idxEval, 0] += bZ * eX
+        magneticField[idxEval, 1] += bZ * eY
+        magneticField[idxEval, 2] += bZ * eZ
+        
+    return magneticField
+
+# --------------------------------------------------
+
+
+
+
+
 
