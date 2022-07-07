@@ -119,9 +119,9 @@ def demoMcGreivy():
         resultTable[i, 2] = allBzMcGErr[i]
 
     if useCompensatedSummation:
-        np.savetxt(resultTable, "convergenceMcGreivy_CompensatedSummation.dat")
+        np.savetxt("convergenceMcGreivy_CompensatedSummation.dat", resultTable)
     else:
-        np.savetxt(resultTable, "convergenceMcGreivy_StandardSummation.dat")
+        np.savetxt("convergenceMcGreivy_StandardSummation.dat", resultTable)
 
 
 
