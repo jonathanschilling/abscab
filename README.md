@@ -38,20 +38,52 @@ to model a closed loop.
 At least two points must be specified, which are then taken
 as start- and endpoint of a single straight wire segment.
 
-* The geometry of the polygon is provided to the routines as an array.
-  * **Java**: `double[][] vertices = new double[3][numVertices];`  
-    The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
-    The second dimension (`numVertices`) is for the individual points along the polygon.
-  * **C**: `double vertices[3 * numVertices];`  
-    The geometry of the polygon is specified as a one-dimensional array.  
-    The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
-    where `n = numVertices - 1`.
+The **geometry of the polygon** can be provided to the routines as an array.
+ * **Java**: `double[][] vertices = new double[3][numVertices];`  
+   The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
+   The second dimension (`numVertices`) is for the individual points along the polygon.
+ * **C**: `double vertices[3 * numVertices];`  
+   The geometry of the polygon is specified as a one-dimensional array.  
+   The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
+   where `n = numVertices - 1`.
+ * **Fortran**: `real(wp), dimension(3, numVertices) :: vertices`  
+   The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
+   The second dimension (`numVertices`) is for the individual points along the polygon.
+ * **Python**: `arr(float) vertices: [numVertices][3: x, y, z]`
+   The first dimension (`numVertices`) is for the individual points along the polygon.
+   The second dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
 
-##### Magnetic Vector Potential (A)
-The magnetic vector potential of a polygon filament
-is computed using a method called `vectorPotentialPolygonFilament`.
+Furthermore, the geometry of the polygon can be provided via a callback function
+providing the coordinates of the`i`-th point along the polygon when being called with the point index `i`.
+This allows to compute the magnetic field and magnetic vector potential
+of polygon geometries that consist of so many points that holding them in memory simultaneously
+would not be possible.
 
-##### Magnetic Field (B)
+The **evaluation locations** are provided to the routines as an array
+similarly shaped to the ones providing the polygon geometry (see above).
+
+An optional parameter `useCompensatedSummation` (`true` by default)
+controls the use of Kahan-Babushka compensated summation when computing
+the superposition of the fields from the individual wire segments along the polygon.
+It can be set to `false` in order to use standard `+=` summation
+into a single accumulation variable.
+This might be faster in some cases at the cost of giving up guaranteed accuracy.
+
+The parallelized polygon routines allow to specify an optional parameter
+`numProcessors` specifying over how many threads the computation shall be parallelized.
+The prallelization is performed over either the number of source terms
+(number of wire segments along the polygon) or the number of evaluation locations, whichever is greater.
+This is done to ensure parallelization over large chunks of computational work
+for more efficient use of the processors.
+
+The **magnetic vector potential of a polygon filament**
+is computed using methods called `vectorPotentialPolygonFilament`.
+
+The **magnetic field of a polygon filament**
+is computed using methods called `magneticFieldPolygonFilament`.
+
+A suffix `VertexSupplier` is appended to these names (in C, Fortran and Python)
+to indicate the routines that accept a callback function for the polygon geometry.
 
 #### Circular Filament
 
