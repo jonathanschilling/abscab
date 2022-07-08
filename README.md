@@ -4,6 +4,32 @@ Accurate Biot-Savart routines with Correct Asymptotic Behaviour
 
 The main article on this software can be found here: [abscab_main.pdf](article/abscab_main.pdf)
 
+## API
+
+This library can be used to compute the magnetic field and the magnetic vector potential
+of filamentary current carriers in the form of a circular loop and straight segments.
+Arbitrary geometries of conductors can be approximated by a polygon along its contour
+and the connecting segments between the polygon vertices are modeled by straight segments.
+Finite-width conductors can be approximated by arranging multiple filaments
+throughout the cross section of the current carrier.
+
+The methods available to use this functionality are outlined below.
+The API consists of two levels.
+The high-level methods use the lower-level methods to evaluate
+the magnetic field and magnetic vector potential for a given current
+at given locations in global Cartesian coordinates.
+The lower level consists of methods for computing the normalized
+magnetic vector potential and magnetic field (i.e., only the geometric parts of the formulas)
+in normalized coordinates relative to the current carriers.
+
+### High-Level Methods
+
+
+
+### Low-Level Methods
+
+
+
 ## Implementation
 
 Various implementations are provided in this repository.
@@ -12,7 +38,7 @@ Here is an overview:
 |   Language   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
 | ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | ------------ |
 | Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
-| C99          | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
+| C 99         | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
 | Fortran 2008 | [`abscab.f08`](src/main/fortran/abscab.f08)                    | [`test_abscab.f08`](src/test/fortran/test_abscab.f08) | [`demo_abscab.f08`](src/test/fortran/demo_abscab.f08) | :heavy_check_mark: (OpenMP) |
 | Python 3     | [`abscab.py`](src/main/python/abscab/_abscab.py)                | [`test_abscab.py`](src/test/python/abscab/test_abscab.py) | [`demo_abscab.py`](src/test/python/abscab/demo_abscab.py)  | :heavy_multiplication_x: |
 
