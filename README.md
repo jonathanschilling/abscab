@@ -71,10 +71,10 @@ This might be faster in some cases at the cost of giving up guaranteed accuracy.
 
 The parallelized polygon routines allow to specify an optional parameter
 `numProcessors` specifying over how many threads the computation shall be parallelized.
-The prallelization is performed over either the number of source terms
+The parallelization is performed over either the number of source terms
 (number of wire segments along the polygon) or the number of evaluation locations, whichever is greater.
-This is done to ensure parallelization over large chunks of computational work
-for more efficient use of the processors.
+This is done to ensure parallelization over as large chunks of computational work as possible
+for the most efficient use of available processors.
 
 The **magnetic vector potential of a polygon filament**
 is computed using methods called `vectorPotentialPolygonFilament`.
