@@ -49,8 +49,8 @@ The **geometry of the polygon** can be provided to the routines as an array.
  * **Fortran**: `real(wp), dimension(3, numVertices) :: vertices`  
    The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
    The second dimension (`numVertices`) is for the individual points along the polygon.
- * **Python**: `arr(float) vertices: [numVertices][3: x, y, z]`
-   The first dimension (`numVertices`) is for the individual points along the polygon.
+ * **Python**: `arr(float) vertices: [numVertices][3: x, y, z]`  
+   The first dimension (`numVertices`) is for the individual points along the polygon.  
    The second dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
 
 Furthermore, the geometry of the polygon can be provided via a callback function
