@@ -54,7 +54,7 @@ The **geometry of the polygon** can be provided to the routines as an array.
    The second dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
 
 Furthermore, the geometry of the polygon can be provided via a callback function
-providing the coordinates of the`i`-th point along the polygon when being called with the point index `i`.
+providing the coordinates of the `i`-th point along the polygon when being called with the point index `i`.
 This allows to compute the magnetic field and magnetic vector potential
 of polygon geometries that consist of so many points that holding them in memory simultaneously
 would not be possible.
