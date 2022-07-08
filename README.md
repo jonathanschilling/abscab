@@ -150,8 +150,42 @@ The **magnetic field of a circular filament**
 is computed using methods called `magneticFieldCircularFilament`.
 
 ### Low-Level Methods
+The low-level methods of this library are used to compute
+the geometric parts of the formulas for the magnetic vector potential
+and magnetic field of a straight wire segment and a circular wire loop.
+Normalized coordinates are used in a cylindrical coordinate system
+aligned with the axis of the wire segment in case of a straight wire segment
+and with the axis of the wire loop in the respective case
+of computing magnetostatic quantities for a circular wire loop.
 
+Arguments to the routines listed below are `rhoP` and `zP`
+for the normalized radial and normalized vertical coordinates
+of the evaluation location, respectively.
 
+#### Straight Wire Segment
+The normalization factor used for the evaluation location
+in this case is the length `L` of wire segment.
+
+The **normalized magnetic vector potential** of a straight wire segment
+only has a component `A_z` in the axial direction.
+This component is computed using routines named `straightWireSegment_A_z(rhoP, zP)`.
+The return value of this method has to be multiplied by `mu_0 * I / (2 pi)`
+to get the magnetic vector potential in units of `Tm`, where
+`mu_0` is the vacuum magnetic permeability and
+`I` is the current along the wire segment.
+
+The **normalized magnetic field** of a straight wire segment
+only has a component `B_phi` in the tangential/cylindrical direction around the wire segment.
+This component is computed using routines named `straightWireSegment_B_phi(rhoP, zP)`.
+The return value of this methods has to multiplied by `mu_0 * I / (4 pi L)`
+to get the magnetic field in units of `T`, where
+`mu_0` is the vacuum magnetic permeability,
+`I` is the current along the wire segment and
+`L` is the length of the wire segment.
+
+#### Circular Wire Loop
+The normalization factor used for the evaluation location
+in this case is the radius `r` of wire loop.
 
 ## Implementations
 
