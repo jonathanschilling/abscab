@@ -23,8 +23,41 @@ magnetic vector potential and magnetic field (i.e., only the geometric parts of 
 in normalized coordinates relative to the current carriers.
 
 ### High-Level Methods
+The high-level API constists of methods to compute
+the magnetic field and the magnetic vector potential
+of a polygon filament (current flows along straight wire segments from point to point along a polygon)
+and a circular filament.
 
+#### Polygon Filament
+The polygon describing the current carrier geometry
+is made up of the ordered list of points (vertices) along the polygon.
+A positive value of the current implies
+that the current flows along the polygon in the order of the points.
+The first and the last point of the polygon must coincide
+to model a closed loop.
+At least two points must be specified, which are then taken
+as start- and endpoint of a single straight wire segment.
 
+* The geometry of the polygon is provided to the routines as an array.
+  * Java: `double[][] vertices = new double[3][numVertices];`  
+    The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
+    The second dimension (`numVertices`) is for the individual points along the polygon.
+  * C: `double vertices[3 * numVertices];`  
+    The geometry of the polygon is specified as a one-dimensional array.  
+    The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
+    where `n = numVertices - 1`.
+
+##### Magnetic Vector Potential (A)
+The magnetic vector potential of a polygon filament
+is computed using a method called `vectorPotentialPolygonFilament`.
+
+##### Magnetic Field (B)
+
+#### Circular Filament
+
+##### Magnetic Vector Potential (A)
+
+##### Magnetic Field (B)
 
 ### Low-Level Methods
 
