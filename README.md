@@ -162,6 +162,10 @@ Arguments to the routines listed below are `rhoP` and `zP`
 for the normalized radial and normalized vertical coordinates
 of the evaluation location, respectively.
 
+Inside these routines, appropriate special-case formulations are used
+for given normalized coorinates of the evaluation location
+in order to maximize accuracy of the results.
+
 #### Straight Wire Segment
 The normalization factor used for the evaluation location
 in this case is the length `L` of wire segment.
@@ -186,6 +190,24 @@ to get the magnetic field in units of `T`, where
 #### Circular Wire Loop
 The normalization factor used for the evaluation location
 in this case is the radius `r` of wire loop.
+
+The **normalized magnetic vector potential** of a circular wire loop
+only has a component `A_phi` in the tangential/cylindrical direction of the wire loop.
+This component is computed using routines named `circularWireLoop_A_phi(rhoP, zP)`.
+The return value of this methods has to multiplied by `mu_0 * I / pi`
+to get the magnetic vector potential in units of `Tm`, where
+`mu_0` is the vacuum magnetic permeability and
+`I` is the current along the wire loop.
+
+The **normalized magnetic field** of a circular wire loop
+has components `B_rho` and `B_z` in radial and vertical directions, respectively.
+The component `B_rho` is computed using routines named `circularWireLoop_B_rho(rhoP, zP)`.
+The component `B_z` is computed using routines named `circularWireLoop_B_z(rhoP, zP)`.
+The return values of these methods have to be multiplied by `mu_0 * I / (pi r)`
+to get the magnetic field in units of `T`, where
+`mu_0` is the vacuum magnetic permeability,
+`I` is the current along the wire loop and
+`r` is the radius of the wire loop.
 
 ## Implementations
 
