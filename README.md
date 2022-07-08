@@ -39,10 +39,10 @@ At least two points must be specified, which are then taken
 as start- and endpoint of a single straight wire segment.
 
 * The geometry of the polygon is provided to the routines as an array.
-  * Java: `double[][] vertices = new double[3][numVertices];`  
+  * **Java**: `double[][] vertices = new double[3][numVertices];`  
     The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
     The second dimension (`numVertices`) is for the individual points along the polygon.
-  * C: `double vertices[3 * numVertices];`  
+  * **C**: `double vertices[3 * numVertices];`  
     The geometry of the polygon is specified as a one-dimensional array.  
     The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
     where `n = numVertices - 1`.
