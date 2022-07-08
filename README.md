@@ -4,6 +4,19 @@ Accurate Biot-Savart routines with Correct Asymptotic Behaviour
 
 The main article on this software can be found here: [abscab_main.pdf](article/abscab_main.pdf)
 
+## Table of Contents
+1. [API](https://github.com/jonathanschilling/abscab#api)
+   1. [High-Level Methods](https://github.com/jonathanschilling/abscab#high-level-methods)
+      1. [Polygon Filament](https://github.com/jonathanschilling/abscab#polygon-filament)
+      1. [Circular Filament](https://github.com/jonathanschilling/abscab#circular-filament)
+   2. [Low-Level Methods](https://github.com/jonathanschilling/abscab#low-level-methods)
+2. [Implementations](https://github.com/jonathanschilling/abscab#implementations)
+3. [Reference Outputs](https://github.com/jonathanschilling/abscab#reference-outputs)
+4. [Verification Procedure](https://github.com/jonathanschilling/abscab#verification-procedure)
+   1. [`mpmath` vs. Mathematica](https://github.com/jonathanschilling/abscab#mpmath-vs-mathematica)
+   2. [Test Points](https://github.com/jonathanschilling/abscab#test-points)
+   3. [Reference Data](https://github.com/jonathanschilling/abscab#reference-data)
+
 ## API
 
 This library can be used to compute the magnetic field and the magnetic vector potential
@@ -140,7 +153,7 @@ is computed using methods called `magneticFieldCircularFilament`.
 
 
 
-## Implementation
+## Implementations
 
 Various implementations are provided in this repository.
 Here is an overview:
