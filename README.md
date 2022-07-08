@@ -28,6 +28,11 @@ the magnetic field and the magnetic vector potential
 of a polygon filament (current flows along straight wire segments from point to point along a polygon)
 and a circular filament.
 
+**SI Units** are implied in the high-level interface.
+The geometric quantites are assumed to be specified in meters (m)
+and the current to be specified in Amperes (A).
+Then, the magnetic field is returned in Tesla (T) and the magnetic vector potential is returned in Tesla * meter (Tm).
+
 #### Polygon Filament
 The polygon describing the current carrier geometry
 is made up of the ordered list of points (vertices) along the polygon.
@@ -86,10 +91,50 @@ A suffix `VertexSupplier` is appended to these names (in C, Fortran and Python)
 to indicate the routines that accept a callback function for the polygon geometry.
 
 #### Circular Filament
+The geometry of a current-carrying circular loop
+is described in terms of the origin of the loop,
+a normal vector and the radius of the loop.
 
-##### Magnetic Vector Potential (A)
+The **origin** is a three-element vector
+which contains the Cartesian coordinates (`x_0`, `y_0`, `z_0`) of the center point of the loop in global coordinates.
 
-##### Magnetic Field (B)
+The **normal** vector is a three-element vector
+which contains the Cartesian components (`n_x`, `n_y`, `n_z`) of a vector normal to the plane of the wire loop.
+
+The **radius** of the loop completes the specification of the loop geometry.
+
+A positive current implies that the current flows in clockwise direction
+along the wire loop when looking in positive direction along the normal vector.
+This is the usual direction of the tangential unit vector (`e_phi`) in a cylindrical coordinate system
+that has its z-axis aligned with the normal vector of the loop.
+
+One call to the methods for the circular filament
+compute the magnetic field and magnetic vector potential
+at a number of evaluation locations due to the current in a single wire loop.
+Thus, for computing the magnetostatic quantities of a multi-winding coil,
+multiple calls (one for each winding of the coil) have to me made
+and the results need to be superposed to get the total fields of the coil.
+
+The **evaluation locations** must be provided to the routines as an array.
+ * **Java**: `double[][] evalPos = new double[3][numEvalPos];`  
+   The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the locations.  
+   The second dimension (`numEvalPos`) is for the individual evaluation locations.
+ * **C**: `double evalPos[3 * numEvalPos];`  
+   The evaluation locations are specified as a one-dimensional array.  
+   The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
+   where `n = numEvalPos - 1`.
+ * **Fortran**: `real(wp), dimension(3, numEvalPos) :: evalPos`  
+   The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the locations.  
+   The second dimension (`numEvalPos`) is for the individual evaluation locations.
+ * **Python**: `arr(float) evalPos: [numEvalPos][3: x, y, z]`  
+   The first dimension (`numEvalPos`) is for the individual evaluation locations.
+   The second dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the locations.  
+
+The **magnetic vector potential of a circular filament**
+is computed using methods called `vectorPotentialCircularFilament`.
+
+The **magnetic field of a circular filament**
+is computed using methods called `magneticFieldCircularFilament`.
 
 ### Low-Level Methods
 
