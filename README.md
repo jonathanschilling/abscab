@@ -224,6 +224,8 @@ Here is an overview:
 | Python 3     | [`abscab.py`](src/main/python/abscab/_abscab.py)                | [`test_abscab.py`](src/test/python/abscab/test_abscab.py) | [`demo_abscab.py`](src/test/python/abscab/demo_abscab.py)  | :heavy_multiplication_x: |
 
 ## Reference Outputs
+The following plots show the agreement between the Java implementation
+and the reference data computed using arbitrary-precision arithmetic.
 
 <img src="article/img/StraightWireSegment_results.png" alt="A_z and B_phi of Straight Wire Segment: Java vs. reference" height="500"/>
 
