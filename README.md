@@ -244,7 +244,7 @@ For brevity, this is done on a reduced set of test points.
 A set of test points is defined at which the implementations
 will be tested against the arbitrary-precision reference will be tested.
 These points are computed in Java, since it is a strictly-typed language
-and binaries are expected to given platform-independent results.
+and binaries are expected to produce platform-independent results.
 Nevertheless they are still of finite (64-bit) precision.
 The code to generate the test points is [`src/test/java/GenerateTestKnots.java`](src/test/java/de/labathome/GenerateTestKnots.java).
 
