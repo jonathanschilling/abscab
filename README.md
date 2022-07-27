@@ -164,7 +164,7 @@ for the normalized radial and normalized vertical coordinates
 of the evaluation location, respectively.
 
 Inside these routines, appropriate special-case formulations are used
-for given normalized coorinates of the evaluation location
+for given normalized coordinates of the evaluation location
 in order to maximize accuracy of the results.
 
 #### Straight Wire Segment
