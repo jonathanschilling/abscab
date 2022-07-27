@@ -175,7 +175,7 @@ in this case is the length `L` of wire segment.
 The **normalized magnetic vector potential** of a straight wire segment
 only has a component `A_z` in the axial direction.
 This component is computed using routines named `straightWireSegment_A_z(rhoP, zP)`.
-The return value of this method has to be multiplied by `mu_0 * I / (2 pi)`
+The return value of this method has to be multiplied by `mu_0 * I / (2 * pi)`
 to get the magnetic vector potential in units of `Tm`, where
 `mu_0` is the vacuum magnetic permeability and
 `I` is the current along the wire segment.
@@ -183,7 +183,7 @@ to get the magnetic vector potential in units of `Tm`, where
 The **normalized magnetic field** of a straight wire segment
 only has a component `B_phi` in the tangential/cylindrical direction around the wire segment.
 This component is computed using routines named `straightWireSegment_B_phi(rhoP, zP)`.
-The return value of this methods has to multiplied by `mu_0 * I / (4 pi L)`
+The return value of this methods has to multiplied by `mu_0 * I / (4 * pi * L)`
 to get the magnetic field in units of `T`, where
 `mu_0` is the vacuum magnetic permeability,
 `I` is the current along the wire segment and
@@ -205,7 +205,7 @@ The **normalized magnetic field** of a circular wire loop
 has components `B_rho` and `B_z` in radial and vertical directions, respectively.
 The component `B_rho` is computed using routines named `circularWireLoop_B_rho(rhoP, zP)`.
 The component `B_z` is computed using routines named `circularWireLoop_B_z(rhoP, zP)`.
-The return values of these methods have to be multiplied by `mu_0 * I / (pi r)`
+The return values of these methods have to be multiplied by `mu_0 * I / (pi * r)`
 to get the magnetic field in units of `T`, where
 `mu_0` is the vacuum magnetic permeability,
 `I` is the current along the wire loop and
