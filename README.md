@@ -246,7 +246,7 @@ will be tested against the arbitrary-precision reference will be tested.
 These points are computed in Java, since it is a strictly-typed language
 and binaries are expected to produce platform-independent results.
 Nevertheless they are still of finite (64-bit) precision.
-The code to generate the test points is [`src/test/java/GenerateTestKnots.java`](src/test/java/de/labathome/GenerateTestKnots.java).
+The code to generate the test points is [`src/test/java/GenerateTestKnots.java`](src/test/java/de/labathome/abscab/GenerateTestKnots.java).
 
 The test points are saved into text files in [`src/test/resources`](src/test/resources):
 * [`testPointsRpStraightWireSegment.dat`](src/test/resources/testPointsRpStraightWireSegment.dat) contains the value of `r'` at which
