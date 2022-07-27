@@ -73,12 +73,6 @@ The **geometry of the polygon** can be provided to the routines as an array.
    The first dimension (`numVertices`) is for the individual points along the polygon.  
    The second dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
 
-Furthermore, the geometry of the polygon can be provided via a callback function
-providing the coordinates of the `i`-th point along the polygon when being called with the point index `i`.
-This allows to compute the magnetic field and magnetic vector potential
-of polygon geometries that consist of so many points that holding them in memory simultaneously
-would not be possible. The corresponding routines in C, Python and Fortran carry the suffix `VertexSupplier`.
-
 The **evaluation locations** are provided to the routines as an array
 similarly shaped to the ones providing the polygon geometry (see above).
 
@@ -102,6 +96,11 @@ is computed using methods called `vectorPotentialPolygonFilament`.
 The **magnetic field of a polygon filament**
 is computed using methods called `magneticFieldPolygonFilament`.
 
+Furthermore, the geometry of the polygon can be provided via a callback function
+providing the coordinates of the `i`-th point along the polygon when being called with the point index `i`.
+This allows to compute the magnetic field and magnetic vector potential
+of polygon geometries that consist of so many points that holding them in memory simultaneously
+would not be possible.
 A suffix `VertexSupplier` is appended to these names (in C, Fortran and Python)
 to indicate the routines that accept a callback function for the polygon geometry.
 
