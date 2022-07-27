@@ -77,7 +77,7 @@ Furthermore, the geometry of the polygon can be provided via a callback function
 providing the coordinates of the `i`-th point along the polygon when being called with the point index `i`.
 This allows to compute the magnetic field and magnetic vector potential
 of polygon geometries that consist of so many points that holding them in memory simultaneously
-would not be possible.
+would not be possible. The corresponding routines in C, Python and Fortran carry the suffix `VertexSupplier`.
 
 The **evaluation locations** are provided to the routines as an array
 similarly shaped to the ones providing the polygon geometry (see above).
