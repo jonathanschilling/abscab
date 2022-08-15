@@ -22,8 +22,8 @@ do
   ./plotStraightWireSegmentVsRef.py \
     ../resources/StraightWireSegment_A_z_ref.dat \
     ../../../data/StraightWireSegment_${i}_Java.dat \
-    ../../../more_plots/StraightWireSegment_${i}_Java.pdf \
-    "${i} of Straight Wire Segment (Java)"
+    ../../../more_plots/StraightWireSegment_${i}_Java.pdf #\
+#    "${i} of Straight Wire Segment (Java)"
 done
 
 for i in B_phi_rad \
@@ -33,8 +33,8 @@ do
   ./plotStraightWireSegmentVsRef.py \
     ../resources/StraightWireSegment_B_phi_ref.dat \
     ../../../data/StraightWireSegment_${i}_Java.dat \
-    ../../../more_plots/StraightWireSegment_${i}_Java.pdf \
-    "${i} of Straight Wire Segment (Java)"
+    ../../../more_plots/StraightWireSegment_${i}_Java.pdf #\
+#    "${i} of Straight Wire Segment (Java)"
 done
 
 # Circular Wire Loop
@@ -46,8 +46,8 @@ do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_A_phi_ref.dat \
     ../../../data/CircularWireLoop_${i}_Java.dat \
-    ../../../more_plots/CircularWireLoop_${i}_Java.pdf \
-    "${i} of Circular Wire Loop (Java)"
+    ../../../more_plots/CircularWireLoop_${i}_Java.pdf #\
+#    "${i} of Circular Wire Loop (Java)"
 done
 
 for i in B_rho_f \
@@ -57,8 +57,8 @@ do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_B_rho_ref.dat \
     ../../../data/CircularWireLoop_${i}_Java.dat \
-    ../../../more_plots/CircularWireLoop_${i}_Java.pdf \
-    "${i} of Circular Wire Loop (Java)"
+    ../../../more_plots/CircularWireLoop_${i}_Java.pdf #\
+#    "${i} of Circular Wire Loop (Java)"
 done
 
 for i in B_z_f1 \
@@ -69,8 +69,8 @@ do
   ./plotCircularWireLoopVsRef.py \
     ../resources/CircularWireLoop_B_z_ref.dat \
     ../../../data/CircularWireLoop_${i}_Java.dat \
-    ../../../more_plots/CircularWireLoop_${i}_Java.pdf \
-    "${i} of Circular Wire Loop (Java)"
+    ../../../more_plots/CircularWireLoop_${i}_Java.pdf #\
+#    "${i} of Circular Wire Loop (Java)"
 done
 
 popd # back from ../src/test/python
