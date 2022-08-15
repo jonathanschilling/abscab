@@ -1,14 +1,13 @@
 \section{Introduction}
 \label{sec:introduction}
 A common task in computational physics is to compute the magnetic field and magnetic vector potential
-originating from current-carrying wire arrangements in the form of coils and cables.
-These current carriers can be approximated for computational simplicity as infinitely thin filaments
+originating from current-carrying wire arrangements.
+These current carriers are often approximated for computational simplicity as infinitely thin filaments
 following the center lines of the real current carrier.
-A current carrier path specified by a list of points along the path
+A current carrier path specified by ($x$,$y$,$z$) coordinates
 can be modeled as a set of straight wire segments from point to point along the polygon describing the current carrier geometry.
-Closed circular wire loops appear as well in practise and can be chosen to model, e.g.,
-individual windings in a circular coil.
-Computational methods are thus needed to compute the magnetic field and the magnetic vector potential
+Closed circular wire loops are also commonly used as a proxy for a physical coil with helical windings.
+Computational methods are needed to compute the magnetic field and the magnetic vector potential
 of a single straight wire segment or a single circular wire loop
 in order to model more complex current carrier arrangements
 by superposition of the current carrier primitives.
@@ -18,19 +17,11 @@ and a circular wire loop. The expressions consist of several special cases,
 which are switched between depending on the location of the evaluation location
 in the coordinate system of the current carrier primitive.
 This approach allows to select the most accurate formulation
-for a given evaluation location and make explicit use of simplications
-in certain special cases for the sake of simplicity, speed and accuracy.
-Particular attention was paid to make sure that the expressions presented in this work
-obey the correct asymptotic behavior for evaluation locations
-far away from and close to the current carriers.
-For most test cases, the full relative accuracy of the floating point
-arithmetic chosen for implementation is retained throughout the computations
-(16 digits of precision in the IEEE754 \texttt{binary64}~\cite{ieee754} implementation),
-with few exceptions where accuracy drops by up to 2 digits of precision
-(in the \texttt{binary64} case).
+for a given evaluation location and to make explicit use of simplifications
+in certain special cases for speed and accuracy.
 The provided implementations have not been optimized for speed.
 
-The magnetic field is denoted by $\mathbf{H}$ and
+The magnetic vector field is denoted by $\mathbf{H}$ and
 the magnetic flux density $\mathbf{B}$ is then given by $\mathbf{B} = \mu_0 \mu_\mathrm{r} \mathbf{H}$,
 where $\mu_0$ is the vacuum magnetic permeability
 and $\mu_r$ is the relative permeability, taking material properties into account.
@@ -40,3 +31,12 @@ due to the vanishing magnetic susceptibility $|\chi| \ll 1$ of the plasma,
 leading to $\mu_r = 1+\chi \approx 1$.
 This is equivalent to considering only vacuum magnetic fields.
 Then, magnetic field and magnetic flux density only differ by a factor of $\mu_0$.
+
+The paper is structured as follows.
+In section \ref{sec:methods}, the main numerical method of this work
+and arbitrary-precision reference calculations to benchmark the numerical method are presented.
+The results of the comparison between the finite-precision method
+and the arbitrary-precision reference data is presented in Sec.~\ref{sec:results}.
+The results are discussed in Sec.~\ref{sec:discussion}.
+An outlook is given in Sec.~\ref{sec:outlook}.
+The full derivations of the equations presented in this work are given in~\ref{apx:derivations}.

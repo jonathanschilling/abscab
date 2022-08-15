@@ -1,14 +1,21 @@
 \section{Methods}
 \label{sec:methods}
-In this section, accurate methods used to compute the magnetic vector potential and the magnetic field
+In this section, accurate methods used to compute the magnetic vector potential~$\mathbf{A}$ and the magnetic field~$\mathbf{B}$
 of a straight wire segment and a circular wire loop are presented.
 Furthermore, methods to evaluate the magnetostatic quantities in global coordinates are provided.
+Particular attention was paid to make sure that the expressions presented in this work
+obey the correct asymptotic behavior for evaluation locations
+far away from and close to the current carriers.
+For most test cases, the full relative accuracy of the floating point
+arithmetic chosen for implementation is retained throughout the computations
+(16 digits of precision in the IEEE-754 \texttt{binary64}~\cite{ieee754} implementation),
+with few exceptions where accuracy drops by up to 3 digits of precision
+(in the \texttt{binary64} case).
 The section is concluded by a description of the verification procedure
 employed to benchmark these methods.
 
 \subsection{Straight Wire Segment}
 \label{sec:methods_sws}
-The straight wire segment is handled first.
 The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWireSegment}.
 \begin{figure}[htbp]
  \centering
@@ -18,7 +25,7 @@ The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWi
           such that the wire is aligned with the $z$-axis and starts at the origin.
           A current $I$ flows along the wire segment of length~$L$ in positive~$z$ direction~(red arrow).
           The evaluation point is specified by~$\mathbf{x} = (\rho, \varphi=0, z)$.
-          $R_\mathrm{i}$ ($R_\mathrm{f}$) denotes the distance from the start (end) of the wire segment to the evaluation location.
+          $R_\mathrm{i}$ ($R_\mathrm{f}$) denotes the distance from the start (end) of the wire segment to~$\mathbf{x}$.
           The angles $\alpha$ and $\beta$ are used in the formulas below.}
  \label{fig:straightWireSegment}
 \end{figure}
@@ -27,9 +34,10 @@ The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWi
 The magnetic vector potential of a straight wire segment
 only has component~$A_z$ parallel to the wire:
 \begin{equation}
- \mathbf{A} = A_z \hat{\mathbf{e}}_z \, .
+ \mathbf{A} = A_z \hat{\mathbf{e}}_z
 \end{equation}
-It is given by:
+where~$\hat{\mathbf{e}}_z$ is the unit vector in direction $z$.
+It is given by~\cite{hanson_hirshman_2002}:
 \begin{equation}
   A_z(\rho, z) = \frac{\mu_0 I}{4 \pi} \ln \left( \frac{1 + \epsilon}{1 - \epsilon} \right)
 \end{equation}
@@ -69,7 +77,10 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{else} \, .
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
-For the case~$\rho'=0$, the following formulation is used:
+The case~$\rho'=0$ is considered first.
+Recall that the wire segment extends along~$\rho'=0$ from $z'=0$ to $z'=1$.
+The magnetostatic quantities are well-defined for~$\rho'=0$ as long as $z' < 0$ or $z' > 1$.
+For the case~$\rho'=0$, the following formulation is used for valid evaluation locations:
 \begin{equation}
   \tilde{A}_\mathrm{z,ax} (z') =
   \begin{cases}
@@ -127,7 +138,7 @@ and~$r_\mathrm{i}$, $r_\mathrm{f}$ from~\eqn{r_i_default}, \eqn{r_f_default}, re
 
 \subsubsection{Magnetic Field}
 The magnetic field of a straight wire segment
-is given by~\cite{hanson_hirshman_2002}:
+is given by the law of Biot and Savart as follows~\cite{hanson_hirshman_2002}:
 \begin{equation}
  \mathbf{B}
  = \frac{\mu_0 I}{4 \pi}
@@ -226,21 +237,23 @@ with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
 
 \subsection{Circular Wire Loop}
 \label{sec:methods_cwl}
-The circular wire loop is handled next.
 The basic geometry of a circular wire loop under consideration here is shown in Fig.~\ref{fig:circularWireLoop}.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.5\textwidth]{img/circularWireLoop.eps}
  \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.
-          The radius of the loop is denoted $a$ and a current $I$ flows in the indicated direction.
+          The radius of the loop is denoted $a$ and a current $I$ (with corresponding current density~$\mathbf{j}$)
+          flows in the indicated direction.
           The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.
           The coordinates of the evaluation point can be expressed in spherical coordinates as~$(r, \theta)$
-          or in cylindrical coordinates as~$(\rho, z)$.}
+          or in cylindrical coordinates as~$(\rho, z)$.
+          The axisymmetry of this setup always allows to rotate the coordinate system such that $\varphi=0$ can be assumed.}
  \label{fig:circularWireLoop}
 \end{figure}
 Similar to the case of the straight wire segment,
 the magnetic vector potential and the magnetic field of the circular wire loop
-are assembled from various formulations for special cases of the far-field and the near-field.
+are assembled from various formulations for special cases of the far-field and the near-field
+in the implementation described later.
 
 \subsubsection{Magnetic Vector Potential}
 The magnetic vector potential of a circular wire loop
@@ -268,7 +281,7 @@ Normalized coordinates~$(\rho', z')$ are introduced with
     z'  =&\,   z  / a \label{eqn:zP}   \, .
 \end{align}
 An expression for the linear combination of $\mathcal{K}(k)$ and $\mathcal{E}(k)$
-is used to reformulate the expression provided by Jackson:
+is used to reformulate \eqn{cwl_A_phi_Jackson}:
 \begin{equation}
   \lambda \mathcal{K}(k) + \mu \mathcal{E}(k) = \,\mathrm{cel}(k_c, 1, \lambda + \mu, \lambda + \mu k_c^2) \label{eqn:K_E_by_cel}
 \end{equation}
@@ -309,9 +322,9 @@ and their combinations are as follows for use in \eqn{K_E_by_cel}:
 \begin{align}
   \lambda + \mu       &= \frac{2}{k^2} - 1 - \frac{2}{k^2}     = -1 \\
   \lambda + \mu k_c^2 &= \frac{2}{k^2} - 1 - \frac{2}{k^2} (1 - k^2) \nonumber \\
-          ~           &= \frac{2}{k^2} - 1 - \frac{2}{k^2} + 2 =  1 \, .
+          ~           &= \frac{2}{k^2} - 1 - \frac{2}{k^2} + 2 =  1 \label{eqn:lmkcsq} \, .
 \end{align}
-Putting above results together, we arrive at the following expression for $A_\varphi$:
+Putting Eqn.s~(\ref{eqn:K_E_by_cel}) to~(\ref{eqn:lmkcsq}) together, we arrive at the following expression for $A_\varphi$:
 \begin{equation}
  A_\varphi(\rho', z') = \frac{\mu_0 I}{\pi}
                         \frac{1}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathrm{cel}(k_c, 1, -1, 1) \, . \label{eqn:cwl_A_phi_cel}
@@ -513,7 +526,7 @@ with
 Evaluation of the magnetic vector potential~$\mathbf{A}$ and magnetic field~$\mathbf{B}$
 produced by the current carriers considered in this work
 happens in cylindrical coordinates~$\rho$ and~$z$
-in the coordinate system of the current carriers.
+in the local coordinate system of the current carriers.
 It is often more convenient to be able to work in global coordinates.
 The methods given in this section show how to transform the evaluation location
 into cylindrical coordinates in the frame of reference of the current carrier
