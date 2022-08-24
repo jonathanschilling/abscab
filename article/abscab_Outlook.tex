@@ -19,15 +19,15 @@ can perform parallel computations in \texttt{binary32} much quicker than regular
 The methods presented in this work as well as the gradient methods therefore should be ported to \texttt{binary32}
 and would allow for rapid evaluation at guaranteed error levels still low enough for practical applications in experimental physics.
 %
-Furthermore, gradient-based optimization methods applied to, e.g., finding the coils for a Stellarator device~\cite{zhu_2017}
+Furthermore, gradient-based optimization methods applied to, e.g., finding the coils for a Stellarator device~\cite{zhu_2017,hudson_2018}
 require calculations of the field gradients.
 It is noted that derivatives with respect to the position of the current carrier
 are easily expressed via derivatives of the fields.
 The change of the field with changing current carrier position is complementary
 to the change of field with changing evaluation position (relative to the current carrier).
 %
-Other types of current carriers are also desirable to have implemented in this framework.
-In particular, the case of a filamentary arc segment (the non-closed counterpart of the circular wire loop)
+It is desirable to have more shapes of current carriers implemented in this framework.
+In particular, the case of a filamentary arc segment (a segment of a circular wire loop)
 would be of interest as well as finite-extent current carriers.
 It is noted that the methods presented by Urankar for this case~\cite{urankar_1,urankar_2,urankar_3,urankar_4,urankar_5}
 have recently been reconsidered and improved~\cite{maurer_2020}.
