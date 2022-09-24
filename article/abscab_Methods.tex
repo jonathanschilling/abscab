@@ -1,3 +1,4 @@
+\FloatBarrier
 \section{Methods}
 \label{sec:methods}
 In this section, accurate methods used to compute the magnetic vector potential~$\mathbf{A}$ and the magnetic field~$\mathbf{B}$
@@ -14,6 +15,7 @@ There are a few exceptions where accuracy drops by up to 3 digits of precision
 The section concludes with a description of the verification procedure
 employed to benchmark these methods.
 
+\FloatBarrier
 \subsection{Straight Wire Segment}
 \label{sec:methods_sws}
 The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWireSegment}.
@@ -95,13 +97,6 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
 The domain decomposition used to compute $\tilde{A}_z$ accurately is depicted in Fig.~\ref{fig:sws_A_z_regions}.
-\begin{figure}[htbp]
- \centering
- \includegraphics{img/sws_A_z_regions.eps}
- \caption{Domain decomposition used to partition the evaluation region
-          for computing $\tilde{A}_z$ accurately.}
- \label{fig:sws_A_z_regions}
-\end{figure}
 The case~$\rho'=0$ is considered first.
 Recall that the wire segment extends along~$\rho'=0$ from $z'=0$ to $z'=1$.
 The magnetostatic quantities are well-defined for~$\rho'=0$ as long as $z' < 0$ or $z' > 1$.
@@ -240,6 +235,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{else} \, .
   \end{cases} \label{eqn:sws_B_phi_switchover}
 \end{equation}
+The domain decomposition used to compute $\tilde{B}_\varphi$ accurately is depicted in Fig.~\ref{fig:sws_B_phi_regions}.
 The special case~$z' \in \{0, 1\}$ is implemented as follows:
 \begin{equation}
   \tilde{B}_{\varphi,\mathrm{rad}} (\rho') = \frac{1}{\rho' \sqrt{{\rho'}^2 + 1}} \, .
@@ -259,7 +255,25 @@ The final case is implemented as follows:
          {{\rho'}^2 + 2 r_\mathrm{i} \left[ r_\mathrm{f} \sin^2(\beta/2) + (1 - z') \sin^2(\alpha/2) \right]}
 \end{equation}
 with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.45\textwidth}
+        \centering
+        \includegraphics{img/sws_A_z_regions.pdf}
+        \caption{Domain decomposition used to partition the evaluation region
+                  for computing $\tilde{A}_z$ accurately.}
+        \label{fig:sws_A_z_regions}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics{img/sws_B_phi_regions.pdf}
+        \caption{Domain decomposition used to partition the evaluation region
+                  for computing $\tilde{B}_\varphi$ accurately.}
+        \label{fig:sws_B_phi_regions}
+    \end{minipage}
+\end{figure}
 
+\FloatBarrier
 \subsection{Circular Wire Loop}
 \label{sec:methods_cwl}
 The basic geometry of a circular wire loop under consideration here is shown in Fig.~\ref{fig:circularWireLoop}.
@@ -547,6 +561,31 @@ with
   k_c^2 = \frac{{z'}^2}{{z'}^2 + 4} \, .
 \end{equation}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_A_phi_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{A}_\varphi$ accurately.}
+    \label{fig:cwl_A_phi_regions}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_B_rho_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{B}_\rho$ accurately.}
+    \label{fig:cwl_B_rho_regions}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_B_z_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{B}_z$ accurately.}
+    \label{fig:cwl_B_z_regions}
+\end{figure}
+
+\FloatBarrier
 \subsection{Evaluation in Global Coordinates}
 Evaluation of the magnetic vector potential~$\mathbf{A}$ and magnetic field~$\mathbf{B}$
 produced by the current carriers considered in this work
@@ -664,6 +703,7 @@ The vector potential of the circular wire loop in thus in Cartesian coordinates:
   \mathbf{A}(\mathbf{r}) = A_\varphi(\rho', z') \hat{\mathbf{e}}_\varphi \, .
 \end{equation}
 
+\FloatBarrier
 \subsection{Verification Method}
 \label{sec:methods_verification}
 The implementations of above formulas for the magnetic vector potential
