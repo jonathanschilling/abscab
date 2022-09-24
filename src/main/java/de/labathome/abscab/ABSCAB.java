@@ -1989,7 +1989,7 @@ public class ABSCAB {
 			return 0.0;
 		} else if (zP == 0.0 || zP == 1.0) {
 			return sws_B_phi_rad(rhoP);
-		} else if (rhoP >= 1.0 || zP <= 0.0 || zP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
+		} else if (rhoP >= zP || rhoP >= 1 - zP || zP < 0.0 || zP > 1.0) {
 			return sws_B_phi_f(rhoP, zP);
 		} else {
 			return sws_B_phi_n(rhoP, zP);

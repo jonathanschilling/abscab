@@ -36,7 +36,7 @@ public class DemoABSCAB {
 
 		int exponent = Math.getExponent(f) + 1023;
 
-		long[] fParts = TestABSCABUtils.doubleParts(f);
+		long[] fParts = UtilsTestABSCAB.doubleParts(f);
 
 		System.out.printf("s: %d =?= %d\n", s, fParts[0]);
 		System.out.printf("E: %d =?= %d =?= %d\n", E, fParts[1], exponent);
@@ -46,13 +46,13 @@ public class DemoABSCAB {
 	public static void demoStraightWireSegmentAlongRhoP0() {
 
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_A_z   = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
+		double[] ref_A_z   = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
 
 		List<Double> sws_A_z_refLst = new LinkedList<>();
 		List<Double> sws_A_z_2aLst = new LinkedList<>();
@@ -75,8 +75,8 @@ public class DemoABSCAB {
 		double[] sws_A_z_2a_err = new double[numCasesAlongRhoP0];
 		double[] sws_A_z_2b_err = new double[numCasesAlongRhoP0];
 		for (int i=0; i<numCasesAlongRhoP0; ++i) {
-			sws_A_z_2a_err[i] = TestABSCABUtils.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2aLst.get(i));
-			sws_A_z_2b_err[i] = TestABSCABUtils.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2bLst.get(i));
+			sws_A_z_2a_err[i] = UtilsTestABSCAB.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2aLst.get(i));
+			sws_A_z_2b_err[i] = UtilsTestABSCAB.errorMetric(sws_A_z_refLst.get(i), sws_A_z_2bLst.get(i));
 		}
 
 		JyPlot plt = new JyPlot();
@@ -97,13 +97,13 @@ public class DemoABSCAB {
 	public static void demoStraightWireSegmentAlongZP01() {
 
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
 		// load reference data
-		double[] ref_A_z   = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
+		double[] ref_A_z   = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/StraightWireSegment_A_z_ref.dat")[0];
 
 		List<Double> sws_A_z_refLst = new LinkedList<>();
 		List<Double> sws_A_z_3aLst = new LinkedList<>();
@@ -126,8 +126,8 @@ public class DemoABSCAB {
 		double[] sws_A_z_3a_err = new double[numCasesAlongRhoP0];
 		double[] sws_A_z_3b_err = new double[numCasesAlongRhoP0];
 		for (int i=0; i<numCasesAlongRhoP0; ++i) {
-			sws_A_z_3a_err[i] = TestABSCABUtils.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3aLst.get(i));
-			sws_A_z_3b_err[i] = TestABSCABUtils.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3bLst.get(i));
+			sws_A_z_3a_err[i] = UtilsTestABSCAB.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3aLst.get(i));
+			sws_A_z_3b_err[i] = UtilsTestABSCAB.errorMetric(sws_A_z_refLst.get(i), sws_A_z_3bLst.get(i));
 		}
 
 		JyPlot plt = new JyPlot();
@@ -210,7 +210,7 @@ public class DemoABSCAB {
 //			double[][] verticesStd = polygonCircleAround0(radius, numPhi);
 //			double bZStd = ABSCAB.magneticFieldPolygonFilament(verticesStd, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
 
-			allBzStdErr[i] = TestABSCABUtils.errorMetric(bZRef, bZStd);
+			allBzStdErr[i] = UtilsTestABSCAB.errorMetric(bZRef, bZStd);
 			System.out.printf("ABSCAB B_z = %.3e (err %g)\n", bZStd, allBzStdErr[i]);
 
 			// McGreivy radius correction
@@ -235,7 +235,7 @@ public class DemoABSCAB {
 //			double[][] verticesMcG = polygonCircleAround0(rCorr, numPhi);
 //			double bZMcG = ABSCAB.magneticFieldPolygonFilament(verticesMcG, current, evalPos, numProcessors, useCompensatedSummation)[2][0];
 
-			allBzMcGErr[i] = TestABSCABUtils.errorMetric(bZRef, bZMcG);
+			allBzMcGErr[i] = UtilsTestABSCAB.errorMetric(bZRef, bZMcG);
 			System.out.printf("McGrvy B_z = %.3e (err %g)\n", bZMcG, allBzMcGErr[i]);
 
 			resultTable[0][i] = numPhi;
@@ -244,9 +244,9 @@ public class DemoABSCAB {
 		}
 
 		if (useCompensatedSummation) {
-			TestABSCABUtils.dumpToFile(resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
+			UtilsTestABSCAB.dumpToFile(resultTable, "data/convergenceMcGreivy_CompensatedSummation.dat");
 		} else {
-			TestABSCABUtils.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
+			UtilsTestABSCAB.dumpToFile(resultTable, "data/convergenceMcGreivy_StandardSummation.dat");
 		}
 
 		long duration = startTime + System.nanoTime();
@@ -532,8 +532,8 @@ public class DemoABSCAB {
 
 	public static void demoStraightWireSegment() {
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -550,14 +550,14 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_z,   "data/StraightWireSegment_A_z_Java.dat");
-		TestABSCABUtils.dumpToFile(B_phi, "data/StraightWireSegment_B_phi_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_z,   "data/StraightWireSegment_A_z_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_phi, "data/StraightWireSegment_B_phi_Java.dat");
 	}
 
 	public static void demoCircularWireLoop() {
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -576,15 +576,15 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_phi, "data/CircularWireLoop_A_phi_Java.dat");
-		TestABSCABUtils.dumpToFile(B_rho, "data/CircularWireLoop_B_rho_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z,   "data/CircularWireLoop_B_z_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_phi, "data/CircularWireLoop_A_phi_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_rho, "data/CircularWireLoop_B_rho_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_z,   "data/CircularWireLoop_B_z_Java.dat");
 	}
 
 	public static void dumpInternalResultsStraightWireSegment() {
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpStraightWireSegment.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpStraightWireSegment.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -613,21 +613,21 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_z_ax,  "data/StraightWireSegment_A_z_ax_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_rad, "data/StraightWireSegment_A_z_rad_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_n,   "data/StraightWireSegment_A_z_n_Java.dat");
-		TestABSCABUtils.dumpToFile(A_z_f,   "data/StraightWireSegment_A_z_f_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_z_ax,  "data/StraightWireSegment_A_z_ax_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_z_rad, "data/StraightWireSegment_A_z_rad_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_z_n,   "data/StraightWireSegment_A_z_n_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_z_f,   "data/StraightWireSegment_A_z_f_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_phi_rad, "data/StraightWireSegment_B_phi_rad_Java.dat");
-		TestABSCABUtils.dumpToFile(B_phi_f,   "data/StraightWireSegment_B_phi_f_Java.dat");
-		TestABSCABUtils.dumpToFile(B_phi_n,   "data/StraightWireSegment_B_phi_n_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_phi_rad, "data/StraightWireSegment_B_phi_rad_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_phi_f,   "data/StraightWireSegment_B_phi_f_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_phi_n,   "data/StraightWireSegment_B_phi_n_Java.dat");
 	}
 
 
 	public static void dumpInternalResultsCircularWireLoop() {
 		// load set of test points
-		double[] testPointsRp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
-		double[] testPointsZp = TestABSCABUtils.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
 
 		int numCases = testPointsRp.length;
 
@@ -664,17 +664,17 @@ public class DemoABSCAB {
 		}
 
 		// write to output file
-		TestABSCABUtils.dumpToFile(A_phi_f, "data/CircularWireLoop_A_phi_f_Java.dat");
-		TestABSCABUtils.dumpToFile(A_phi_n, "data/CircularWireLoop_A_phi_n_Java.dat");
-		TestABSCABUtils.dumpToFile(A_phi_v, "data/CircularWireLoop_A_phi_v_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_phi_f, "data/CircularWireLoop_A_phi_f_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_phi_n, "data/CircularWireLoop_A_phi_n_Java.dat");
+		UtilsTestABSCAB.dumpToFile(A_phi_v, "data/CircularWireLoop_A_phi_v_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_rho_f, "data/CircularWireLoop_B_rho_f_Java.dat");
-		TestABSCABUtils.dumpToFile(B_rho_n, "data/CircularWireLoop_B_rho_n_Java.dat");
-		TestABSCABUtils.dumpToFile(B_rho_v, "data/CircularWireLoop_B_rho_v_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_rho_f, "data/CircularWireLoop_B_rho_f_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_rho_n, "data/CircularWireLoop_B_rho_n_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_rho_v, "data/CircularWireLoop_B_rho_v_Java.dat");
 
-		TestABSCABUtils.dumpToFile(B_z_f1, "data/CircularWireLoop_B_z_f1_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_f2, "data/CircularWireLoop_B_z_f2_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_n,  "data/CircularWireLoop_B_z_n_Java.dat");
-		TestABSCABUtils.dumpToFile(B_z_v,  "data/CircularWireLoop_B_z_v_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_z_f1, "data/CircularWireLoop_B_z_f1_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_z_f2, "data/CircularWireLoop_B_z_f2_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_z_n,  "data/CircularWireLoop_B_z_n_Java.dat");
+		UtilsTestABSCAB.dumpToFile(B_z_v,  "data/CircularWireLoop_B_z_v_Java.dat");
 	}
 }

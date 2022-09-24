@@ -3,30 +3,32 @@
 In this section, accurate methods used to compute the magnetic vector potential~$\mathbf{A}$ and the magnetic field~$\mathbf{B}$
 of a straight wire segment and a circular wire loop are presented.
 Furthermore, methods to evaluate the magnetostatic quantities in global coordinates are provided.
-Particular attention was paid to make sure that the expressions presented in this work
+Particular attention was paid to ensure that the expressions presented in this work
 obey the correct asymptotic behavior for evaluation locations
 far away from and close to the current carriers.
 For most test cases, the full relative accuracy of the floating point
 arithmetic chosen for implementation is retained throughout the computations
-(16 digits of precision in the IEEE-754 \texttt{binary64}~\cite{ieee754} implementation),
-with few exceptions where accuracy drops by up to 3 digits of precision
+(16 digits of precision in the IEEE-754 \texttt{binary64}~\cite{ieee754} implementation).
+There are a few exceptions where accuracy drops by up to 3 digits of precision
 (in the \texttt{binary64} case).
-The section is concluded by a description of the verification procedure
+The section concludes with a description of the verification procedure
 employed to benchmark these methods.
 
 \subsection{Straight Wire Segment}
 \label{sec:methods_sws}
 The basic geometry of a single wire segment is shown in Fig.~\ref{fig:straightWireSegment}.
+A cylindrical coordinate system~$(\rho, \varphi,z)$ is aligned with the wire segment~(red line),
+such that the wire is aligned with the $z$-axis and starts at the origin.
+A current $I$ flows along the wire segment of length~$L$ in positive~$z$ direction~(red arrow).
+The evaluation point is specified by~$\mathbf{x} = (\rho, \varphi=0, z)$.
+$R_\mathrm{i}$ ($R_\mathrm{f}$) denotes the distance from the start (end) of the wire segment to~$\mathbf{x}$.
+The angles $\alpha$ and $\beta$ are used in the formulas below.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=8cm]{img/straightWireSegment.eps}
- \caption{Geometry of a single wire segment after Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.
-          A cylindrical coordinate system~$(\rho, \varphi,z)$ is aligned with the wire segment~(red line),
-          such that the wire is aligned with the $z$-axis and starts at the origin.
-          A current $I$ flows along the wire segment of length~$L$ in positive~$z$ direction~(red arrow).
-          The evaluation point is specified by~$\mathbf{x} = (\rho, \varphi=0, z)$.
-          $R_\mathrm{i}$ ($R_\mathrm{f}$) denotes the distance from the start (end) of the wire segment to~$\mathbf{x}$.
-          The angles $\alpha$ and $\beta$ are used in the formulas below.}
+ \caption{Geometry of a single wire segment (red line) and the associated cylindrical coordinate system.
+          The magnetostatic quantities are to be evaluated at a location $\mathbf{x}$.
+          After Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.}
  \label{fig:straightWireSegment}
 \end{figure}
 
@@ -56,6 +58,21 @@ for~$r_\mathrm{i} = R_\mathrm{i}/L$ and~$r_\mathrm{f} = R_\mathrm{f}/L$:
   \Rightarrow
   \epsilon     =&\, \frac{1}{r_\mathrm{i} + r_\mathrm{f}} \label{eqn:eps_default}\, .
 \end{align}
+For locations on the conductor, $\epsilon = 1$ holds.
+The magnetostatic quantites can only be evaluated at points not located on the conductor,
+where $\epsilon < 1$ holds.
+The value of $\epsilon$ only depends on the sum $R_\mathrm{i} + R_\mathrm{f}$,
+which implies that contours of constant $\epsilon$ are ellipses with focii at the ends of the wire segment.
+This is similar to the Gardener's construction method for ellipses~\cite{dawson_2021}.
+The elliptical contours of constant $\epsilon$ are illustrated in Fig.~\ref{fig:epsilon_contours}.
+The contours approach a circular shape far away from the wire segment.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/epsilon_contours.eps}
+ \caption{Contours of constant $\epsilon$ as computed from \eqn{eps_default}.
+          The straight wire segment is located along the red line.}
+ \label{fig:epsilon_contours}
+\end{figure}
 A common prefactor depending on the current~$I$ and~$\mu_0$ is split off:
 \begin{equation}
   A_z(\rho', z') = \frac{\mu_0 I}{2 \pi} \tilde{A}_z (\rho', z')
@@ -71,12 +88,20 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{A}_z (\rho', z') =
   \begin{cases}
-    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0 , \textrm{any } z'      \\
-    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \rho' > 0, z' \in \{0, 1\} \\
-    \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq 1 \textrm{ or } z' > 2 \\
-    \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{else} \, .
+    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0 , \textrm{any } z' \,\cancel{\in}\, [0, 1]  \\
+    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, 0 < \rho' < 1, z' \in \{0, 1\} \\
+    \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq -1 \textrm{ or } z' > 2 \\
+    \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{elsewhere} \, .
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
+The domain decomposition used to compute $\tilde{A}_z$ accurately is depicted in Fig.~\ref{fig:sws_A_z_regions}.
+\begin{figure}[htbp]
+ \centering
+ \includegraphics{img/sws_A_z_regions.eps}
+ \caption{Domain decomposition used to partition the evaluation region
+          for computing $\tilde{A}_z$ accurately.}
+ \label{fig:sws_A_z_regions}
+\end{figure}
 The case~$\rho'=0$ is considered first.
 Recall that the wire segment extends along~$\rho'=0$ from $z'=0$ to $z'=1$.
 The magnetostatic quantities are well-defined for~$\rho'=0$ as long as $z' < 0$ or $z' > 1$.
@@ -84,8 +109,8 @@ For the case~$\rho'=0$, the following formulation is used for valid evaluation l
 \begin{equation}
   \tilde{A}_\mathrm{z,ax} (z') =
   \begin{cases}
-    \tilde{A}_\mathrm{z,ax,f} (z') &:\, z' < -1 \textrm{ or } z' > 2 \\
-    \tilde{A}_\mathrm{z,ax,n} (z') &:\, \textrm{else}
+    \tilde{A}_\mathrm{z,ax,f} (z') &:\, z' < -1 \textrm{ or } z' \geq 2 \\
+    \tilde{A}_\mathrm{z,ax,n} (z') &:\, -1 \leq z' < 0 \textrm{ or } 1 < z' < 2
   \end{cases}
 \end{equation}
 with
@@ -100,8 +125,8 @@ The following formulation is used for the cases $z'=0$ or $z'=1$:
 \begin{equation}
   \tilde{A}_\mathrm{z,rad} (\rho') =
   \begin{cases}
-    \tilde{A}_\mathrm{z,rad,f} (\rho')  &:\, \rho' > 1 \\
-    \tilde{A}_\mathrm{z,rad,n} (\rho') &:\, \textrm{else}
+    \tilde{A}_\mathrm{z,rad,f} (\rho') &:\, \rho' > 1 \\
+    \tilde{A}_\mathrm{z,rad,n} (\rho') &:\, 0 < \rho' \leq 1
   \end{cases}
 \end{equation}
 with

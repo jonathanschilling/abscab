@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-public class TestABSCABUtils {
+public class UtilsTestABSCAB {
 
 	/**
 	 * Write a given array to a text file; one line per row.
@@ -47,7 +47,7 @@ public class TestABSCABUtils {
 				for (int idxCol=0; idxCol<arr.length; ++idxCol) {
 					line += String.format(Locale.ENGLISH, "%+.20e ", arr[idxCol][idxRow]);
 				}
-				pw.println(line.strip());
+				pw.println(line.trim());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +68,7 @@ public class TestABSCABUtils {
 				for (int idxCol=0; idxCol<arr.length; ++idxCol) {
 					line += String.format("%d ", arr[idxCol][idxRow]);
 				}
-				pw.println(line.strip());
+				pw.println(line.trim());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,7 +217,7 @@ public class TestABSCABUtils {
 
 				if (numRows == 0) {
 					// first non-comment line defines how many columns there are
-					String[] parts = line.strip().split("\\s+");
+					String[] parts = line.trim().split("\\s+");
 					numColumns = parts.length;
 				}
 
@@ -234,7 +234,7 @@ public class TestABSCABUtils {
 		for (String line : lines) {
 			// ignore comment lines
 			if (!line.startsWith("#")) {
-				String[] parts = line.strip().split("\\s+");
+				String[] parts = line.trim().split("\\s+");
 
 				for (int idxCol = 0; idxCol < numColumns; ++idxCol) {
 					data[idxCol][idxRow] = Double.valueOf(parts[idxCol]);

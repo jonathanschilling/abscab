@@ -99,8 +99,8 @@ public class GenerateTestKnots {
 //			System.out.printf("% .17e\n", testKnotsZp[i]);
 //		}
 
-		TestABSCABUtils.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpStraightWireSegment.dat");
-		TestABSCABUtils.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpStraightWireSegment.dat");
 
 		/** assemble test points from knots; exclude locations on wire segment */
 		List<Double> testPointsRpLst = new LinkedList<>();
@@ -137,13 +137,13 @@ public class GenerateTestKnots {
 		int[] idxRp = idxRpLst.stream().mapToInt(i -> i).toArray();
 		int[] idxZp = idxZpLst.stream().mapToInt(i -> i).toArray();
 
-		TestABSCABUtils.dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
-		TestABSCABUtils.dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(testPointsRp, "src/test/resources/testPointsRpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(testPointsZp, "src/test/resources/testPointsZpStraightWireSegment.dat");
 
-		TestABSCABUtils.dumpToFile(idxRp, "src/test/resources/idxRpStraightWireSegment.dat");
-		TestABSCABUtils.dumpToFile(idxZp, "src/test/resources/idxZpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(idxRp, "src/test/resources/idxRpStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpToFile(idxZp, "src/test/resources/idxZpStraightWireSegment.dat");
 
-		TestABSCABUtils.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
+		UtilsTestABSCAB.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsStraightWireSegment.dat");
 	}
 
 	/**
@@ -221,8 +221,8 @@ public class GenerateTestKnots {
 //			System.out.printf("% .17e\n", testKnotsZp[i]);
 //		}
 
-		TestABSCABUtils.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpCircularWireLoop.dat");
-		TestABSCABUtils.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(testKnotsRp, "src/test/resources/testKnotsRpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(testKnotsZp, "src/test/resources/testKnotsZpCircularWireLoop.dat");
 
 		/** assemble test points from knots; exclude locations on wire segment */
 		List<Double> testPointsRpLst = new LinkedList<>();
@@ -259,12 +259,12 @@ public class GenerateTestKnots {
 		int[] idxRp = idxRpLst.stream().mapToInt(i -> i).toArray();
 		int[] idxZp = idxZpLst.stream().mapToInt(i -> i).toArray();
 
-		TestABSCABUtils.dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
-		TestABSCABUtils.dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(testPointsRp, "src/test/resources/testPointsRpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(testPointsZp, "src/test/resources/testPointsZpCircularWireLoop.dat");
 
-		TestABSCABUtils.dumpToFile(idxRp, "src/test/resources/idxRpCircularWireLoop.dat");
-		TestABSCABUtils.dumpToFile(idxZp, "src/test/resources/idxZpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(idxRp, "src/test/resources/idxRpCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpToFile(idxZp, "src/test/resources/idxZpCircularWireLoop.dat");
 
-		TestABSCABUtils.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
+		UtilsTestABSCAB.dumpTestPoints(testPointsRp, testPointsZp, "src/test/resources/testPointsCircularWireLoop.dat");
 	}
 }

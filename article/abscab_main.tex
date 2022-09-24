@@ -163,9 +163,9 @@ The (infinitely thin) current carrier types are a straight wire segment and a ci
 The routines are highly accurate and exhibit the correct asymptotic behavior far away from and close to the current carrier.
 A suitable global set of test points is introduced and the methods presented in this work
 are tested against results obtained using arbitrary-precision arithmetic on all test points.
-The results are accurate to approximately 16 decimal digits of precision when computed using 64 bit floating point arithmetic,
-with few exceptions where accuracy drops to 13 digits.
-These primitive current carrier types can be used to make up more complex arrangements,
+The results are accurate to approximately 16 decimal digits of precision when computed using 64 bit floating point arithmetic.
+There are a few exceptions where accuracy drops to 13 digits.
+These primitive current carrier types can be used to assemble more complex arrangements,
 such as a current along a polygon (by means of defining straight wire segments from point to point along the polygon)
 and a multi-winding coil with circular cross-section.
 Reference data is provided along with the code
@@ -220,14 +220,14 @@ magnetostatics; Biot-Savart; straight wire segment; circular wire loop; magnetic
   This approach allows to select the most accurate formulation
   for a given evaluation location and to make explicit use of simplifications
   in certain special cases for speed and accuracy.
-  Particular attention was paid to make sure that the expressions presented in this work
+  Particular attention was paid to ensure that the expressions presented in this work
   obey the correct asymptotic behavior for evaluation locations
   far away from and close to the current carriers. \\
 {\em Additional comments including restrictions and unusual features:}\\
   For most test cases, the full relative accuracy of the floating point
   arithmetic chosen for implementation is retained throughout the computations
-  (16 digits of precision in the IEEE-754 \texttt{binary64} implementation),
-  with few exceptions where accuracy drops by up to 3 digits of precision
+  (16 digits of precision in the IEEE-754 \texttt{binary64} implementation).
+  There are a few exceptions where accuracy drops by up to 3 digits of precision
   (in the \texttt{binary64} case).
   The provided implementations have not been optimized for speed. \\
 \end{small}
