@@ -96,7 +96,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{elsewhere} \, .
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
-The domain decomposition used to compute $\tilde{A}_z$ accurately is depicted in Fig.~\ref{fig:sws_A_z_regions}.
+The domain decomposition used to compute $\tilde{A}_z$ accurately is depicted in Fig.~\ref{fig:sws_regions}(a).
 The case~$\rho'=0$ is considered first.
 Recall that the wire segment extends along~$\rho'=0$ from $z'=0$ to $z'=1$.
 The magnetostatic quantities are well-defined for~$\rho'=0$ as long as $z' < 0$ or $z' > 1$.
@@ -235,7 +235,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{else} \, .
   \end{cases} \label{eqn:sws_B_phi_switchover}
 \end{equation}
-The domain decomposition used to compute $\tilde{B}_\varphi$ accurately is depicted in Fig.~\ref{fig:sws_B_phi_regions}.
+The domain decomposition used to compute $\tilde{B}_\varphi$ accurately is depicted in Fig.~\ref{fig:sws_regions}(b).
 The special case~$z' \in \{0, 1\}$ is implemented as follows:
 \begin{equation}
   \tilde{B}_{\varphi,\mathrm{rad}} (\rho') = \frac{1}{\rho' \sqrt{{\rho'}^2 + 1}} \, .
@@ -257,20 +257,10 @@ The final case is implemented as follows:
 with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
 \begin{figure}[htbp]
     \centering
-    \begin{minipage}{.45\textwidth}
-        \centering
-        \includegraphics{img/sws_A_z_regions.pdf}
-        \caption{Domain decomposition used to partition the evaluation region
-                  for computing $\tilde{A}_z$ accurately.}
-        \label{fig:sws_A_z_regions}
-    \end{minipage}
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics{img/sws_B_phi_regions.pdf}
-        \caption{Domain decomposition used to partition the evaluation region
-                  for computing $\tilde{B}_\varphi$ accurately.}
-        \label{fig:sws_B_phi_regions}
-    \end{minipage}
+    \includegraphics{img/sws_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{A}_z$ (a) and $\tilde{B}_\varphi$ (b) accurately.}
+    \label{fig:sws_regions}
 \end{figure}
 
 \FloatBarrier
@@ -390,6 +380,14 @@ One of several formulations for $\tilde{A}_\varphi$ is chosen depending on the e
     \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
   \end{cases} \label{eqn:A_phi_final}
 \end{equation}
+The domain decomposition used to compute $\tilde{A}_\varphi$ accurately is depicted in Fig.~\ref{fig:cwl_A_phi_regions}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_A_phi_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{A}_\varphi$ accurately.}
+    \label{fig:cwl_A_phi_regions}
+\end{figure}
 The following formula is implemented for evaluation locations away from the wire loop:
 \begin{equation}
   \tilde{A}_{\varphi,\mathrm{f}} (\rho',z')
@@ -451,6 +449,14 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
       \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
     \end{cases} \label{eqn:cwl_B_rho_switchover}
 \end{equation}
+The domain decomposition used to compute $\tilde{B}_\rho$ accurately is depicted in Fig.~\ref{fig:cwl_B_rho_regions}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_B_rho_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{B}_\rho$ accurately.}
+    \label{fig:cwl_B_rho_regions}
+\end{figure}
 The following formulation is implemented for evaluation locations away from to the wire loop:
 \begin{equation}
   \tilde{B}_{\rho,\mathrm{f}} (\rho', z')
@@ -522,6 +528,14 @@ One of several formulations is selected depending on the evaluation location~$(\
       \tilde{B}_{z,\mathrm{v}}  (z') &:\, \textrm{else } (\rho' = 1, |z'| \leq 1) \, .
     \end{cases} \label{eqn:cwl_B_z_switchover}
 \end{equation}
+The domain decomposition used to compute $\tilde{B}_z$ accurately is depicted in Fig.~\ref{fig:cwl_B_z_regions}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{img/cwl_B_z_regions.pdf}
+    \caption{Domain decomposition used to partition the evaluation region
+              for computing $\tilde{B}_z$ accurately.}
+    \label{fig:cwl_B_z_regions}
+\end{figure}
 For points not too close to the wire loop and with $\rho' \leq 2$, the following formulation is used:
 \begin{align}
   \tilde{B}_{z,\mathrm{f1}} (\rho', z')
@@ -561,29 +575,6 @@ with
   k_c^2 = \frac{{z'}^2}{{z'}^2 + 4} \, .
 \end{equation}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics{img/cwl_A_phi_regions.pdf}
-    \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{A}_\varphi$ accurately.}
-    \label{fig:cwl_A_phi_regions}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics{img/cwl_B_rho_regions.pdf}
-    \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{B}_\rho$ accurately.}
-    \label{fig:cwl_B_rho_regions}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics{img/cwl_B_z_regions.pdf}
-    \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{B}_z$ accurately.}
-    \label{fig:cwl_B_z_regions}
-\end{figure}
 
 \FloatBarrier
 \subsection{Evaluation in Global Coordinates}
