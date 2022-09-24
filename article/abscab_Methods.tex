@@ -259,7 +259,9 @@ with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
     \centering
     \includegraphics{img/sws_regions.pdf}
     \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{A}_z$ (a) and $\tilde{B}_\varphi$ (b) accurately.}
+             for computing $\tilde{A}_z$ (a) and $\tilde{B}_\varphi$ (b) accurately.
+             The colored regions indicate at which evaluation locations $(\rho',z')$
+             which formulation (see legend) is used.}
     \label{fig:sws_regions}
 \end{figure}
 
@@ -267,16 +269,17 @@ with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
 \subsection{Circular Wire Loop}
 \label{sec:methods_cwl}
 The basic geometry of a circular wire loop under consideration here is shown in Fig.~\ref{fig:circularWireLoop}.
+The loop is centered at the origin with its normal vector aligned with the $z$-axis.
+The radius of the loop is denoted $a$ and a current $I$ (with corresponding current density~$\mathbf{j}$)
+flows in the direction indicated in Fig.~\ref{fig:circularWireLoop}.
+The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.
+The coordinates of the evaluation point can be expressed in spherical coordinates as~$(r, \theta)$
+or in cylindrical coordinates as~$(\rho, z)$.
+The axisymmetry of this setup always allows to rotate the coordinate system such that $\varphi=0$ can be assumed.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.5\textwidth]{img/circularWireLoop.eps}
- \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.
-          The radius of the loop is denoted $a$ and a current $I$ (with corresponding current density~$\mathbf{j}$)
-          flows in the indicated direction.
-          The magnetic field and vector potential are to be evaluated at the point $\mathbf{x}$ in the ($x$, $z$)-plane.
-          The coordinates of the evaluation point can be expressed in spherical coordinates as~$(r, \theta)$
-          or in cylindrical coordinates as~$(\rho, z)$.
-          The axisymmetry of this setup always allows to rotate the coordinate system such that $\varphi=0$ can be assumed.}
+ \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.}
  \label{fig:circularWireLoop}
 \end{figure}
 Similar to the case of the straight wire segment,
@@ -385,7 +388,9 @@ The domain decomposition used to compute $\tilde{A}_\varphi$ accurately is depic
     \centering
     \includegraphics{img/cwl_A_phi_regions.pdf}
     \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{A}_\varphi$ accurately.}
+             for computing $\tilde{A}_\varphi$ accurately.
+             The colored regions indicate at which evaluation locations $(\rho',z')$
+             which formulation (see legend) is used.}
     \label{fig:cwl_A_phi_regions}
 \end{figure}
 The following formula is implemented for evaluation locations away from the wire loop:
@@ -454,7 +459,9 @@ The domain decomposition used to compute $\tilde{B}_\rho$ accurately is depicted
     \centering
     \includegraphics{img/cwl_B_rho_regions.pdf}
     \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{B}_\rho$ accurately.}
+             for computing $\tilde{B}_\rho$ accurately.
+             The colored regions indicate at which evaluation locations $(\rho',z')$
+             which formulation (see legend) is used.}
     \label{fig:cwl_B_rho_regions}
 \end{figure}
 The following formulation is implemented for evaluation locations away from to the wire loop:
@@ -533,7 +540,9 @@ The domain decomposition used to compute $\tilde{B}_z$ accurately is depicted in
     \centering
     \includegraphics{img/cwl_B_z_regions.pdf}
     \caption{Domain decomposition used to partition the evaluation region
-              for computing $\tilde{B}_z$ accurately.}
+             for computing $\tilde{B}_z$ accurately.
+             The colored regions indicate at which evaluation locations $(\rho',z')$
+             which formulation (see legend) is used.}
     \label{fig:cwl_B_z_regions}
 \end{figure}
 For points not too close to the wire loop and with $\rho' \leq 2$, the following formulation is used:
