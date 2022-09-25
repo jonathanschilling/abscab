@@ -1,6 +1,9 @@
 module abscab
 use mod_cel
 use mod_compsum
+
+use, intrinsic :: ieee_arithmetic, only: IEEE_VALUE, IEEE_SIGNALING_NAN
+
 implicit none
 
 !> vacuum magnetic permeability in Vs/Am (CODATA-2018)
@@ -557,7 +560,14 @@ function straightWireSegment_A_z(rhoP, zP)
     real(wp) :: rhoP
     real(wp) :: zP
     if (rhoP .eq. 0.0_wp) then
-        straightWireSegment_A_z = sws_A_z_ax(zP)
+        if (zP .lt. 0.0_wp .or. zP .gt. 1.0_wp) then
+            straightWireSegment_A_z = sws_A_z_ax(zP)
+        else
+            write(*,*) "evaluation locations on the wire segment (rho'=", &
+              rhoP, " z'=", zP, ") are not allowed"
+            straightWireSegment_A_z = IEEE_VALUE(straightWireSegment_A_z, &
+                                                 IEEE_SIGNALING_NAN)
+        end if
     else if (zP .eq. 0.0_wp .or. zP .eq. 1.0_wp) then
         straightWireSegment_A_z = sws_A_z_rad(rhoP)
     else if (rhoP .ge. 1.0_wp .or. zP .le. -1.0_wp .or. zP .gt. 2.0_wp) then
@@ -577,11 +587,18 @@ function straightWireSegment_B_phi(rhoP, zP)
     real(wp) :: rhoP
     real(wp) :: zP
     if (rhoP .eq. 0.0_wp) then
-        straightWireSegment_B_phi = 0.0_wp
+        if (zP .lt. 0.0_wp .or. zP .gt. 1.0_wp) then
+            straightWireSegment_B_phi = 0.0_wp
+        else
+            write(*,*) "evaluation locations on the wire segment (rho'=", &
+              rhoP, " z'=", zP, ") are not allowed"
+            straightWireSegment_B_phi = IEEE_VALUE(straightWireSegment_B_phi, &
+                                                   IEEE_SIGNALING_NAN)
+        end if
     else if (zP .eq. 0.0_wp .or. zP .eq. 1.0_wp) then
         straightWireSegment_B_phi = sws_B_phi_rad(rhoP)
-    else if (rhoP .ge. 1.0_wp .or. zP .le. 0.0_wp .or. zP .ge. 1.0_wp .or. &
-             rhoP / (1.0_wp - zP) .ge. 1.0_wp .or. rhoP / zP .ge. 1.0_wp) then
+    else if (rhoP .ge. zP .or. rhoP .ge. 1.0_wp - zP .or. &
+             zP .lt. 0.0_wp .or. zP .gt. 1.0_wp) then
         straightWireSegment_B_phi = sws_B_phi_f(rhoP, zP)
     else
         straightWireSegment_B_phi = sws_B_phi_n(rhoP, zP)
@@ -609,7 +626,13 @@ function circularWireLoop_A_phi(rhoP, zP)
     else if (rhoP .ne. 1.0_wp) then
         circularWireLoop_A_phi = cwl_A_phi_n(rhoP, zP)
     else
-        circularWireLoop_A_phi = cwl_A_phi_v(zP)
+        if (zP .ne. 0.0_wp) then
+            circularWireLoop_A_phi = cwl_A_phi_v(zP)
+        else
+            write(*,*) "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined"
+            circularWireLoop_A_phi = IEEE_VALUE(circularWireLoop_A_phi, &
+                                                IEEE_SIGNALING_NAN)
+        end if
     end if
 end function ! circularWireLoop_A_phi
 
@@ -627,7 +650,13 @@ function circularWireLoop_B_rho(rhoP, zP)
     real(wp) :: rhoP
     real(wp) :: zP
     if (rhoP .eq. 0.0_wp .or. zP .eq. 0.0_wp) then
-        circularWireLoop_B_rho = 0.0_wp
+        if (rhoP .ne. 1.0_wp) then
+            circularWireLoop_B_rho = 0.0_wp
+        else
+            write(*,*) "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined"
+            circularWireLoop_B_rho = IEEE_VALUE(circularWireLoop_B_rho, &
+                                                IEEE_SIGNALING_NAN)
+        end if
     else if (rhoP .lt. 0.5_wp .or. rhoP .gt. 2.0_wp .or. &
              abs(zP) .ge. 1.0_wp) then
         circularWireLoop_B_rho = cwl_B_rho_f(rhoP, zP)
@@ -659,7 +688,13 @@ function circularWireLoop_B_z(rhoP, zP)
     else if (rhoP .ne. 1.0_wp) then
         circularWireLoop_B_z = cwl_B_z_n(rhoP, zP)
     else
-        circularWireLoop_B_z = cwl_B_z_v(zP)
+        if (zP .ne. 0.0_wp) then
+            circularWireLoop_B_z = cwl_B_z_v(zP)
+        else
+            write(*,*) "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined"
+            circularWireLoop_B_z = IEEE_VALUE(circularWireLoop_B_z, &
+                                              IEEE_SIGNALING_NAN)
+        end if
     end if
 end function ! circularWireLoop_B_z
 

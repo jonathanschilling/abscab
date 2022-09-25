@@ -516,7 +516,11 @@ double cwl_B_z_v(double zP) {
  */
 double straightWireSegment_A_z(double rhoP, double zP) {
 	if (rhoP == 0.0) {
-		return sws_A_z_ax(zP);
+		if (zP < 0 || zP > 1) {
+			return sws_A_z_ax(zP);
+		} else {
+			fprintf(stderr, "evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed\n", rhoP, zP);
+		}
 	} else if (zP == 0.0 || zP == 1.0) {
 		return sws_A_z_rad(rhoP);
 	} else if (rhoP >= 1.0 || zP <= -1.0 || zP > 2.0) {
@@ -535,10 +539,14 @@ double straightWireSegment_A_z(double rhoP, double zP) {
  */
 double straightWireSegment_B_phi(double rhoP, double zP) {
 	if (rhoP == 0.0) {
-		return 0.0;
+		if (zP < 0 || zP > 1) {
+			return 0.0;
+		} else {
+			fprintf(stderr, "evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed\n", rhoP, zP);
+		}
 	} else if (zP == 0.0 || zP == 1.0) {
 		return sws_B_phi_rad(rhoP);
-	} else if (rhoP >= 1.0 || zP <= 0.0 || zP >= 1.0 || rhoP / (1 - zP) >= 1.0 || rhoP / zP >= 1.0) {
+	} else if (rhoP >= zP || rhoP >= 1 - zP || zP < 0.0 || zP > 1.0) {
 		return sws_B_phi_f(rhoP, zP);
 	} else {
 		return sws_B_phi_n(rhoP, zP);
@@ -564,7 +572,11 @@ double circularWireLoop_A_phi(double rhoP, double zP) {
 	} else if (rhoP != 1.0) {
 		return cwl_A_phi_n(rhoP, zP);
 	} else {
-		return cwl_A_phi_v(zP);
+		if (zP != 0) {
+			return cwl_A_phi_v(zP);
+		} else {
+			fprintf(stderr, "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined\n");
+		}
 	}
 }
 
@@ -581,7 +593,10 @@ double circularWireLoop_A_phi(double rhoP, double zP) {
  */
 double circularWireLoop_B_rho(double rhoP, double zP) {
 	if (rhoP == 0.0 || zP == 0.0) {
-		return 0.0;
+		if (rhoP != 1.0) {
+			return 0.0;
+		} else {
+			fprintf(stderr, "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined\n");
 	} else if (rhoP < 0.5 || rhoP > 2.0 || fabs(zP) >= 1.0) {
 		return cwl_B_rho_f(rhoP, zP);
 	} else if (rhoP != 1.0) {
@@ -610,7 +625,11 @@ double circularWireLoop_B_z(double rhoP, double zP) {
 	} else if (rhoP != 1.0) {
 		return cwl_B_z_n(rhoP, zP);
 	} else {
-		return cwl_B_z_v(zP);
+		if (zP != 0) {
+			return cwl_B_z_v(zP);
+		} else {
+			fprintf(stderr, "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined\n");
+		}
 	}
 }
 

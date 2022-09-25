@@ -19,11 +19,11 @@ r"""vacuum magnetic permeability, divided by :math:`4 \pi`"""
 
 def _sws_A_z_ax_f(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0, far-field.
-    
+
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
     evaluated along axis of wire segment (rho = 0).
     This is a special case for points away from the wire ("far-field") for zP < -1 or zP >= 2.
-    
+
     :param float zP: normalized vertical coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
     :rtype: float
@@ -33,26 +33,26 @@ def _sws_A_z_ax_f(zP):
 
 def _sws_A_z_ax_n(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0, near-field.
-    
+
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
     evaluated along axis of wire segment (rhoP = 0).
     This is a special case for points close to the wire ("near-field") for -1 <= zP < 2.
-    
+
     :param float zP: normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
     :meta private:
     """
-    
+
     # Two negative signs must be able to cancel each other here!
     return np.copysign(1.0, zP) * np.log(zP / (zP - 1)) / 2
 
 def _sws_A_z_ax(zP):
     """Normalized A_z of Straight Wire Segment, along rhoP=0.
-    
+
     Compute the normalized axial component of magnetic vector potential of straight wire segment,
     evaluated along axis of wire segment (rho = 0).
-    
+
     :param float zP: normalized axial coordinate of evaluation location; must not be in [0, 1] (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
@@ -65,11 +65,11 @@ def _sws_A_z_ax(zP):
 
 def _sws_A_z_rad_f(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1, far-field.
-    
+
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
     evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
     This is a special case for points away from the wire ("far-field") for rhoP > 1.
-  
+
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
@@ -79,11 +79,11 @@ def _sws_A_z_rad_f(rhoP):
 
 def _sws_A_z_rad_n(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1, near-field.
-    
+
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
     evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
     This is a special case for points close to the wire ("near-field") for rhoP <= 1.
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
@@ -98,10 +98,10 @@ def _sws_A_z_rad_n(rhoP):
 
 def _sws_A_z_rad(rhoP):
     """Normalized A_z of Straight Wire Segment, along zP=0 or zP=1.
-    
+
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment,
     evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location; must not be zero (on wire segment)
     :return: normalized axial component of magnetic vector potential
     :rtype: float
@@ -114,11 +114,11 @@ def _sws_A_z_rad(rhoP):
 
 def _sws_A_z_f(rhoP, zP):
     """Normalized A_z of Straight Wire Segment, far-field.
-    
+
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
     This formulation is useful for points away from the wire ("far-field")
     at rhoP >= 1 or zP <= -1 or zP > 2.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
@@ -131,11 +131,11 @@ def _sws_A_z_f(rhoP, zP):
 
 def _sws_A_z_n(rhoP, zP):
     """Normalized A_z of Straight Wire Segment, near-field.
-    
+
     Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
     This formulation is useful for points close to the wire ("near-field")
     at rhoP < 1 and -1 < zP <= 2.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
@@ -164,10 +164,10 @@ def _sws_A_z_n(rhoP, zP):
 
 def _sws_B_phi_rad(rhoP):
     """Normalized B_phi of Straight Wire Segment, along zP=0 or zP=1.
-    
+
     Compute the normalized tangential component of the magnetic field of a straight wire segment,
     evaluated radially along the endpoints of the wire segment (zP = 0 or zP = 1).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
     :rtype: float
@@ -177,11 +177,11 @@ def _sws_B_phi_rad(rhoP):
 
 def _sws_B_phi_f(rhoP, zP):
     """Normalized B_phi of Straight Wire Segment, far-field.
-    
+
     Compute the normalized tangential component of the magnetic field of a straight wire segment.
     This formulation is useful for points away from the wire ("far-field")
     at rhoP >= 1 or zP <= 0 or zP >= 1 or rhoP/(1-zP) >= 1 or rhoP/zP >= 1.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
@@ -200,11 +200,11 @@ def _sws_B_phi_f(rhoP, zP):
 
 def _sws_B_phi_n(rhoP, zP):
     """Normalized B_phi of Straight Wire Segment, near-field.
-    
+
     Compute the normalized tangential component of the magnetic field of a straight wire segment.
     This formulation is useful for points close to the wire ("near-field")
     at rhoP < 1 and 0 < zP < 1 and rhoP/(1-zP) < 1 and rhoP/zP < 1.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
@@ -242,11 +242,11 @@ def _sws_B_phi_n(rhoP, zP):
 
 def _cwl_A_phi_f(rhoP, zP):
     """Normalized A_phi of Circular Wire Loop, far-field.
-    
+
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points away from the wire ("far-field")
     at rhoP < 1/2 or rhoP > 2 or :math:`|zP| >= 1`.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
@@ -268,11 +268,11 @@ def _cwl_A_phi_f(rhoP, zP):
 
 def _cwl_A_phi_n(rhoP, zP):
     """Normalized A_phi of Circular Wire Loop, near-field.
-    
+
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
     at 1/2 <= rhoP <= 2 and :math:`|zP| < 1`.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
@@ -295,10 +295,10 @@ def _cwl_A_phi_n(rhoP, zP):
 
 def _cwl_A_phi_v(zP):
     """Normalized A_phi of Circular Wire Loop, along rhoP=1, near-field.
-    
+
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
- 
+
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
     :rtype: float
@@ -315,11 +315,11 @@ def _cwl_A_phi_v(zP):
 
 def _cwl_B_rho_f(rhoP, zP):
     """Normalized B_rho of Circular Wire Loop, far-field.
-    
+
     Compute the normalized radial component of the magnetic field of a circular wire loop.
     This formulation is useful for points away from the wire ("far-field")
     at rhoP < 1/2 or rhoP > 2 or :math:`|zP| >= 1`.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
@@ -348,11 +348,11 @@ def _cwl_B_rho_f(rhoP, zP):
 
 def _cwl_B_rho_n(rhoP, zP):
     """Normalized B_rho of Circular Wire Loop, near-field.
-    
+
     Compute the normalized radial component of the magnetic field of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
     at 1/2 <= rhoP <= 2 and :math:`|zP| < 1`.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
@@ -389,10 +389,10 @@ def _cwl_B_rho_n(rhoP, zP):
 
 def _cwl_B_rho_v(zP):
     """Normalized B_rho of Circular Wire Loop, along rhoP=1, near-field.
-    
+
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
- 
+
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
@@ -412,11 +412,11 @@ def _cwl_B_rho_v(zP):
 
 def _cwl_B_z_f1(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, far-field (1).
-    
+
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
     This formulation is useful for certain points away from the wire ("far-field")
     at rhoP < 1/2 or (rhoP <= 2 and :math:`|zP| >= 1`).
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
@@ -439,11 +439,11 @@ def _cwl_B_z_f1(rhoP, zP):
 
 def _cwl_B_z_f2(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, far-field (2).
-    
+
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
     This formulation is useful for certain other points away from the wire ("far-field")
     at rhoP > 2.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
@@ -488,11 +488,11 @@ def _cwl_B_z_f2(rhoP, zP):
 
 def _cwl_B_z_n(rhoP, zP):
     """Normalized B_z of Circular Wire Loop, near-field.
-    
+
     Compute the normalized vertical component of the magnetic field of a circular wire loop.
     This formulation is useful for points close to the wire ("near-field")
     at 1/2 <= rhoP <= 2, but not rhoP=1, and :math:`|zP| <= 1`.
- 
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized vertical component of magnetic field
@@ -517,10 +517,10 @@ def _cwl_B_z_n(rhoP, zP):
 
 def _cwl_B_z_v(zP):
     """Normalized B_z of Circular Wire Loop, along rhoP=1, near-field.
-    
+
     Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
     This formulation is useful for points along rhoP=1 with :math:`|zP| < 1`.
- 
+
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
     :rtype: float
@@ -538,11 +538,11 @@ def _cwl_B_z_v(zP):
 
 def straightWireSegment_A_z(rhoP, zP):
     """Compute the normalized axial component of the magnetic vector potential of a straight wire segment.
-    
+
     This method selects the proper special case method to use
     for computing the normalized axial component of the magnetic vector potential
     of a straight wire segment for given evaluation location (rhoP, zP).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized axial component of magnetic vector potential
@@ -550,7 +550,10 @@ def straightWireSegment_A_z(rhoP, zP):
     :meta private:
     """
     if rhoP == 0.0:
-        return _sws_A_z_ax(zP)
+        if zP < 0.0 or zP > 1.0:
+            return _sws_A_z_ax(zP)
+        else:
+            raise RuntimeError("evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed"%(rhoP, zP))
     elif zP == 0.0 or zP == 1.0:
         return _sws_A_z_rad(rhoP)
     elif rhoP >= 1.0 or zP <= -1.0 or zP > 2.0:
@@ -560,11 +563,11 @@ def straightWireSegment_A_z(rhoP, zP):
 
 def straightWireSegment_B_phi(rhoP, zP):
     """Compute the normalized tangential component of the magnetic field of a straight wire segment.
-    
+
     This method selects the proper special case method to use
     for computing the normalized tangential component of the magnetic field
     of a straight wire segment for given evaluation location (rhoP, zP).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic field
@@ -572,21 +575,24 @@ def straightWireSegment_B_phi(rhoP, zP):
     :meta private:
     """
     if rhoP == 0.0:
-        return 0.0
+        if zP < 0.0 or zP > 1.0:
+            return 0.0
+        else:
+            raise RuntimeError("evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed"%(rhoP, zP))
     elif zP == 0.0 or zP == 1.0:
         return _sws_B_phi_rad(rhoP)
-    elif rhoP >= 1.0 or zP <= 0.0 or zP >= 1.0 or rhoP / (1 - zP) >= 1.0 or rhoP / zP >= 1.0:
+    elif rhoP >= zP or rhoP >= 1.0 - zP or zP < 0.0 or zP > 1.0:
         return _sws_B_phi_f(rhoP, zP)
     else:
         return _sws_B_phi_n(rhoP, zP)
 
 def circularWireLoop_A_phi(rhoP, zP):
     """Compute the normalized tangential component of the magnetic vector potential of a circular wire loop.
-    
+
     This method selects the proper special case method to use
     for computing the normalized tangential component of the magnetic vector potential
     of a circular wire loop for given evaluation location (rhoP, zP).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized tangential component of magnetic vector potential
@@ -600,15 +606,18 @@ def circularWireLoop_A_phi(rhoP, zP):
     elif rhoP != 1.0:
         return _cwl_A_phi_n(rhoP, zP)
     else:
-        return _cwl_A_phi_v(zP)
+        if zP != 0.0:
+            return _cwl_A_phi_v(zP)
+        else:
+            raise RuntimeError("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined")
 
 def circularWireLoop_B_rho(rhoP, zP):
     """Compute the normalized radial component of the magnetic field of a circular wire loop.
-    
+
     This method selects the proper special case method to use
     for computing the normalized radial component of the magnetic field
     of a circular wire loop for given evaluation location (rhoP, zP).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
@@ -616,7 +625,10 @@ def circularWireLoop_B_rho(rhoP, zP):
     :meta private:
     """
     if rhoP == 0.0 or zP == 0.0:
-        return 0.0
+        if rhoP != 0.0:
+            return 0.0
+        else :
+            raise RuntimeError("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined")
     elif rhoP < 0.5 or rhoP > 2.0 or np.abs(zP) >= 1.0:
         return _cwl_B_rho_f(rhoP, zP)
     elif rhoP != 1.0:
@@ -626,11 +638,11 @@ def circularWireLoop_B_rho(rhoP, zP):
 
 def circularWireLoop_B_z(rhoP, zP):
     """Compute the normalized vertical component of the magnetic field of a circular wire loop.
-    
+
     This method selects the proper special case method to use
     for computing the normalized vertical component of the magnetic field
     of a circular wire loop for given evaluation location (rhoP, zP).
-    
+
     :param float rhoP: normalized radial coordinate of evaluation location
     :param float zP: normalized axial coordinate of evaluation location
     :return: normalized radial component of magnetic field
@@ -644,13 +656,16 @@ def circularWireLoop_B_z(rhoP, zP):
     elif rhoP != 1.0:
         return _cwl_B_z_n(rhoP, zP)
     else:
-        return _cwl_B_z_v(zP)
+        if zP != 0.0:
+            return _cwl_B_z_v(zP)
+        else:
+            raise RuntimeError("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined")
 
 # --------------------------------------------------
 
 def vectorPotentialCircularFilament(center, normal, radius, current, evalPos):
     """Compute the magnetic vector potential of a circular wire loop.
-    
+
     :param arr(float) center: [3: x, y, z] origin of loop (in meters)
     :param arr(float) normal: [3: x, y, z]  normal vector of loop (in meters); will be normalized internally
     :param float radius: radius of the wire loop (in meters)
@@ -678,7 +693,7 @@ def vectorPotentialCircularFilament(center, normal, radius, current, evalPos):
     eX = normal[0] / nLen
     eY = normal[1] / nLen
     eZ = normal[2] / nLen
-    
+
     nEvalPos = len(evalPos)
 
     vectorPotential = np.zeros((nEvalPos, 3))
@@ -736,12 +751,12 @@ def vectorPotentialCircularFilament(center, normal, radius, current, evalPos):
             vectorPotential[idxEval, 0] = aPhi * ePhiX
             vectorPotential[idxEval, 1] = aPhi * ePhiY
             vectorPotential[idxEval, 2] = aPhi * ePhiZ
-    
+
     return vectorPotential
 
 def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
     """Compute the magnetic field of a circular wire loop.
-    
+
     :param arr(float) center: [3: x, y, z] origin of loop (in meters)
     :param arr(float) normal: [3: x, y, z]  normal vector of loop (in meters); will be normalized internally
     :param float radius: radius of the wire loop (in meters)
@@ -753,7 +768,7 @@ def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
     """
     if not np.isfinite(radius) or radius <= 0.0:
         raise ValueError("radius must be finite and positive, but is %g"%(radius,))
-    
+
     bPrefactor = MU_0_BY_PI * current / radius
 
     # squared length of normal vector
@@ -824,7 +839,7 @@ def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
             magneticField[idxEval, 2] = bRho * eRZ
         else:
             rhoP = 0.0
-            
+
         # compute vertical component of normalized magnetic field
         # and scale by current and mu_0
         bZ = bPrefactor * circularWireLoop_B_z(rhoP, zP)
@@ -833,18 +848,18 @@ def magneticFieldCircularFilament(center, normal, radius, current, evalPos):
         magneticField[idxEval, 0] += bZ * eX
         magneticField[idxEval, 1] += bZ * eY
         magneticField[idxEval, 2] += bZ * eZ
-        
+
     return magneticField
 
 # --------------------------------------------------
 
 def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSummation = True):
     """Compute the magnetic vector potential of a polygon filament at a number of evaluation locations.
-    
-    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m                                                     
-    :param float current: current along polygon; in A                                                                               
-    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
-    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+
+    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m
+    :param float current: current along polygon; in A
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition
                                          of the contributions from the polygon vertices; otherwise, use standard += summation.
     :return: [numEvalPos][3: x, y, z] magnetic vector potential at evaluation locations; in Tm
     :rtype: arr(float)
@@ -867,11 +882,11 @@ def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSum
         aXSum = np.zeros((numEvalPos, 3))
         aYSum = np.zeros((numEvalPos, 3))
         aZSum = np.zeros((numEvalPos, 3))
-    
+
     x_i = vertices[0, 0]
     y_i = vertices[0, 1]
     z_i = vertices[0, 2]
-    
+
     for idxSource in range(numVertices-1):
 
         x_f = vertices[idxSource + 1, 0]
@@ -896,7 +911,7 @@ def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSum
         eX = dx / l
         eY = dy / l
         eZ = dz / l
-        
+
         for idxEval in range(numEvalPos):
 
             # vector from start of wire segment to eval pos
@@ -945,17 +960,17 @@ def vectorPotentialPolygonFilament(vertices, current, evalPos, useCompensatedSum
             vectorPotential[idxEval, 0] = aXSum[idxEval, 0] + aXSum[idxEval, 1] + aXSum[idxEval, 2]
             vectorPotential[idxEval, 1] = aYSum[idxEval, 0] + aYSum[idxEval, 1] + aYSum[idxEval, 2]
             vectorPotential[idxEval, 2] = aZSum[idxEval, 0] + aZSum[idxEval, 1] + aZSum[idxEval, 2]
-    
+
     return vectorPotential
 
 def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, current, evalPos, useCompensatedSummation = True):
     """Compute the magnetic vector potential of a polygon filament at a number of evaluation locations.
-    
+
     :param int numVertices: number of polygon vertices to take into account
     :param callable(int i), arr(float) vertexSupplier: should return points along polygon as [3: x, y, z] for i=0,1,...,(numVertices-1); in m
-    :param float current: current along polygon; in A                                                                               
-    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
-    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+    :param float current: current along polygon; in A
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition
                                          of the contributions from the polygon vertices; otherwise, use standard += summation.
     :return: [numEvalPos][3: x, y, z] magnetic vector potential at evaluation locations; in Tm
     :rtype: arr(float)
@@ -963,7 +978,7 @@ def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, cu
     numEvalPos = len(evalPos)
     if numVertices < 2:
         raise ValueError("must have at least 2 vertices, not %d"%(numVertices,))
-    
+
     vectorPotential = np.zeros((numEvalPos, 3))
 
     if current == 0.0:
@@ -977,12 +992,12 @@ def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, cu
         aXSum = np.zeros((numEvalPos, 3))
         aYSum = np.zeros((numEvalPos, 3))
         aZSum = np.zeros((numEvalPos, 3))
-    
+
     pointData = vertexSupplier(0)
     x_i = pointData[0]
     y_i = pointData[1]
     z_i = pointData[2]
-    
+
     for idxSource in range(numVertices-1):
 
         pointData = vertexSupplier(idxSource + 1)
@@ -1008,7 +1023,7 @@ def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, cu
         eX = dx / l
         eY = dy / l
         eZ = dz / l
-        
+
         for idxEval in range(numEvalPos):
 
             # vector from start of wire segment to eval pos
@@ -1057,16 +1072,16 @@ def vectorPotentialPolygonFilamentVertexSupplier(numVertices, vertexSupplier, cu
             vectorPotential[idxEval, 0] = aXSum[idxEval, 0] + aXSum[idxEval, 1] + aXSum[idxEval, 2]
             vectorPotential[idxEval, 1] = aYSum[idxEval, 0] + aYSum[idxEval, 1] + aYSum[idxEval, 2]
             vectorPotential[idxEval, 2] = aZSum[idxEval, 0] + aZSum[idxEval, 1] + aZSum[idxEval, 2]
-    
+
     return vectorPotential
 
 def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSummation = True):
     """Compute the magnetic field of a polygon filament at a number of evaluation locations.
-    
-    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m                                                     
-    :param float current: current along polygon; in A                                                                               
-    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
-    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+
+    :param arr(float) vertices: [numVertices][3: x, y, z] points along polygon; in m
+    :param float current: current along polygon; in A
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition
                                          of the contributions from the polygon vertices; otherwise, use standard += summation.
     :return: [numEvalPos][3: x, y, z] magnetic field at evaluation locations; in T
     :rtype: arr(float)
@@ -1090,11 +1105,11 @@ def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSumma
         bXSum = np.zeros((numEvalPos, 3))
         bYSum = np.zeros((numEvalPos, 3))
         bZSum = np.zeros((numEvalPos, 3))
-    
+
     x_i = vertices[0, 0]
     y_i = vertices[0, 1]
     z_i = vertices[0, 2]
-    
+
     for idxSource in range(numVertices-1):
 
         x_f = vertices[idxSource + 1, 0]
@@ -1122,7 +1137,7 @@ def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSumma
         eX = dx / l
         eY = dy / l
         eZ = dz / l
-        
+
         for idxEval in range(numEvalPos):
 
             # vector from start of wire segment to eval pos
@@ -1143,7 +1158,7 @@ def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSumma
 
             # perpendicular distance squared between evalPos and axis of wire segment
             alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
-            
+
             # B_phi is zero along axis of filament
             if alignedRSq > 0.0:
 
@@ -1187,17 +1202,17 @@ def magneticFieldPolygonFilament(vertices, current, evalPos, useCompensatedSumma
             magneticField[idxEval, 0] = bXSum[idxEval, 0] + bXSum[idxEval, 1] + bXSum[idxEval, 2]
             magneticField[idxEval, 1] = bYSum[idxEval, 0] + bYSum[idxEval, 1] + bYSum[idxEval, 2]
             magneticField[idxEval, 2] = bZSum[idxEval, 0] + bZSum[idxEval, 1] + bZSum[idxEval, 2]
-    
+
     return magneticField
 
 def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, current, evalPos, useCompensatedSummation = True):
     """Compute the magnetic field of a polygon filament at a number of evaluation locations.
-    
+
     :param int numVertices: number of polygon vertices to take into account
     :param callable(int i), arr(float) vertexSupplier: should return points along polygon as [3: x, y, z] for i=0,1,...,(numVertices-1); in m
-    :param float current: current along polygon; in A                                                                               
-    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m                                                       
-    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition             
+    :param float current: current along polygon; in A
+    :param arr(float) evalPos: [numEvalPos][3: x, y, z] evaluation locations; in m
+    :param bool useCompensatedSummation: If true, use Kahan-Babuska compensated summation to compute the superposition
                                          of the contributions from the polygon vertices; otherwise, use standard += summation.
     :return: [numEvalPos][3: x, y, z] magnetic field at evaluation locations; in T
     :rtype: arr(float)
@@ -1220,12 +1235,12 @@ def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, curr
         bXSum = np.zeros((numEvalPos, 3))
         bYSum = np.zeros((numEvalPos, 3))
         bZSum = np.zeros((numEvalPos, 3))
-    
+
     pointData = vertexSupplier(0)
     x_i = pointData[0]
     y_i = pointData[1]
     z_i = pointData[2]
-    
+
     for idxSource in range(numVertices-1):
 
         pointData = vertexSupplier(idxSource + 1)
@@ -1254,7 +1269,7 @@ def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, curr
         eX = dx / l
         eY = dy / l
         eZ = dz / l
-        
+
         for idxEval in range(numEvalPos):
 
             # vector from start of wire segment to eval pos
@@ -1275,7 +1290,7 @@ def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, curr
 
             # perpendicular distance squared between evalPos and axis of wire segment
             alignedRSq = rPerpX * rPerpX + rPerpY * rPerpY + rPerpZ * rPerpZ
-            
+
             # B_phi is zero along axis of filament
             if alignedRSq > 0.0:
 
@@ -1319,5 +1334,5 @@ def magneticFieldPolygonFilamentVertexSupplier(numVertices, vertexSupplier, curr
             magneticField[idxEval, 0] = bXSum[idxEval, 0] + bXSum[idxEval, 1] + bXSum[idxEval, 2]
             magneticField[idxEval, 1] = bYSum[idxEval, 0] + bYSum[idxEval, 1] + bYSum[idxEval, 2]
             magneticField[idxEval, 2] = bZSum[idxEval, 0] + bZSum[idxEval, 1] + bZSum[idxEval, 2]
-    
+
     return magneticField
