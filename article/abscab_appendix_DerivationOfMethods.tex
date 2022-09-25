@@ -135,6 +135,69 @@ leading to
  \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}} \, . \label{eqn:A_artanh}
 \end{equation}
 The special-case formulations listed in Sec.~\ref{sec:methods_sws} are derived in the following.
+Close to the wire segment, the term $1-\epsilon$ vanishes as $\epsilon$ approaches it value of 1 on the wire segment.
+Therefore, consider $1-\epsilon$:
+\begin{align}
+  1 - \epsilon
+  =&\, 1 - \frac{1}{r_\mathrm{i} + r_\mathrm{f}} = \frac{r_\mathrm{i} + r_\mathrm{f} - 1}{r_\mathrm{i} + r_\mathrm{f}} \nonumber \\
+  =&\, \frac{r_\mathrm{i} + r_\mathrm{f} - 1}{r_\mathrm{i} + r_\mathrm{f} - 1 + 1} \, .
+\end{align}
+Now introduce $\tilde{n} \equiv r_\mathrm{i} + r_\mathrm{f} - 1$ and it follows:
+\begin{equation}
+  1 - \epsilon = \frac{\tilde{n}}{\tilde{n}+1} \label{eqn:omeps} \, .
+\end{equation}
+Note that as $\epsilon$ approaches 1 from below, $\tilde{n} \rightarrow 0$ from above.
+When $\epsilon$ is represented as a 64-bit floating-point variable, the closest value to $1$ it can represent is $1-\epsilon_{64}/2$,
+where $\epsilon_{64} \approx 2.2 \times 10^{-16}$ is the relative increment of \texttt{binary64}.
+However, $\tilde{n}$ can approach 0 as close as the minimum representable \texttt{binary64} value, which is on the order of $10^{-300}$.
+Thus, the reformulation into using $\tilde{n}$ allows to represent $1-\epsilon$ much more accurately than a straight-forward implementation.
+It follows with \eqn{omeps}:
+\begin{equation}
+  1 + \epsilon = 2 - (1 - \epsilon) = 2 - \frac{\tilde{n}}{\tilde{n}+1} \label{eqn:opeps} \, .
+\end{equation}
+Now insert \eqn{omeps} and \eqn{opeps} into \eqn{A_z_tilde}
+and use $\ln(a/b) = \ln(a) - \ln(b)$ for real numbers $a$ and $b$:
+\begin{align}
+  \tilde{A}_{z,\mathrm{n}} (\rho', z')
+  =&\, \frac{1}{2} \left[ \ln \left( 2 - \frac{\tilde{n}}{\tilde{n}+1} \right) - \ln \left( \frac{\tilde{n}}{\tilde{n}+1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2} \left[ \ln \left( \frac{2(\tilde{n}+1) - \tilde{n}}{\tilde{n}+1} \right) - \ln \left( \frac{\tilde{n}}{\tilde{n}+1} \right) \right] \nonumber \\
+  =&\, \frac{1}{2} \left[ \ln (2(\tilde{n}+1) - \tilde{n}) \bcancel{- \ln(\tilde{n}+1)} - \ln (\tilde{n}) \bcancel{+ \ln(\tilde{n}+1)} \right]  \nonumber \\
+  =&\, \frac{1}{2} \left[ \ln (2 + \tilde{n}) - \ln (\tilde{n}) \right] \label{eqn:sws_A_z_n_withfac2} \, .
+\end{align}
+A nutritious zero $0 = -z' + z'$ is introduced into $\tilde{n}$:
+\begin{align}
+  \tilde{n} =&\, r_\mathrm{i} - z' + r_\mathrm{f} - 1 + z' \nonumber \\
+    =&\, r_\mathrm{i} - z' + r_\mathrm{f} - (1 - z') \label{eqn:ndef} \, .
+\end{align}
+Basic trigonometry allows to identify expressions defining the angles $\alpha$ and $\beta$ in Fig.~\ref{fig:straightWireSegment}:
+\begin{align}
+  \cos(\alpha) =&\, \frac{    z'}{r_\mathrm{i}} \label{eqn:cos_alpha} \\
+  \cos(\beta ) =&\, \frac{1 - z'}{r_\mathrm{f}} \, .
+\end{align}
+It follows with the trigonometric identity $1 - \cos(\gamma) = 2 \sin^2(\gamma/2)$ (for an arbitrary angle $\gamma$):
+\begin{align}
+  r_\mathrm{i} -      z'  =&\, r_\mathrm{i} \left[ 1 - \frac{z'}{r_\mathrm{i}} \right] \nonumber \\
+       ~                  =&\, r_\mathrm{i} \left[ 1 - \cos(\alpha) \right] \nonumber \\
+       ~                  =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:riz} \\
+  r_\mathrm{f} - (1 - z') =&\, r_\mathrm{f} \left[ 1 - \frac{1 - z'}{r_\mathrm{f}} \right] \nonumber \\
+       ~            =&\, r_\mathrm{f} \left[ 1 - \cos(\beta) \right] \nonumber \\
+       ~            =&\, 2 r_\mathrm{f} \sin^2(\beta/2) \label{eqn:rfomz} \, .
+\end{align}
+Next, \eqn{riz} and \eqn{rfomz} are inserted into \eqn{ndef}, leading to:
+\begin{equation}
+  \tilde{n} = 2 \left[ r_\mathrm{i} \sin^2(\alpha/2) + r_\mathrm{f} \sin^2(\beta/2) \right] \label{eqn:n_tilde} \, .
+\end{equation}
+A factor of 2 can now be cancelled in \eqn{sws_A_z_n_withfac2} and \eqn{n_tilde}, resulting in an expression for $n = \tilde{n}/2$:
+\begin{equation}
+  n = r_\mathrm{i} \sin^2(\alpha/2) + r_\mathrm{f} \sin^2(\beta/2)
+\end{equation}
+as well as the final expression for $\tilde{A}_{z,\mathrm{n}}$:
+\begin{equation}
+   \tilde{A}_{z,\mathrm{n}} (\rho', z') =  \frac{1}{2} \left[ \ln (1 + n) - \ln (n) \right] \label{eqn:sws_A_z_n_derivation} \, .
+\end{equation}
+This concludes the derivation of \eqn{sws_A_z_n}.
+Next up are the derivations of the special-case formulations
+along the lines $\rho'=0$ as well as $z'=0$ or $z'=1$.
 First, consider the case $\rho' = 0$ at $z' < 0$ or $z' > 1$.
 There, it holds:
 \begin{align}
@@ -185,76 +248,57 @@ The expressions in \eqn{sws_A_z_ax_n_pos} and \eqn{sws_A_z_ax_n_neg} can be gene
   \tilde{A}_\mathrm{z,ax,n} (z') = \frac{1}{2} \frac{z'}{|z'|} \ln \left( \frac{z'}{z' - 1} \right) \label{eqn:sws_A_z_ax_n_derivation} \, .
 \end{equation}
 This is the formulation used in \eqn{sws_A_z_ax_n}.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Close to the wire segment, the term $1-\epsilon$ vanishes as $\epsilon$ approaches it value of 1 on the wire segment.
-Therefore, consider $1-\epsilon$:
+Next, the cases at $\rho' > 0$ for $z' = 0$ or $z' = 1$ are considered.
+Only the sum $r_\mathrm{i} + r_\mathrm{f}$ enters the expression for $\epsilon$
+and thus, also $\tilde{A}_\mathrm{z,rad}(\rho')$ only depends on $r_\mathrm{i} + r_\mathrm{f}$.
+For $z' = 0$, it follows:
 \begin{align}
-  1 - \epsilon
-  =&\, 1 - \frac{1}{r_\mathrm{i} + r_\mathrm{f}} = \frac{r_\mathrm{i} + r_\mathrm{f} - 1}{r_\mathrm{i} + r_\mathrm{f}} \nonumber \\
-  =&\, \frac{r_\mathrm{i} + r_\mathrm{f} - 1}{r_\mathrm{i} + r_\mathrm{f} - 1 + 1} \, .
+  r_\mathrm{i} =&\, \rho' \\
+  r_\mathrm{f} =&\, \sqrt{{\rho'}^2 + 1} \\
+  \Rightarrow
+  r_\mathrm{i} + r_\mathrm{f} =&\, \rho' + \sqrt{{\rho'}^2 + 1} \, .
 \end{align}
-Now introduce $n \equiv r_\mathrm{i} + r_\mathrm{f} - 1$ and it follows:
+Similarly, for $z' = 1$ it follows:
+\begin{align}
+  r_\mathrm{i} =&\, \sqrt{{\rho'}^2 + 1} \label{eqn:ri_for_rad} \\
+  r_\mathrm{f} =&\, \rho' \\
+  \Rightarrow
+  r_\mathrm{i} + r_\mathrm{f} =&\, \rho' + \sqrt{{\rho'}^2 + 1} \label{eqn:riplusrf} \, .
+\end{align}
+Thus, a valid formulation for $\tilde{A}_\mathrm{z,rad}(\rho')$ listed above in \eqn{sws_A_z_rad_f} is:
 \begin{equation}
-  1 - \epsilon = \frac{n}{n+1} \label{eqn:omeps} \, .
+  \tilde{A}_\mathrm{z,rad,f}(\rho') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right) \label{eqn:sws_A_z_rad_f_derivation} \, .
 \end{equation}
-Note that as $\epsilon$ approaches 1 from below, $n \rightarrow 0$ from above.
-When $\epsilon$ is represented as a 64-bit floating-point variable, the closest value to $1$ it can represent is $1-\epsilon_{64}/2$,
-where $\epsilon_{64} \approx 2.2 \times 10^{-16}$ is the relative increment of \texttt{binary64}.
-However, $n$ can approach 0 as close as the minimum representable \texttt{binary64} value, which is on the order of $10^{-300}$.
-Thus, the reformulation into using $n$ allows to represent $1-\epsilon$ much more accurately than a straight-forward implementation.
-It follows with \eqn{omeps}:
+This formulation was found to work well for evaluation locations far away from the wire segment.
+A different formulation which works well for evaluation locations
+close to the wire segment along $z' = 0$ and $z' = 1$ is derived next.
+The expression for $r_\mathrm{i} + r_\mathrm{f}$ from \eqn{riplusrf} is re-used here
+and normalized to $\sqrt{{\rho'}^2 + 1}$:
+\begin{align}
+  \frac{1 + \epsilon}{1 - \epsilon}
+  =&\, \frac{r_\mathrm{i} + r_\mathrm{f} + 1}{r_\mathrm{i} + r_\mathrm{f} - 1} \nonumber \\
+  =&\, \frac{\rho' + \sqrt{{\rho'}^2 + 1} + 1}{\rho' + \sqrt{{\rho'}^2 + 1} - 1} \nonumber \\
+  =&\, \frac{\bcancel{\sqrt{{\rho'}^2 + 1}} \left( \frac{\rho'}{\sqrt{{\rho'}^2 + 1}} + 1 + \frac{1}{\sqrt{{\rho'}^2 + 1}} \right)}
+            {\bcancel{\sqrt{{\rho'}^2 + 1}} \left( \frac{\rho'}{\sqrt{{\rho'}^2 + 1}} + 1 - \frac{1}{\sqrt{{\rho'}^2 + 1}} \right)} \label{eqn:opeps_omeps}
+\end{align}
+Note that an expression for $\cos(\alpha)$ can be found
+by inserting $z'=1$ and $r_\mathrm{i}$ from \eqn{ri_for_rad} into \eqn{cos_alpha}:
 \begin{equation}
-  1 + \epsilon = 2 - (1 - \epsilon) = 2 - \frac{n}{n+1} \label{eqn:opeps} \, .
+  \cos(\alpha) = \frac{1}{\sqrt{{\rho'}^2 + 1}} \, .
 \end{equation}
-Now insert \eqn{omeps} and \eqn{opeps} into \eqn{A_z_tilde}
-and use $\ln(a/b) = \ln(a) - \ln(b)$ for real numbers $a$ and $b$:
-\begin{align}
-  \tilde{A}_{z,\mathrm{n}} (\rho', z')
-  =&\, \frac{1}{2} \left[ \ln \left( 2 - \frac{n}{n+1} \right) - \ln \left( \frac{n}{n+1} \right) \right] \nonumber \\
-  =&\, \frac{1}{2} \left[ \ln \left( \frac{2(n+1) - n}{n+1} \right) - \ln \left( \frac{n}{n+1} \right) \right] \nonumber \\
-  =&\, \frac{1}{2} \left[ \ln (2(n+1) - n) \bcancel{- \ln(n+1)} - \ln (n) \bcancel{+ \ln(n+1)} \right]  \nonumber \\
-  =&\, \frac{1}{2} \left[ \ln (2 + n) - \ln (n) \right] \label{eqn:sws_A_z_n_derivation} \, .
-\end{align}
-A nutritious zero $0 = -z' + z'$ is introduced into $n$:
-\begin{align}
-  n =&\, r_\mathrm{i} - z' + r_\mathrm{f} - 1 + z' \nonumber \\
-    =&\, r_\mathrm{i} - z' + r_\mathrm{f} - (1 - z') \label{eqn:ndef} \, .
-\end{align}
-Basic trigonometry allows to identify expressions defining the angles $\alpha$ and $\beta$ in Fig.~\ref{fig:straightWireSegment}:
-\begin{align}
-  \cos(\alpha) =&\, \frac{    z'}{r_\mathrm{i}} \\
-  \cos(\beta ) =&\, \frac{1 - z'}{r_\mathrm{f}} \, .
-\end{align}
-It follows with the trigonometric identity $1 - \cos(\gamma) = 2 \sin^2(\gamma/2)$ (for an arbitrary angle $\gamma$):
-\begin{align}
-  r_\mathrm{i} -      z'  =&\, r_\mathrm{i} \left[ 1 - \frac{z'}{r_\mathrm{i}} \right] \nonumber \\
-       ~                  =&\, r_\mathrm{i} \left[ 1 - \cos(\alpha) \right] \nonumber \\
-       ~                  =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:riz} \\
-  r_\mathrm{f} - (1 - z') =&\, r_\mathrm{f} \left[ 1 - \frac{1 - z'}{r_\mathrm{f}} \right] \nonumber \\
-       ~            =&\, r_\mathrm{f} \left[ 1 - \cos(\beta) \right] \nonumber \\
-       ~            =&\, 2 r_\mathrm{f} \sin^2(\beta/2) \label{eqn:rfomz} \, .
-\end{align}
-Next, \eqn{riz} and \eqn{rfomz} are inserted into \eqn{ndef}, leading to:
+This allows to write \eqn{opeps_omeps} as follows:
 \begin{equation}
-  n = 2 \left[ r_\mathrm{i} \sin^2(\alpha/2) + r_\mathrm{f} \sin^2(\beta/2) \right] \, .
+  \frac{1 + \epsilon}{1 - \epsilon}
+  = \frac{\rho' \cos(\alpha) + 1 + \cos(\alpha)}
+         {\rho' \cos(\alpha) + 1 - \cos(\alpha)} \label{eqn:opeps_omeps_slim}
 \end{equation}
-This concludes the derivation of \eqn{sws_A_z_n}.
+and with $\cos(\alpha) = 1 - \sin^2(\alpha/2)$ it follows by inserting \eqn{opeps_omeps_slim} into \eqn{A_z_tilde}:
+\begin{equation}
+  \tilde{A}_\mathrm{z,rad,n}(\rho') = \frac{1}{2} \ln \left(
+         \frac{\rho' \cos(\alpha) + 1 + \cos(\alpha)}
+              {\rho' \cos(\alpha) + 1 - \cos(\alpha)} \right) \label{eqn:sws_A_z_rad_n_derivation} \, .
+\end{equation}
+This concludes the derivation of the formulation used in \eqn{sws_A_z_rad_n}.
 
 \subsubsection{Magnetic Field}
 The law of Biot and Savart for the magnetic field of a current density distribution $\mathbf{j}(\mathbf{x})$ is as follows~\cite{jackson}:

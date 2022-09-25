@@ -128,31 +128,31 @@ The cases with $z'=0$ or $z'=1$ are evaluated using the following expressions:
 \end{equation}
 with
 \begin{equation}
-  \tilde{A}_\mathrm{z,rad,f} (\rho') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right)
+  \tilde{A}_\mathrm{z,rad,f} (\rho') = \textrm{atanh}\left( \frac{1}{\rho' + \sqrt{{\rho'}^2 + 1}} \right) \label{eqn:sws_A_z_rad_f}
 \end{equation}
+(derived in \eqn{sws_A_z_rad_f_derivation})
 and
 \begin{equation}
-  \tilde{A}_\mathrm{z,rad,n} (\rho') = \frac{1}{2} \ln \left(\frac{\rho' c + 1 + c}{\rho' c + 2 s^2 }\right) \, ,
+  \tilde{A}_\mathrm{z,rad,n} (\rho') = \frac{1}{2} \ln \left(\frac{\rho' c + 1 + c}{\rho' c + 2 s^2 }\right) \label{eqn:sws_A_z_rad_n}
 \end{equation}
 where
 \begin{align}
   c =&\, \frac{1}{\sqrt{{\rho'}^2 + 1}} \\
   s =&\, \sin(\arctan(\rho')/2) \, .
 \end{align}
-The case of~$\tilde{A}_\mathrm{z,f}(\rho', z')$ is implemented as:
+The derivation for this formulation can be found in \eqn{sws_A_z_rad_n_derivation}.
+The case of~$\tilde{A}_\mathrm{z,f}(\rho', z')$ is the straight-forward implementation of:
 \begin{equation}
   \tilde{A}_\mathrm{z,f}(\rho', z') = \textrm{atanh} (\epsilon)
 \end{equation}
 with~$r_\mathrm{i}$, $r_\mathrm{f}$ and~$\epsilon$ from~\eqn{r_i_default}, \eqn{r_f_default} and~\eqn{eps_default}, respectively.
-For all other permitted locations the following evaluation is used:
+For all other permitted locations, the following evaluation is used:
 \begin{equation}
-  \tilde{A}_\mathrm{z,n} (\rho', z') = \frac{1}{2} \left[ \ln\left(n + 2 \right) - \ln \left( n \right)  \right] \label{eqn:sws_A_z_n}
+  \tilde{A}_\mathrm{z,n} (\rho', z') = \frac{1}{2} \left[ \ln\left(n + 1 \right) - \ln \left( n \right)  \right] \label{eqn:sws_A_z_n}
 \end{equation}
 with
 \begin{align}
-  n                       =&\, a + b \\
-  a \equiv r_\mathrm{i} - z'       =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:ri_zp} \\
-  b \equiv r_\mathrm{f} - (1 - z') =&\, 2 r_\mathrm{f} \sin^2(\beta/2)  \label{eqn:rf_zp_1} \\
+  n                       =&\, r_\mathrm{i} \sin^2(\alpha/2) + r_\mathrm{f} \sin^2(\beta/2) \\
   \alpha =&\, \texttt{atan2}(\rho', z')   \label{eqn:sws_alpha} \\
   \beta  =&\, \texttt{atan2}(\rho', 1-z') \label{eqn:sws_beta}
 \end{align}
