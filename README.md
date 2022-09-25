@@ -5,6 +5,7 @@ Accurate Biot-Savart routines with Correct Asymptotic Behaviour
 The main article on this software can be found here: [abscab_main.pdf](article/abscab_main.pdf)
 
 Please consider leaving a GitHub star if you like this software.
+
 If you use this software in a scientific publication,
 we kindly ask you to cite the corresponding article:
 ```bibtex
