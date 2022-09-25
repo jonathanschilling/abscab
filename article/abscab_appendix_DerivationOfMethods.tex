@@ -134,7 +134,7 @@ leading to
 \begin{equation}
  \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}} \, . \label{eqn:A_artanh}
 \end{equation}
-The special-case formulations listed in Sec.~\ref{sec:methods_sws} are derived in the following.
+The special-case formulations listed in Sec.~\ref{sec:methods_sws_vecpot} are derived in the following.
 Close to the wire segment, the term $1-\epsilon$ vanishes as $\epsilon$ approaches it value of 1 on the wire segment.
 Therefore, consider $1-\epsilon$:
 \begin{align}
@@ -172,7 +172,7 @@ A nutritious zero $0 = -z' + z'$ is introduced into $\tilde{n}$:
 Basic trigonometry allows to identify expressions defining the angles $\alpha$ and $\beta$ in Fig.~\ref{fig:straightWireSegment}:
 \begin{align}
   \cos(\alpha) =&\, \frac{    z'}{r_\mathrm{i}} \label{eqn:cos_alpha} \\
-  \cos(\beta ) =&\, \frac{1 - z'}{r_\mathrm{f}} \, .
+  \cos(\beta ) =&\, \frac{1 - z'}{r_\mathrm{f}} \label{eqn:cos_beta} \, .
 \end{align}
 It follows with the trigonometric identity $1 - \cos(\gamma) = 2 \sin^2(\gamma/2)$ (for an arbitrary angle $\gamma$):
 \begin{align}
@@ -369,6 +369,43 @@ This results in the final expression for the magnetic field:
 \begin{equation}
  \mathbf{B} (\mathbf{x}) = \frac{\mu_0 I}{4 \pi} \frac{2 L (R_i + R_f)}{R_i R_f} \frac{1}{(R_i + R_f)^2 - L^2} \, \hat{\mathbf{e}} \times \mathbf{R}_i \, .
 \end{equation}
+The special-case formulations listed in Sec.~\ref{sec:methods_sws_magfld} are derived in the following.
+The derivations start with \eqn{bPhiTilde}.
+First, a special-case formulation for $\rho' > 0$ at $z'=0$ as well as $z'=1$ is derived.
+The problem is identical when exchanging $r_\mathrm{i}$ and $r_\mathrm{f}$ together with $z'$ and $1-z'$.
+Therefore, choose the case of $z'=0$ with $r_\mathrm{i} = \rho'$ and $r_\mathrm{f} = \sqrt{{\rho'}^2+1}$
+for this derivation.
+Inserting these into \eqn{bPhiTilde} leads to:
+\begin{align}
+  \tilde{B}_{\varphi,\mathrm{rad}}(\rho')
+  =&\, \left(\frac{1}{\rho'} + \frac{1}{\sqrt{{\rho'}^2+1}} \right)
+       \frac{\rho'}{ {\rho'}^2 + \rho' \sqrt{{\rho'}^2+1} } \nonumber \\
+  =&\, \frac{\bcancel{\sqrt{{\rho'}^2+1} + \rho'}}{\rho' \sqrt{{\rho'}^2+1}}
+       \frac{1}{\bcancel{\rho' + \sqrt{{\rho'}^2+1} } }  \nonumber \\
+  =&\, \frac{1}{\rho' \sqrt{{\rho'}^2+1}} \label{eqn:sws_B_phi_rad_derivation} \, .
+\end{align}
+This is the expression used in \eqn{sws_B_phi_rad}.
+In the following, the expression $\tilde{B}_{\varphi,\mathrm{n}}$ used to compute
+at evaluation locations close to the wire segment is derived.
+The term $r_\mathrm{i} r_\mathrm{f} - z' (1 - z')$ in the denominator of \eqn{bPhiTilde}
+is considered and a nutritious zero $0 = -r_\mathrm{i}(1 - z') + r_\mathrm{i}(1 - z')$ is inserted:
+\begin{align}
+  ~&\, r_\mathrm{i} r_\mathrm{f} - z' (1 - z') \nonumber \\
+  =&\, r_\mathrm{i} r_\mathrm{f} - r_\mathrm{i}(1 - z') + r_\mathrm{i}(1 - z') - z' (1 - z') \nonumber \\
+  =&\, r_\mathrm{i} r_\mathrm{f} - r_\mathrm{i} r_\mathrm{f} \cos(\beta) + r_\mathrm{i} (1 - z') - (1 - z') r_\mathrm{i} \cos(\alpha) \nonumber \\
+  =&\, r_\mathrm{i} r_\mathrm{f} \left( 1 - \cos(\beta) \right) + r_\mathrm{i} (1 - z') \left(1 - \cos(\alpha) \right) \nonumber \\
+  =&\, 2 r_\mathrm{i} \left[ r_\mathrm{f} \sin^2(\beta/2) + (1 - z') \sin^2(\alpha/2) \right] \label{eqn:denom_sws_B_phi}
+\end{align}
+where \eqn{cos_alpha} and \eqn{cos_beta}
+as well as the trigonometric identity $1 - \cos(\gamma) = 2 \sin^2(\gamma/2)$ for an arbitrary angle $\gamma$ were used.
+Inserting \eqn{denom_sws_B_phi} into \eqn{bPhiTilde} leads to:
+\begin{equation}
+  \tilde{B}_{\varphi,\mathrm{n}} (\rho', z')
+  = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
+    \frac{\rho'}
+         {{\rho'}^2 + 2 r_\mathrm{i} \left[ r_\mathrm{f} \sin^2(\beta/2) + (1 - z') \sin^2(\alpha/2) \right]} \label{eqn:sws_B_phi_n_derivation}.
+\end{equation}
+This concludes the derivation of \eqn{sws_B_phi_n}.
 
 \subsection{Circular Wire Loop}
 The derivation of the circular wire loop formulas is considered next.

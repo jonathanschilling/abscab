@@ -35,6 +35,7 @@ The angles $\alpha$ and $\beta$ are used in the formulas below.
 \end{figure}
 
 \subsubsection{Magnetic Vector Potential}
+\label{sec:methods_sws_vecpot}
 The magnetic vector potential of a straight wire segment
 only has component~$A_z$ parallel to the wire:
 \begin{equation}
@@ -162,6 +163,7 @@ for the evaluation locations under consideration in this case.
 The derivation for this formulation is found in the appendix around \eqn{sws_A_z_n_derivation}.
 
 \subsubsection{Magnetic Field}
+\label{sec:methods_sws_magfld}
 The magnetic field of a straight wire segment
 is given by the law of Biot and Savart as follows~\cite{hanson_hirshman_2002}:
 \begin{equation}
@@ -242,10 +244,11 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \end{equation}
 The domain decomposition for the accurate computation of $\tilde{B}_\varphi$
 formulated in \eqn{sws_B_phi_switchover} is illustrated in Fig.~\ref{fig:sws_regions}(b).
-The special case~$z' \in \{0, 1\}$ is implemented as follows:
+The special case~$z' \in \{0, 1\}$ for $\rho'>0$ is implemented as follows:
 \begin{equation}
-  \tilde{B}_{\varphi,\mathrm{rad}} (\rho') = \frac{1}{\rho' \sqrt{{\rho'}^2 + 1}} \, .
+  \tilde{B}_{\varphi,\mathrm{rad}} (\rho') = \frac{1}{\rho' \sqrt{{\rho'}^2 + 1}} \label{eqn:sws_B_phi_rad} \, .
 \end{equation}
+The derivation of this formulation is found in \eqn{sws_B_phi_rad_derivation}.
 The formula in~\eqn{bPhiTilde} is used for evaluation locations far away from the wire
 as well as a part of the near-field close to the wire segment:
 \begin{equation}
@@ -258,9 +261,10 @@ For all other permitted locations the following evaluation is used:
   \tilde{B}_{\varphi,\mathrm{n}} (\rho', z')
   = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
     \frac{\rho'}
-         {{\rho'}^2 + 2 r_\mathrm{i} \left[ r_\mathrm{f} \sin^2(\beta/2) + (1 - z') \sin^2(\alpha/2) \right]}
+         {{\rho'}^2 + 2 r_\mathrm{i} \left[ r_\mathrm{f} \sin^2(\beta/2) + (1 - z') \sin^2(\alpha/2) \right]} \label{eqn:sws_B_phi_n}
 \end{equation}
 with~$\alpha$ and~$\beta$ from~\eqn{sws_alpha} and~\eqn{sws_beta}, respectively.
+The derivation of this formulation is given in \eqn{sws_B_phi_n_derivation}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{img/sws_regions.pdf}

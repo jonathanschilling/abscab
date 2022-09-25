@@ -2026,7 +2026,11 @@ public class ABSCAB {
 		} else if (rhoP != 1.0) {
 			return cwl_A_phi_n(rhoP, zP);
 		} else {
-			return cwl_A_phi_v(zP);
+			if (zP != 0) {
+				return cwl_A_phi_v(zP);
+			} else {
+				throw new IllegalArgumentException("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined");
+			}
 		}
 	}
 
@@ -2043,7 +2047,11 @@ public class ABSCAB {
 	 */
 	public static double circularWireLoop_B_rho(double rhoP, double zP) {
 		if (rhoP == 0.0 || zP == 0.0) {
-			return 0.0;
+			if (rhoP != 1.0) {
+				return 0.0;
+			} else {
+				throw new IllegalArgumentException("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined");
+			}
 		} else if (rhoP < 0.5 || rhoP > 2.0 || Math.abs(zP) >= 1.0) {
 			return cwl_B_rho_f(rhoP, zP);
 		} else if (rhoP != 1.0) {
@@ -2072,7 +2080,11 @@ public class ABSCAB {
 		} else if (rhoP != 1.0) {
 			return cwl_B_z_n(rhoP, zP);
 		} else {
-			return cwl_B_z_v(zP);
+			if (zP != 0) {
+				return cwl_B_z_v(zP);
+			} else {
+				throw new IllegalArgumentException("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined");
+			}
 		}
 	}
 
