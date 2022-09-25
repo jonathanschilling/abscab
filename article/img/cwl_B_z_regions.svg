@@ -25,7 +25,7 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="5.8340625"
-     inkscape:cx="226.68595"
+     inkscape:cx="226.85736"
      inkscape:cy="151.1811"
      inkscape:window-width="3840"
      inkscape:window-height="2024"
@@ -291,11 +291,11 @@
            x="38.878372"
            y="3.9739966"><tspan
              style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic'"
-             id="tspan2963-5">B</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic';baseline-shift:sub"
-             id="tspan2281-6">ρ</tspan><tspan
+             id="tspan2963-5">B<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan982">z</tspan></tspan><tspan
              style="font-size:65%;baseline-shift:sub"
-             id="tspan7418">,f1</tspan></tspan></text>
+             id="tspan984">,f1</tspan></tspan></text>
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:1.25;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
@@ -337,7 +337,7 @@
            x="24"
            y="115">B<tspan
    style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic';baseline-shift:sub"
-   id="tspan4351">ρ</tspan><tspan
+   id="tspan4351">z</tspan><tspan
    style="font-size:65%;baseline-shift:sub"
    id="tspan4353">,v</tspan></tspan></text>
       <text
@@ -376,9 +376,9 @@
              style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic'"
              id="tspan4421">B<tspan
    style="font-size:65%;baseline-shift:sub"
-   id="tspan4423">ρ</tspan></tspan><tspan
+   id="tspan994">z</tspan></tspan><tspan
              style="font-size:65%;baseline-shift:sub"
-             id="tspan4425">,n</tspan></tspan></text>
+             id="tspan996">,n</tspan></tspan></text>
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:1.25;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
@@ -414,11 +414,11 @@
            x="38.878372"
            y="3.9739966"><tspan
              style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic'"
-             id="tspan2963-5-8">B</tspan><tspan
-             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif Italic';baseline-shift:sub"
-             id="tspan2281-6-1">ρ</tspan><tspan
+             id="tspan2963-5-8">B<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan988">z</tspan></tspan><tspan
              style="font-size:65%;baseline-shift:sub"
-             id="tspan7418-2">,f2</tspan></tspan></text>
+             id="tspan990">,f2</tspan></tspan></text>
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:1.25;font-family:'Liberation Serif';-inkscape-font-specification:'Liberation Serif';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"

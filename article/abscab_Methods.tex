@@ -28,6 +28,7 @@ The angles $\alpha$ and $\beta$ are used in the formulas below.
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=8cm]{img/straightWireSegment.eps}
+%  \includegraphics[width=8cm]{img/figure_1.eps}
  \caption{Geometry of a single wire segment (red line) and the associated cylindrical coordinate system.
           The magnetostatic quantities are to be evaluated at a location $\mathbf{x}$.
           After Fig.~1 in Ref.~\cite{hanson_hirshman_2002}.}
@@ -72,6 +73,7 @@ The contours approach a circular shape far away from the wire segment.
 \begin{figure}[htbp]
  \centering
  \includegraphics{img/epsilon_contours.eps}
+%  \includegraphics{img/figure_2.eps}
  \caption{Contours of constant $\epsilon$ as computed from \eqn{eps_default}.
           The straight wire segment is located along the red line.}
  \label{fig:epsilon_contours}
@@ -268,6 +270,7 @@ The derivation of this formulation is given in \eqn{sws_B_phi_n_derivation}.
 \begin{figure}[htbp]
     \centering
     \includegraphics{img/sws_regions.pdf}
+%     \includegraphics{img/figure_3.pdf}
     \caption{Domain decomposition used to partition the evaluation region
              for computing $\tilde{A}_z$ (a) and $\tilde{B}_\varphi$ (b) accurately.
              The colored regions indicate at which evaluation locations $(\rho',z')$
@@ -289,6 +292,7 @@ The axisymmetry of this setup always allows to rotate the coordinate system such
 \begin{figure}[htbp]
  \centering
  \includegraphics[width=0.5\textwidth]{img/circularWireLoop.eps}
+%  \includegraphics[width=0.5\textwidth]{img/figure_4.eps}
  \caption{Geometry of a circular wire loop centered at the origin with normal vector aligned with the $z$-axis.}
  \label{fig:circularWireLoop}
 \end{figure}
@@ -399,6 +403,7 @@ The domain decomposition used to compute $\tilde{A}_\varphi$ accurately is depic
 \begin{figure}[htbp]
     \centering
     \includegraphics{img/cwl_A_phi_regions.pdf}
+%     \includegraphics{img/figure_5.pdf}
     \caption{Domain decomposition used to partition the evaluation region
              for computing $\tilde{A}_\varphi$ accurately.
              The colored regions indicate at which evaluation locations $(\rho',z')$
@@ -415,6 +420,7 @@ with $k^2$~from~\eqn{kSq} and
   \mathcal{C}(k_c)
   = \,\mathrm{cel} \left( \frac{2 \sqrt{k_c}}{1 + k_c}, 1, 0, \frac{2}{(1 + k_c)^3} \right) \, . \label{eqn:elliptic_c}
 \end{equation}
+The derivation for this formulation is found in \eqn{cwl_A_phi_f_derivation}.
 Close to the wire loop, the following formulation is used:
 \begin{equation}
   \tilde{A}_{\varphi,\mathrm{n}} (\rho',z')
@@ -425,6 +431,7 @@ with $k_c^2$ computed as follows:
 \begin{equation}
   k_c^2 = \frac{\left( \frac{z'}{\rho'-1} \right)^2 + 1}{\left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2} \, .
 \end{equation}
+The derivation for this formulation is found in \eqn{cwl_A_phi_near}.
 At~$\rho' = 1$, some further simplification can be carried out.
 This leads to the following formulation for~$\rho' = 1$ and~$|z'| < 1$:
 \begin{equation}
@@ -432,8 +439,9 @@ This leads to the following formulation for~$\rho' = 1$ and~$|z'| < 1$:
 \end{equation}
 with $k_c$ computed as follows:
 \begin{equation}
-  k_c = \frac{|z'|}{\sqrt{4 + {z'}^2}} \, .
+  k_c = \frac{|z'|}{\sqrt{4 + {z'}^2}} \, ,
 \end{equation}
+which is derived in \eqn{cwl_A_phi_v_derivation}.
 
 \subsubsection{Magnetic Field}
 The magnetic field produced by a circular wire loop is made up of two components:
@@ -471,6 +479,7 @@ The domain decomposition used to compute $\tilde{B}_\rho$ accurately is depicted
 \begin{figure}[htbp]
     \centering
     \includegraphics{img/cwl_B_rho_regions.pdf}
+%     \includegraphics{img/figure_6.pdf}
     \caption{Domain decomposition used to partition the evaluation region
              for computing $\tilde{B}_\rho$ accurately.
              The colored regions indicate at which evaluation locations $(\rho',z')$
@@ -489,16 +498,18 @@ with
   = \frac{\mathcal{K}(k) - \,\mathcal{E}(k)}{k^2}
   = \,\mathrm{cel}(k_c, 1, 0, 1) \, . \label{eqn:elliptic_d}
 \end{equation}
+The derivation for this formulation is found in \eqn{cwl_B_rho_f_derivation}.
 For points close to the wire loop, but with~$\rho' \neq 1$, the following formulation is used:
 \begin{align}
   \tilde{B}_{\rho,\mathrm{n}}& (\rho', z')
-  = \frac{4 \rho' \left|\frac{z'}{\rho'-1}\right| \left[ \,\mathcal{D}(k_c) - \,\mathcal{C}(k_c) \right]}
+  = \frac{4 \rho' \frac{z'}{|\rho'-1|} \left[ \,\mathcal{D}(k_c) - \,\mathcal{C}(k_c) \right]}
          {(\rho' - 1)^4} \nonumber \\
   ~& \left\{
       \left[ \left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 \right]^{3/2}
       \left[ \left( \frac{z'}{\rho'-1} \right)^2 + 1 \right]
     \right\}^{-1} \label{eqn:cwl_B_rho_n} \, .
 \end{align}
+The derivation for this formulation is found in \eqn{cwl_B_rho_n_derivation}.
 Finally, for $\rho'=1$ and~$|z'| < 1$, the following formulation is used:
 \begin{equation}
   \tilde{B}_{\rho,\mathrm{v}} (z')
@@ -513,6 +524,7 @@ and
   \mathcal{K}(k_c) =&\, \,\mathrm{cel}(k_c, 1, 1, 1) \\
   \mathcal{E}(k_c) =&\, \,\mathrm{cel}(k_c, 1, 1, k_c^2) \, .
 \end{align}
+The derivation for this formulation is found in \eqn{cwl_B_rho_v_derivation}.
 The vertical component~$B_z$ of the magnetic field of a circular wire loop is given by~\cite{teal}:
 \begin{align}
  B_z(\rho', z')
@@ -553,6 +565,7 @@ The domain decomposition used to compute $\tilde{B}_z$ accurately is depicted in
 \begin{figure}[htbp]
     \centering
     \includegraphics{img/cwl_B_z_regions.pdf}
+%     \includegraphics{img/figure_7.pdf}
     \caption{Domain decomposition used to partition the evaluation region
              for computing $\tilde{B}_z$ accurately.
              The colored regions indicate at which evaluation locations $(\rho',z')$
@@ -565,6 +578,7 @@ For points not too close to the wire loop and with $\rho' \leq 2$, the following
   =&\, \frac{1}{\sqrt{{z'}^2 + (1+\rho')^2} \left[{z'}^2 + (1 - \rho')^2 \right] } \nonumber \\
   ~&\,  \left\{ \mathcal{E}(k_c) + \rho' \left[ \mathcal{E}(k_c) - 2 \mathcal{K}(k_c) + 2 \mathcal{D}(k_c) \right] \right\} \, . \label{eqn:cwl_B_z_f1}
 \end{align}
+The derivation for this formulation is found in \eqn{cwl_B_z_f1_appendix}.
 A second far-field method is needed for points with $\rho' > 2$:
 \begin{equation}
   \tilde{B}_{z,\mathrm{f2}} (\rho', z')
@@ -580,6 +594,7 @@ and
 \begin{equation}
   \alpha_\mathrm{cd} = 1 + \frac{1}{\rho'} \left[ 2 + \frac{1}{\rho'} \left( 1 + {z'}^2 \right) \right] \, .
 \end{equation}
+The derivation for this formulation is found in \eqn{cwl_B_z_f2_derivation}.
 In the vicinity of the wire loop, but with $z' \neq 0$,
 the following method is used to compute $\tilde{B}_z$:
 \begin{equation}
@@ -587,6 +602,7 @@ the following method is used to compute $\tilde{B}_z$:
   = \frac{\,\mathrm{cel}\left( \sqrt{k_c^2}, k_c^2, 1 + \rho', 1 - \rho' \right) }
          {\left|\rho' - 1 \right|^3 \left[ \left( \frac{z'}{\rho'-1} \right)^2 + \left(1 + \frac{2}{\rho'-1} \right)^2 \right]^{3/2} } \, . \label{eqn:cwl_B_z_n}
 \end{equation}
+The derivation for this formulation is found in \eqn{cwl_B_z_n_derivation}.
 The expression for $\tilde{B}_z$ becomes significantly simpler at $\rho'=1$,
 which is considered next:
 \begin{equation}
@@ -597,7 +613,7 @@ with
 \begin{equation}
   k_c^2 = \frac{{z'}^2}{{z'}^2 + 4} \, .
 \end{equation}
-
+The derivation for this formulation is found in \eqn{cwl_B_z_v_derivation}.
 
 \FloatBarrier
 \subsection{Evaluation in Global Coordinates}
@@ -615,6 +631,7 @@ Figure~\ref{fig:StraightWireSegment_MappingToCartesian} illustrates the setup fo
 \begin{figure}[htbp]
  \centering
  \includegraphics{img/StraightWireSegment_MappingToCartesian.eps}
+%  \includegraphics{img/figure_8.eps}
  \caption{Mapping the components to global coordinates for an exemplary straight wire segment.
           The wire segment is positioned from~$\mathbf{x}_\mathrm{i}$ to~$\mathbf{x}_\mathrm{f}$.
           Its parallel unit vector is denoted $\hat{\mathbf{e}}_z$.
@@ -669,6 +686,7 @@ Figure~\ref{fig:CircularWireLoop_MappingToCartesian} illustrates the setup of a 
 \begin{figure}[htbp]
  \centering
  \includegraphics{img/CircularWireLoop_MappingToCartesian.eps}
+%  \includegraphics{img/figure_9.eps}
  \caption{Mapping the components to Cartesian coordinates for an exemplary circular wire loop.
           The loop is centered around its origin~$\mathbf{r}_0$.
           Its normal vector is denoted $\mathbf{n}$ and defines the orientation of the loop.
@@ -804,6 +822,7 @@ The organization of those bits in a \texttt{binary64} number is shown in Fig.~\r
 \begin{figure}[htbp]
  \centering
  \includegraphics{img/IEEE754_binary64.eps}
+%  \includegraphics{img/figure_10.eps}
  \caption{Organization of sign bit~$s$, exponent~$E$ (11 bits, unsigned integer)
           and mantissa~$M$ (52 bits, unsigned integer) within the 64 bits
           of a IEEE754~\texttt{binary64} floating-point number.

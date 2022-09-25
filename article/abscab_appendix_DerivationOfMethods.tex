@@ -445,7 +445,7 @@ has a the wrong sign.
 Application of~\eqn{kSqC} to~\eqn{aNormJackson} leads to:
 \begin{equation}
   \tilde{A}_\varphi(\rho', z')
-  = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k)\, .
+  = \frac{k^2}{\sqrt{z'^2 + (1 + \rho')^2}} \,\mathcal{C}(k) \label{eqn:cwl_A_phi_f_derivation} \, .
 \end{equation}
 This is the far-field method used in~\eqn{cwl_A_phi_f}.
 Note that~$\mathcal{C}(k)$ can be evaluated as follows~\cite{bulirsch_1, bulirsch_3}:
@@ -558,7 +558,7 @@ the following expression:
 Note that the negative sign at the front has been incorporated into the sign change of the integration differential.
 This result can now be evaluated using cel again:
 \begin{equation}
-  \tilde{A}_\varphi(\rho'=1,z') = \frac{1}{|z'|} \textrm{cel}\,\left(\frac{1}{k_c}, 1, 1, -1\right) \, .
+  \tilde{A}_\varphi(\rho'=1,z') = \frac{1}{|z'|} \textrm{cel}\,\left(\frac{1}{k_c}, 1, 1, -1\right) \label{eqn:cwl_A_phi_v_derivation} \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_A_phi_v}.
 
@@ -723,15 +723,15 @@ This is used to write~$\tilde{B}_\rho$ as follows:
 \begin{align}
   \tilde{B}_\rho
  =&\, \frac{z'}{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2}} \frac{k^2}{k_c^2} \left(  \mathcal{D} - \mathcal{C} \right) \nonumber \\
- =&\, \frac{4 \rho' z' \left(  \mathcal{D} - \mathcal{C} \right) }{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2} \left[ z'^2 + (1 - \rho')^2 \right]} \, .
+ =&\, \frac{4 \rho' z' \left(  \mathcal{D} - \mathcal{C} \right) }{\left[ z'^2 + (1 + \rho')^2 \right]^{3/2} \left[ z'^2 + (1 - \rho')^2 \right]} \label{eqn:cwl_B_rho_f_derivation} \, .
 \end{align}
 This is the form of~$\tilde{B}_\rho$ used in \eqn{cwl_B_rho_f}.
-The near-field formulation is obtained from this by normalizing to~$\rho'-1$:
+The near-field formulation used in \eqn{cwl_B_rho_n} is obtained from this by normalizing to~$\rho'-1$:
 \begin{equation}
   \tilde{B}_\rho
  = \frac{4 \rho' \frac{z'}{|\rho'-1|} \left( \mathcal{D} - \mathcal{C} \right) }
         {(\rho'-1)^4 \left[ \left(\frac{z'}{\rho'-1}\right)^2 + \left(1 + \frac{2}{\rho'-1}\right)^2 \right]^{3/2}
-                     \left[ \left(\frac{z'}{\rho'-1}\right)^2 + 1 \right]} \, .
+                     \left[ \left(\frac{z'}{\rho'-1}\right)^2 + 1 \right]} \label{eqn:cwl_B_rho_n_derivation} \, .
 \end{equation}
 This formulation cannot be used at~$\rho'=1$ close to the wire loop
 due to the vanishing denominator in that case.
@@ -753,7 +753,7 @@ Furthermore:
 \end{align}
 This allows to write:
 \begin{equation}
- \tilde{B}_\rho = \frac{k_c}{2} \frac{z'}{|z'|} \left[ \left( \frac{2}{z'^2} + 1 \right) \mathcal{E} - \mathcal{K} \right] \, .
+ \tilde{B}_\rho = \frac{k_c}{2} \frac{z'}{|z'|} \left[ \left( \frac{2}{z'^2} + 1 \right) \mathcal{E} - \mathcal{K} \right] \label{eqn:cwl_B_rho_v_derivation} \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_rho_v}.
 In order to derive the vertical component of the magnetic field,~$\tilde{B}_z$,
@@ -932,7 +932,7 @@ Putting things back together, we arrive at:
  = \frac{1}{\sqrt{t_1 + t_2} (t_1 - t_2) \rho'^3}
    \left[
      \mathcal{E} + \frac{4 \left(\mathcal{C} - \mathcal{D} \right)}{1 + \frac{1}{\rho'} \left[ 2 + \frac{1}{\rho'} \left( 1 + z'^2 \right) \right]}
-   \right] \, .
+   \right] \label{eqn:cwl_B_z_f2_derivation} \, .
 \end{equation}
 This is the formulation used in~\eqn{cwl_B_z_f2} of this work.
 One more formulation of~$\tilde{B}_z$ is required for this work.
@@ -971,7 +971,7 @@ Then:
 Putting things back together, we arrive at:
 \begin{equation}
   \tilde{B}_z
- = \frac{1}{\left| \rho' - 1 \right|^3 \left[ n^2 + m^2 \right]^{3/2} } \,\textrm{cel}\,(k_c, k_c^2, 1 + \rho', 1 - \rho')
+ = \frac{1}{\left| \rho' - 1 \right|^3 \left[ n^2 + m^2 \right]^{3/2} } \,\textrm{cel}\,(k_c, k_c^2, 1 + \rho', 1 - \rho') \label{eqn:cwl_B_z_n_derivation}
 \end{equation}
 with~$k_c = \sqrt{k_c^2}$ and $k_c^2$ from \eqn{cwl_kCSq_mn}.
 This is the formulation used in \eqn{cwl_B_z_n} of this work.
@@ -980,7 +980,7 @@ Therefore, one final special-case formulation is required.
 The derivation starts again with \eqn{cwl_B_z_14} and $\rho'=1$~is inserted.
 This leads to:
 \begin{equation}
-  \tilde{B}_z = \frac{1}{\left[ z'^2 + 4 \right]^{3/2}} \,\textrm{cel}\,(k_c, k_c^2, 2, 0)
+  \tilde{B}_z = \frac{1}{\left[ z'^2 + 4 \right]^{3/2}} \,\textrm{cel}\,(k_c, k_c^2, 2, 0) \label{eqn:cwl_B_z_v_derivation}
 \end{equation}
 with
 \begin{equation}
