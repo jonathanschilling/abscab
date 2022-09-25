@@ -2197,12 +2197,12 @@ public class ABSCAB {
 		double beta = Math.atan2(rhoP, omz);
 		double sinBetaHalf = Math.sin(beta / 2);
 
-		double Ri_zP    = 2 * r_i * sinAlphaHalf * sinAlphaHalf; // r_i - z'
-		double Rf_p_zM1 = 2 * r_f * sinBetaHalf  * sinBetaHalf;  // r_f - (1 - z')
+		double Ri_zP    = r_i * sinAlphaHalf * sinAlphaHalf; // r_i - z'
+		double Rf_p_zM1 = r_f * sinBetaHalf  * sinBetaHalf;  // r_f - (1 - z')
 
 		double n = Ri_zP + Rf_p_zM1;
 
-		return (Math.log(2 + n) - Math.log(n)) / 2;
+		return (Math.log(1 + n) - Math.log(n)) / 2;
 	}
 
 	/////// B_phi of straight wire segment

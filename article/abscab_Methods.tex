@@ -142,9 +142,9 @@ The case of~$\tilde{A}_\mathrm{z,f}(\rho', z')$ is implemented as:
   \tilde{A}_\mathrm{z,f}(\rho', z') = \textrm{atanh} (\epsilon)
 \end{equation}
 with~$r_\mathrm{i}$, $r_\mathrm{f}$ and~$\epsilon$ from~\eqn{r_i_default}, \eqn{r_f_default} and~\eqn{eps_default}, respectively.
-The final case for evaluation locations close to the wire segment is implemented as follows:
+For all other permitted locations the following evaluation is used:
 \begin{equation}
-  \tilde{A}_\mathrm{z,n} (\rho', z') = \frac{1}{2} \left[ \ln\left(n + 2 \right) - \ln \left( n \right)  \right]
+  \tilde{A}_\mathrm{z,n} (\rho', z') = \frac{1}{2} \left[ \ln\left(n + 2 \right) - \ln \left( n \right)  \right] \label{eqn:sws_A_z_n}
 \end{equation}
 with
 \begin{align}
@@ -155,6 +155,9 @@ with
   \beta  =&\, \texttt{atan2}(\rho', 1-z') \label{eqn:sws_beta}
 \end{align}
 and~$r_\mathrm{i}$, $r_\mathrm{f}$ from~\eqn{r_i_default}, \eqn{r_f_default}, respectively.
+Trigonometric functions are used here since they offer increased numerical robustness
+for the evaluation locations under consideration in this case.
+The derivation for this formulation is found in the appendix around \eqn{sws_A_z_n_derivation}.
 
 \subsubsection{Magnetic Field}
 The magnetic field of a straight wire segment
@@ -248,7 +251,7 @@ as well as a part of the near-field close to the wire segment:
   = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
     \frac{\rho'}{{\rho'}^2 + r_\mathrm{i} r_\mathrm{f} - z' (1 - z')} \, .
 \end{equation}
-The final case for evaluation locations close to the wire segment is implemented as follows:
+For all other permitted locations the following evaluation is used:
 \begin{equation}
   \tilde{B}_{\varphi,\mathrm{n}} (\rho', z')
   = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
