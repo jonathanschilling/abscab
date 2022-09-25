@@ -13,7 +13,8 @@ article{schilling_2022,
   title  = {{Accurate Biot-Savart Routines with Correct Asymptiotic Behaviour}},
   author = {J. Schilling, J. Svensson, U. Hoefel, J. Geiger, H. Thomsen},
   journal = {Computer Physics Communications: Computer Programs in Physics},
-  doi = {}
+  doi = {},
+}
 ```
 
 ## Table of Contents
