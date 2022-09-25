@@ -1,5 +1,6 @@
 package de.labathome.abscab;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -1967,7 +1968,12 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_A_z(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return sws_A_z_ax(zP);
+			if (zP < 0 || zP > 1) {
+				return sws_A_z_ax(zP);
+			} else {
+				throw new IllegalArgumentException(
+						String.format(Locale.ENGLISH, "evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed", rhoP, zP));
+			}
 		} else if (zP == 0.0 || zP == 1.0) {
 			return sws_A_z_rad(rhoP);
 		} else if (rhoP >= 1.0 || zP <= -1.0 || zP > 2.0) {
@@ -1986,7 +1992,12 @@ public class ABSCAB {
 	 */
 	public static double straightWireSegment_B_phi(double rhoP, double zP) {
 		if (rhoP == 0.0) {
-			return 0.0;
+			if (zP < 0 || zP > 1) {
+				return 0.0;
+			} else {
+				throw new IllegalArgumentException(
+						String.format(Locale.ENGLISH, "evaluation locations on the wire segment (rho'=%g z'=%g) are not allowed", rhoP, zP));
+			}
 		} else if (zP == 0.0 || zP == 1.0) {
 			return sws_B_phi_rad(rhoP);
 		} else if (rhoP >= zP || rhoP >= 1 - zP || zP < 0.0 || zP > 1.0) {

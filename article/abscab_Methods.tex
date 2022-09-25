@@ -61,9 +61,9 @@ for~$r_\mathrm{i} = R_\mathrm{i}/L$ and~$r_\mathrm{f} = R_\mathrm{f}/L$:
   \epsilon     =&\, \frac{1}{r_\mathrm{i} + r_\mathrm{f}} \label{eqn:eps_default}\, .
 \end{align}
 For locations on the conductor, $\epsilon = 1$ holds.
-The magnetostatic quantites can only be evaluated at points not located on the conductor,
-where $\epsilon < 1$ holds.
-The value of $\epsilon$ only depends on the sum $R_\mathrm{i} + R_\mathrm{f}$,
+The magnetostatic quantites are not defined for evaluation locations on the conductor,
+which implies $\epsilon < 1$ for valid evaluation locations.
+The value of $\epsilon$ only depends on the sum $r_\mathrm{i} + r_\mathrm{f}$,
 which implies that contours of constant $\epsilon$ are ellipses with focii at the ends of the wire segment.
 This is similar to the Gardener's construction method for ellipses~\cite{dawson_2021}.
 The elliptical contours of constant $\epsilon$ are illustrated in Fig.~\ref{fig:epsilon_contours}.
@@ -90,17 +90,17 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{A}_z (\rho', z') =
   \begin{cases}
-    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0 , \textrm{any } z' \,\cancel{\in}\, [0, 1]  \\
-    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, 0 < \rho' < 1, z' \in \{0, 1\} \\
-    \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq -1 \textrm{ or } z' > 2 \\
+    \textrm{undefined}                   &:\, \rho' = 0; 0 \leq z' \leq 1 \\
+    \tilde{A}_\mathrm{z,ax}  (z')        &:\, \rho' = 0; z' < 0 \textrm{ or } z' > 1  \\
+    \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \rho' > 0; z' \in \{0, 1\} \\
+    \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, (\rho' \geq 1 \textrm{ and } z' \,\cancel{\in}\, \{0, 1\}) \textrm{ or } \\
+                ~                        &~\,\, (\rho' > 0; z' \leq -1 \textrm{ or } z' > 2) \\
     \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{elsewhere} \, .
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
-The domain decomposition used to compute $\tilde{A}_z$ accurately is depicted in Fig.~\ref{fig:sws_regions}(a).
-The case~$\rho'=0$ is considered first.
-Recall that the wire segment extends along~$\rho'=0$ from $z'=0$ to $z'=1$.
-The magnetostatic quantities are well-defined for~$\rho'=0$ as long as $z' < 0$ or $z' > 1$.
-For the case~$\rho'=0$, the following formulation is used for valid evaluation locations:
+The domain decomposition for the accurate computation of $\tilde{A}_z$
+formulated in \eqn{sws_A_z_switchover} is illustrated in Fig.~\ref{fig:sws_regions}(a).
+For the case~$\rho'=0$, the following formulation is used:
 \begin{equation}
   \tilde{A}_\mathrm{z,ax} (z') =
   \begin{cases}
@@ -116,7 +116,7 @@ and
 \begin{equation}
   \tilde{A}_\mathrm{z,ax,n} (z') = \frac{1}{2} \frac{z'}{|z'|} \ln \left(\left| \frac{z'}{1 - z'} \right| \right) \, .
 \end{equation}
-The following formulation is used for the cases $z'=0$ or $z'=1$:
+The cases with $z'=0$ or $z'=1$ are evaluated using the following expressions:
 \begin{equation}
   \tilde{A}_\mathrm{z,rad} (\rho') =
   \begin{cases}
@@ -142,15 +142,15 @@ The case of~$\tilde{A}_\mathrm{z,f}(\rho', z')$ is implemented as:
   \tilde{A}_\mathrm{z,f}(\rho', z') = \textrm{atanh} (\epsilon)
 \end{equation}
 with~$r_\mathrm{i}$, $r_\mathrm{f}$ and~$\epsilon$ from~\eqn{r_i_default}, \eqn{r_f_default} and~\eqn{eps_default}, respectively.
-The final case is implemented as follows:
+The final case for evaluation locations close to the wire segment is implemented as follows:
 \begin{equation}
   \tilde{A}_\mathrm{z,n} (\rho', z') = \frac{1}{2} \left[ \ln\left(n + 2 \right) - \ln \left( n \right)  \right]
 \end{equation}
 with
 \begin{align}
-  n                       =&\, (r_\mathrm{i} - z') + (r_\mathrm{f} - (1 - z')) \\
-  r_\mathrm{i} - z'       =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:ri_zp} \\
-  r_\mathrm{f} - (1 - z') =&\, 2 r_\mathrm{f} \sin^2(\beta/2)  \label{eqn:rf_zp_1} \\
+  n                       =&\, a + b \\
+  a \equiv r_\mathrm{i} - z'       =&\, 2 r_\mathrm{i} \sin^2(\alpha/2) \label{eqn:ri_zp} \\
+  b \equiv r_\mathrm{f} - (1 - z') =&\, 2 r_\mathrm{f} \sin^2(\beta/2)  \label{eqn:rf_zp_1} \\
   \alpha =&\, \texttt{atan2}(\rho', z')   \label{eqn:sws_alpha} \\
   \beta  =&\, \texttt{atan2}(\rho', 1-z') \label{eqn:sws_beta}
 \end{align}
@@ -227,15 +227,16 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{B}_\varphi (\rho', z') =
   \begin{cases}
-    0                                            &:\, \rho' = 0 , \textrm{any } z'      \\
-    \tilde{B}_{\varphi,\mathrm{rad}} (\rho')     &:\, \rho' > 0, z' \in \{0, 1\} \\
-    \tilde{B}_{\varphi,\mathrm{f}}   (\rho', z') &:\, \rho' \geq 1 \textrm{ or } z' \leq 0 \textrm{ or } z' \geq 1 \\
-                                            ~    & ~ \textrm{ or } \rho'/(1-z') \geq 1  \\
-                                            ~    & ~ \textrm{ or } \rho'/z'   \geq 1 \\
-    \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{else} \, .
+    \textrm{undefined}                           &:\, \rho' = 0; 0 \leq z' \leq 1 \\
+    0                                            &:\, \rho' = 0; z' < 0 \textrm{ or } z' > 1 \\
+    \tilde{B}_{\varphi,\mathrm{rad}} (\rho')     &:\, \rho' > 0; z' \in \{0, 1\} \\
+    \tilde{B}_{\varphi,\mathrm{f}}   (\rho', z') &:\, (\rho' > 0; z' > 1 \textrm{ or } z' < 0) \textrm{ or } \\
+                                            ~    &~~  (\rho' \geq z' \textrm{ or } \rho' \geq 1-z'; 0 < z' < 1) \\
+    \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{elsewhere} \, .
   \end{cases} \label{eqn:sws_B_phi_switchover}
 \end{equation}
-The domain decomposition used to compute $\tilde{B}_\varphi$ accurately is depicted in Fig.~\ref{fig:sws_regions}(b).
+The domain decomposition for the accurate computation of $\tilde{B}_\varphi$
+formulated in \eqn{sws_B_phi_switchover} is illustrated in Fig.~\ref{fig:sws_regions}(b).
 The special case~$z' \in \{0, 1\}$ is implemented as follows:
 \begin{equation}
   \tilde{B}_{\varphi,\mathrm{rad}} (\rho') = \frac{1}{\rho' \sqrt{{\rho'}^2 + 1}} \, .
@@ -247,7 +248,7 @@ as well as a part of the near-field close to the wire segment:
   = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
     \frac{\rho'}{{\rho'}^2 + r_\mathrm{i} r_\mathrm{f} - z' (1 - z')} \, .
 \end{equation}
-The final case is implemented as follows:
+The final case for evaluation locations close to the wire segment is implemented as follows:
 \begin{equation}
   \tilde{B}_{\varphi,\mathrm{n}} (\rho', z')
   = \left(\frac{1}{r_\mathrm{f}} + \frac{1}{r_\mathrm{i}} \right)
