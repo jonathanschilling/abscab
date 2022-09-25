@@ -6,7 +6,7 @@ The main article on this software can be found here: [abscab_main.pdf](article/a
 
 Please consider leaving a GitHub star if you like this software.
 
-If you use this software in a scientific publication,
+If you use this software for scientific work,
 we kindly ask you to cite the corresponding article:
 ```bibtex
 article{schilling_2022,
