@@ -625,7 +625,7 @@ def circularWireLoop_B_rho(rhoP, zP):
     :meta private:
     """
     if rhoP == 0.0 or zP == 0.0:
-        if rhoP != 0.0:
+        if rhoP != 1.0:
             return 0.0
         else :
             raise RuntimeError("evaluation at location of wire loop (rho' = 1, z' = 0) is not defined")

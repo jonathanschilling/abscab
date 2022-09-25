@@ -597,6 +597,7 @@ double circularWireLoop_B_rho(double rhoP, double zP) {
 			return 0.0;
 		} else {
 			fprintf(stderr, "evaluation at location of wire loop (rho' = 1, z' = 0) is not defined\n");
+		}
 	} else if (rhoP < 0.5 || rhoP > 2.0 || fabs(zP) >= 1.0) {
 		return cwl_B_rho_f(rhoP, zP);
 	} else if (rhoP != 1.0) {
