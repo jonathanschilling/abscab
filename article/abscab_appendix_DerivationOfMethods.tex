@@ -135,13 +135,56 @@ leading to
  \mathbf{A}(\mathbf{x}) = \frac{\mu_0 I}{2 \pi} \, \mathrm{artanh} \left( \epsilon \right) \hat{\mathbf{e}} \, . \label{eqn:A_artanh}
 \end{equation}
 The special-case formulations listed in Sec.~\ref{sec:methods_sws} are derived in the following.
-
-
-
-
-
-
-
+First, consider the case $\rho' = 0$ at $z' < 0$ or $z' > 1$.
+There, it holds:
+\begin{align}
+  r_\mathrm{i} = |z'|     \label{eqn:r_i_v} \\
+  r_\mathrm{f} = |1 - z'| \label{eqn:r_f_v}
+\end{align}
+and it follows:
+\begin{equation}
+  \tilde{A}_\mathrm{z,ax,f} (z') = \textrm{atanh}\left( \frac{1}{|z'| + |1 - z'|} \right) \label{eqn:sws_A_z_ax_f_derivation}
+\end{equation}
+by inserting \eqn{r_i_v} and \eqn{r_f_v} into \eqn{A_z_tilde}.
+This is the forumlation used in \eqn{sws_A_z_ax_f}.
+It was found that this formulation works well for evaluation locations far away from the wire segment
+where either $z' < -1$ or $z' \geq 2$.
+A formulation that works well for evaluation locations along $\rho'=0$ close to the wire segment
+is obtained by inserting $\epsilon$ expressed using \eqn{r_i_v} and \eqn{r_f_v} into \eqn{A_z_tilde}:
+\begin{align}
+  \tilde{A}_\mathrm{z,ax,n} (z')
+  = \frac{1}{2} \ln \left( \frac{ 1 + \frac{1}{|z'| + |1 - z'|} }{ 1 - \frac{1}{|z'| + |1 - z'|}  } \right) \label{eqn:sws_A_z_ax_n_1} \, .
+\end{align}
+Two cases are considered separately in the following.
+First, for $z' > 1$, it follows:
+\begin{equation}
+  |z'| = z' \textrm{ and } |1 - z'| = z' - 1 \, .
+\end{equation}
+Inserting this into \eqn{sws_A_z_ax_n_1} leads to:
+\begin{align}
+  \tilde{A}_\mathrm{z,ax,n} (z')
+  =&\, \frac{1}{2} \ln \left( \frac{ 1 + \frac{1}{z' + z' - 1} }{ 1 - \frac{1}{z' + z' - 1}  } \right) \nonumber \\
+  =&\, \frac{1}{2} \ln \left( \frac{ 2 z' \bcancel{-1} \bcancel{+1} }{2 z' -1 -1} \right) \nonumber \\
+  =&\, \frac{1}{2} \ln \left( \frac{z'}{z' - 1} \right) \label{eqn:sws_A_z_ax_n_pos} \, .
+\end{align}
+Second, for $z' < 0$, it follows:
+\begin{equation}
+  |z'| = -z' \textrm{ and } |1 - z'| = 1 - z' \, .
+\end{equation}
+Inserting this into \eqn{sws_A_z_ax_n_1} leads to:
+\begin{align}
+  \tilde{A}_\mathrm{z,ax,n} (z')
+  =&\, \frac{1}{2} \ln \left( \frac{ 1 + \frac{1}{-z' + 1 - z'} }{ 1 - \frac{1}{-z' + 1 - z'}  } \right) \nonumber \\
+  =&\, \frac{1}{2} \ln \left( \frac{ -2 z' +1 +1 }{-2 z' \bcancel{+1} \bcancel{-1} } \right) \nonumber \\
+  =&\, \frac{1}{2} \ln \left( \frac{-z' + 1}{-z'} \right) \nonumber \\
+  =&\, \frac{1}{2} \ln \left( \frac{z' - 1}{z'} \right) \nonumber \\
+  =&\, -\frac{1}{2} \ln \left( \frac{z'}{z' - 1} \right) \label{eqn:sws_A_z_ax_n_neg} \, .
+\end{align}
+The expressions in \eqn{sws_A_z_ax_n_pos} and \eqn{sws_A_z_ax_n_neg} can be generalized to the following expression:
+\begin{equation}
+  \tilde{A}_\mathrm{z,ax,n} (z') = \frac{1}{2} \frac{z'}{|z'|} \ln \left( \frac{z'}{z' - 1} \right) \label{eqn:sws_A_z_ax_n_derivation} \, .
+\end{equation}
+This is the formulation used in \eqn{sws_A_z_ax_n}.
 
 
 
@@ -182,7 +225,7 @@ It follows with \eqn{omeps}:
 Now insert \eqn{omeps} and \eqn{opeps} into \eqn{A_z_tilde}
 and use $\ln(a/b) = \ln(a) - \ln(b)$ for real numbers $a$ and $b$:
 \begin{align}
-  \tilde{A}_z (\rho', z')
+  \tilde{A}_{z,\mathrm{n}} (\rho', z')
   =&\, \frac{1}{2} \left[ \ln \left( 2 - \frac{n}{n+1} \right) - \ln \left( \frac{n}{n+1} \right) \right] \nonumber \\
   =&\, \frac{1}{2} \left[ \ln \left( \frac{2(n+1) - n}{n+1} \right) - \ln \left( \frac{n}{n+1} \right) \right] \nonumber \\
   =&\, \frac{1}{2} \left[ \ln (2(n+1) - n) \bcancel{- \ln(n+1)} - \ln (n) \bcancel{+ \ln(n+1)} \right]  \nonumber \\
