@@ -4,6 +4,19 @@ Accurate Biot-Savart routines with Correct Asymptotic Behaviour
 
 The main article on this software can be found here: [abscab_main.pdf](article/abscab_main.pdf)
 
+Please consider leaving a GitHub star if you like this software.
+
+If you use this software for scientific work,
+we kindly ask you to cite the corresponding article:
+```bibtex
+article{schilling_2022,
+  title  = {{Accurate Biot-Savart Routines with Correct Asymptiotic Behaviour}},
+  author = {J. Schilling, J. Svensson, U. Hoefel, J. Geiger, H. Thomsen},
+  journal = {Computer Physics Communications: Computer Programs in Physics},
+  doi = {},
+}
+```
+
 ## Table of Contents
 1. [API](https://github.com/jonathanschilling/abscab#api)
    1. [High-Level Methods](https://github.com/jonathanschilling/abscab#high-level-methods)
