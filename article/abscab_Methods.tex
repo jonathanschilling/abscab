@@ -96,7 +96,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{A}_\mathrm{z,rad} (\rho')     &:\, \rho' > 0; z' \in \{0, 1\} \\
     \tilde{A}_\mathrm{z,f}   (\rho', z') &:\, (\rho' \geq 1 \textrm{ and } z' \,\cancel{\in}\, \{0, 1\}) \textrm{ or } \\
                 ~                        &~\,\, (\rho' > 0; z' \leq -1 \textrm{ or } z' > 2) \\
-    \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{elsewhere} \, .
+    \tilde{A}_\mathrm{z,n}   (\rho', z') &:\, \textrm{elsewhere.}
   \end{cases} \label{eqn:sws_A_z_switchover}
 \end{equation}
 The domain decomposition for the accurate computation of $\tilde{A}_z$
@@ -239,7 +239,7 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
     \tilde{B}_{\varphi,\mathrm{rad}} (\rho')     &:\, \rho' > 0; z' \in \{0, 1\} \\
     \tilde{B}_{\varphi,\mathrm{f}}   (\rho', z') &:\, (\rho' > 0; z' > 1 \textrm{ or } z' < 0) \textrm{ or } \\
                                             ~    &~~  (\rho' \geq z' \textrm{ or } \rho' \geq 1-z'; 0 < z' < 1) \\
-    \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{elsewhere} \, .
+    \tilde{B}_{\varphi,\mathrm{n}}   (\rho', z') &:\, \textrm{elsewhere.}
   \end{cases} \label{eqn:sws_B_phi_switchover}
 \end{equation}
 The domain decomposition for the accurate computation of $\tilde{B}_\varphi$
@@ -387,10 +387,12 @@ One of several formulations for $\tilde{A}_\varphi$ is chosen depending on the e
 \begin{equation}
   \tilde{A}_\varphi (\rho', z') =
   \begin{cases}
-    0                                          &:\, \rho' = 0 , \textrm{ any } z' \\
-    \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, 0 < \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
-    \tilde{A}_{\varphi,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
-    \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
+    \textrm{undefined}                         &:\, \rho' = 1; z' = 0 \\
+    0                                          &:\, \rho' = 0; \textrm{ any } z' \\
+    \tilde{A}_{\varphi,\mathrm{f}} (\rho', z') &:\, (0 < \rho' < 1/2; \textrm{ any } z') \textrm{ or } \\
+                   ~                           &~~     (\rho' > 2;   \textrm{ any } z') \textrm{ or } (\rho' > 0; |z'| \geq 1) \\
+    \tilde{A}_{\varphi,\mathrm{v}} (z')        &:\, \rho' = 1; ( -1 < z' < 0 \textrm{ or } 0 < z' < 1) \\
+    \tilde{A}_{\varphi,\mathrm{n}} (\rho', z') &:\, \textrm{elsewhere.}
   \end{cases} \label{eqn:A_phi_final}
 \end{equation}
 The domain decomposition used to compute $\tilde{A}_\varphi$ accurately is depicted in Fig.~\ref{fig:cwl_A_phi_regions}.
@@ -457,11 +459,12 @@ One of several formulations is chosen depending on the evaluation location~$(\rh
 \begin{equation}
   \tilde{B}_\rho(\rho', z')
   = \begin{cases}
-      0                                 &:\, \rho' = 0, \textrm{ any } z' \\
-                    ~                   &\, ~\textrm{ or } \rho' > 0, z' = 0 \\
-      \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 \\
-      \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| < 1 \\
-      \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \textrm{else } (\rho' = 1, |z'| < 1) \, .
+      \textrm{undefined}                      &:\, \rho' = 1; z' = 0 \\
+      0                                       &:\, (\rho' = 0; \textrm{ any } z') \textrm{ or } (\rho' \neq 1; z' = 0) \\
+      \tilde{B}_{\rho,\mathrm{f}} (\rho', z') &:\, \rho' > 0 \textrm{ and } |z'| > 0 \textrm{ and } \\
+                     ~                        &~~ (\rho' < 1/2 \textrm{ or } \rho' > 2 \textrm{ or } |z'| \geq 1 ) \\
+      \tilde{B}_{\rho,\mathrm{v}} (z')        &:\, \rho' = 1; ( -1 < z' < 0 \textrm{ or } 0 < z' < 1) \\
+      \tilde{B}_{\rho,\mathrm{n}} (\rho', z') &:\, \textrm{elsewhere.}
     \end{cases} \label{eqn:cwl_B_rho_switchover}
 \end{equation}
 The domain decomposition used to compute $\tilde{B}_\rho$ accurately is depicted in Fig.~\ref{fig:cwl_B_rho_regions}.
@@ -538,11 +541,12 @@ One of several formulations is selected depending on the evaluation location~$(\
 \begin{equation}
   \tilde{B}_z(\rho', z')
   = \begin{cases}
-      \tilde{B}_{z,\mathrm{f1}} (\rho', z') &:\, \rho' < 1/2, \textrm{ any } z' \\
-                ~                           &~ \textrm{ or } \rho' \leq 2, |z'| > 1 \\
+      \textrm{undefined}                    &:\, \rho' = 1; z' = 0 \\
+      \tilde{B}_{z,\mathrm{f1}} (\rho', z') &:\, (\rho' < 1/2; \textrm{ any } z') \textrm{ or } \\
+                ~                           &~~  (\rho' \leq 2; |z'| > 1) \\
       \tilde{B}_{z,\mathrm{f2}} (\rho', z') &:\, \rho' > 2, \textrm{ any } z' \\
-      \tilde{B}_{z,\mathrm{n}}  (\rho', z') &:\, 1/2 \leq \rho' \leq 2 \textrm{ but } \rho' \neq 1, |z'| \leq 1 \\
-      \tilde{B}_{z,\mathrm{v}}  (z') &:\, \textrm{else } (\rho' = 1, |z'| \leq 1) \, .
+      \tilde{B}_{z,\mathrm{v}}  (z')        &:\, \rho' = 1; ( -1 \leq z' < 0 \textrm{ or } 0 < z' \leq 1) \\
+      \tilde{B}_{z,\mathrm{n}}  (\rho', z') &:\, \textrm{elsewhere.} \\
     \end{cases} \label{eqn:cwl_B_z_switchover}
 \end{equation}
 The domain decomposition used to compute $\tilde{B}_z$ accurately is depicted in Fig.~\ref{fig:cwl_B_z_regions}.
