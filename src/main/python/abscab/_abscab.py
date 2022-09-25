@@ -153,12 +153,12 @@ def _sws_A_z_n(rhoP, zP):
     beta = np.arctan2(rhoP, omz)
     sinBetaHalf = np.sin(beta / 2)
 
-    Ri_zP    = 2 * r_i * sinAlphaHalf * sinAlphaHalf # r_i - z'
-    Rf_p_zM1 = 2 * r_f * sinBetaHalf  * sinBetaHalf  # r_f - (1 - z')
+    Ri_zP    = r_i * sinAlphaHalf * sinAlphaHalf # 0.5 * (r_i - z')
+    Rf_p_zM1 = r_f * sinBetaHalf  * sinBetaHalf  # 0.5 * (r_f - (1 - z'))
 
     n = Ri_zP + Rf_p_zM1
 
-    return (np.log(2 + n) - np.log(n)) / 2
+    return (np.log(1 + n) - np.log(n)) / 2
 
 ############## B_phi of straight wire segment
 

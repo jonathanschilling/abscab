@@ -149,12 +149,12 @@ function sws_A_z_n(rhoP, zP)
     beta = atan2(rhoP, omz)
     sinBetaHalf = sin(beta / 2.0_wp)
 
-    Ri_zP    = 2.0_wp * r_i * sinAlphaHalf * sinAlphaHalf ! r_i - z'
-    Rf_p_zM1 = 2.0_wp * r_f * sinBetaHalf  * sinBetaHalf  ! r_f - (1 - z')
+    Ri_zP    = r_i * sinAlphaHalf * sinAlphaHalf ! 0.5 * (r_i - z')
+    Rf_p_zM1 = r_f * sinBetaHalf  * sinBetaHalf  ! 0.5 * (r_f - (1 - z'))
 
     n = Ri_zP + Rf_p_zM1
 
-    sws_A_z_n = (log(2.0_wp + n) - log(n)) / 2.0_wp
+    sws_A_z_n = (log(1.0_wp + n) - log(n)) / 2.0_wp
 end function ! sws_A_z_n
 
 !------------ B_phi of straight wire segment
