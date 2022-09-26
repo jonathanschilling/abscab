@@ -286,17 +286,21 @@ by inserting $z'=1$ and $r_\mathrm{i}$ from \eqn{ri_for_rad} into \eqn{cos_alpha
 \begin{equation}
   \cos(\alpha) = \frac{1}{\sqrt{{\rho'}^2 + 1}} \, .
 \end{equation}
+The angle $\alpha$ can be computed as follows for this special case:
+\begin{equation}
+  \alpha = \textrm{arctan}(\rho') \, .
+\end{equation}
 This allows to write \eqn{opeps_omeps} as follows:
 \begin{equation}
   \frac{1 + \epsilon}{1 - \epsilon}
   = \frac{\rho' \cos(\alpha) + 1 + \cos(\alpha)}
          {\rho' \cos(\alpha) + 1 - \cos(\alpha)} \label{eqn:opeps_omeps_slim}
 \end{equation}
-and with $\cos(\alpha) = 1 - \sin^2(\alpha/2)$ it follows by inserting \eqn{opeps_omeps_slim} into \eqn{A_z_tilde}:
+and with $1 - \cos(\alpha) = 2 \sin^2(\alpha/2)$ it follows by inserting \eqn{opeps_omeps_slim} into \eqn{A_z_tilde}:
 \begin{equation}
   \tilde{A}_\mathrm{z,rad,n}(\rho') = \frac{1}{2} \ln \left(
          \frac{\rho' \cos(\alpha) + 1 + \cos(\alpha)}
-              {\rho' \cos(\alpha) + 1 - \cos(\alpha)} \right) \label{eqn:sws_A_z_rad_n_derivation} \, .
+              {\rho' \cos(\alpha) + 2 \sin^2(\alpha/2)} \right) \label{eqn:sws_A_z_rad_n_derivation} \, .
 \end{equation}
 This concludes the derivation of the formulation used in \eqn{sws_A_z_rad_n}.
 
