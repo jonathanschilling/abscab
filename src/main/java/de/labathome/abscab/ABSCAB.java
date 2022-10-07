@@ -9,8 +9,6 @@ import java.util.function.IntFunction;
 
 import org.apache.commons.math3.util.FastMath;
 
-import de.labathome.CompleteEllipticIntegral;
-
 /** Accurate Biot-Savart routines with Correct Asymptotic Behavior */
 public class ABSCAB {
 
