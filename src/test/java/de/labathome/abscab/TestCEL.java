@@ -68,13 +68,13 @@ public class TestCEL {
 		// analytical test cases
 		double kAt0 = CompleteEllipticIntegral.ellipticK(0.0);
 		double eAt0 = CompleteEllipticIntegral.ellipticE(0.0);
-		System.out.printf("  k=0.0  => K(k)=%g  E(k)=%g\n", kAt0, eAt0);
+//		System.out.printf("  k=0.0  => K(k)=%g  E(k)=%g\n", kAt0, eAt0);
 		assertRelAbsEquals(Math.PI/2.0, kAt0, tolerance);
 		assertRelAbsEquals(Math.PI/2.0, eAt0, tolerance);
 
 		double kAt1 = CompleteEllipticIntegral.ellipticK(1.0);
 		double eAt1 = CompleteEllipticIntegral.ellipticE(1.0);
-		System.out.printf("  k=1.0  => K(k)=%g E(k)=%g\n", kAt1, eAt1);
+//		System.out.printf("  k=1.0  => K(k)=%g E(k)=%g\n", kAt1, eAt1);
 		assertRelAbsEquals(Double.POSITIVE_INFINITY, kAt1, tolerance);
 		assertRelAbsEquals(1.0,                      eAt1, tolerance);
 
@@ -82,13 +82,13 @@ public class TestCEL {
 		// J. Res. Nat. Bureau Std., Vol. 50, No. 1, Jan. 1953 (Research Paper 2386)
 		double kAtHalf = CompleteEllipticIntegral.ellipticK(0.5);
 		double eAtHalf = CompleteEllipticIntegral.ellipticE(0.5);
-		System.out.printf("  k=0.5  => K(k)=%g  E(k)=%g\n", kAtHalf, eAtHalf);
+//		System.out.printf("  k=0.5  => K(k)=%g  E(k)=%g\n", kAtHalf, eAtHalf);
 		assertRelAbsEquals(1.685750355, kAtHalf, 1.0e-9);
 		assertRelAbsEquals(1.467462209, eAtHalf, 1.0e-9);
 
 		double kClose1 = CompleteEllipticIntegral.ellipticK(1.0/1.01);
 		double eClose1 = CompleteEllipticIntegral.ellipticE(1.0/1.01);
-		System.out.printf("1/k=1.01 => K(k)=%g  E(k)=%g\n", kClose1, eClose1);
+//		System.out.printf("1/k=1.01 => K(k)=%g  E(k)=%g\n", kClose1, eClose1);
 		assertRelAbsEquals(3.361458120, kClose1, 1.0e-9);
 		assertRelAbsEquals(1.028242731, eClose1, 1.0e-9);
 	}
