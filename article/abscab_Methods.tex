@@ -107,6 +107,7 @@ For the case~$\rho'=0$, the following formulation is used:
 \begin{equation}
   \tilde{A}_\mathrm{z,ax} (z') =
   \begin{cases}
+    \textrm{undefined}             &:\, 0 \leq z' \leq 1 \\
     \tilde{A}_\mathrm{z,ax,f} (z') &:\, z' < -1 \textrm{ or } z' \geq 2 \\
     \tilde{A}_\mathrm{z,ax,n} (z') &:\, -1 \leq z' < 0 \textrm{ or } 1 < z' < 2
   \end{cases}
@@ -121,10 +122,11 @@ and
   \tilde{A}_\mathrm{z,ax,n} (z') = \frac{1}{2} \frac{z'}{|z'|} \ln \left(\frac{z'}{z' - 1}\right) \label{eqn:sws_A_z_ax_n} \, ,
 \end{equation}
 which is derived in \eqn{sws_A_z_ax_n_derivation}.
-The cases with $z'=0$ or $z'=1$ are evaluated using the following expressions:
+The cases with $z'=0$ or $z'=1$ are evaluated using the following expression:
 \begin{equation}
   \tilde{A}_\mathrm{z,rad} (\rho') =
   \begin{cases}
+    \textrm{undefined}                 &:\, \rho' = 0 \\
     \tilde{A}_\mathrm{z,rad,f} (\rho') &:\, \rho' > 1 \\
     \tilde{A}_\mathrm{z,rad,n} (\rho') &:\, 0 < \rho' \leq 1
   \end{cases}
