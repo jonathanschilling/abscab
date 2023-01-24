@@ -9,12 +9,15 @@ import aliceinnets.python.jyplot.JyPlot;
 public class DemoABSCAB {
 
 	public static void main(String[] args) {
+
+		demoStraightWireSegmentAtHalfHeight();
+
 //		demoDoubleParts();
 
 //		demoStraightWireSegmentAlongRhoP0();
 //		demoStraightWireSegmentAlongZP01();
 
-		demoMcGreivy();
+//		demoMcGreivy();
 //		demoFiniteCoil();
 //		demoAntiHelmholtzCoilField();
 //		demoHelmholtzCoilField();
@@ -22,9 +25,60 @@ public class DemoABSCAB {
 
 //		demoStraightWireSegment();
 //		demoCircularWireLoop();
-//
+
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+
+	public static void demoStraightWireSegmentAtHalfHeight() {
+
+		int n = 31;
+
+		double rhoValues[] = new double[n];
+		double sws_A_z_accurate[] = new double[n];
+		double sws_A_z[] = new double[n];
+		double error[] = new double[n];
+
+		double z = 0.5;
+
+		for (int i = 0; i < n; ++i) {
+			rhoValues[i] = Math.pow(10, i - 15);
+
+			sws_A_z_accurate[i] = ABSCAB.straightWireSegment_A_z(rhoValues[i], z);
+			sws_A_z[i] = ABSCAB.sws_A_z_f(rhoValues[i], z);
+
+			error[i] = UtilsTestABSCAB.errorMetric(sws_A_z_accurate[i], sws_A_z[i]);
+
+			System.out.printf("rho' = %5.2e\n" +
+					          "  sws_A_z_f = %.18e\n" +
+					          "       real = %.18e\n" +
+			                  "   => error = %d \n", rhoValues[i], sws_A_z[i], sws_A_z_accurate[i], (int) error[i]);
+		}
+
+		JyPlot plt = new JyPlot();
+
+		plt.subplot(2,1,1);
+		plt.semilogx(rhoValues, sws_A_z_accurate, "bo-", "label='real'");
+		plt.semilogx(rhoValues, sws_A_z,          "r.--", "label='sws_A_z'");
+		plt.legend("loc='upper right'");
+		plt.grid(true);
+		plt.title("straight wire segment, $L=1m$, $I = 1A$, evaluated at $z=0.5m$");
+		plt.ylabel("$A_\\varphi$ / Tm");
+		plt.xticks(new double[] {1.0e-15, 1.0e-12, 1.0e-9, 1.0e-6, 1.0e-3, 1.0, 1.0e3, 1.0e6, 1.0e9, 1.0e12, 1.0e15});
+		plt.tick_params("axis='x', labelbottom=False");
+
+		plt.subplot(2,1,2);
+		plt.semilogx(rhoValues, error, "k.-", "label='error metric'");
+		plt.legend("loc='upper right'");
+		plt.grid(true);
+		plt.xlabel("$\\rho ~ / ~ m$");
+		plt.ylabel("error metric / 1");
+		plt.xticks(new double[] {1.0e-15, 1.0e-12, 1.0e-9, 1.0e-6, 1.0e-3, 1.0, 1.0e3, 1.0e6, 1.0e9, 1.0e12, 1.0e15});
+
+		plt.tight_layout();
+
+		plt.show();
+		plt.exec();
 	}
 
 	public static void demoDoubleParts() {
