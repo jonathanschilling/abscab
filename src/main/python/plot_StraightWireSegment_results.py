@@ -4,10 +4,16 @@
 # and the reference data provided in this repository
 # for A_z and B_phi of the Straight Wire Segment.
 
+import sys
+
+src_type = "Java"
+if len(sys.argv) > 1:
+    src_type = sys.argv[1]
+
 import numpy as np
 import matplotlib.pyplot as plt
 
-savefigFilename = "../../../article/img/StraightWireSegment_results.pdf"
+savefigFilename = "../../../article/img/StraightWireSegment_results_%s.pdf"%(src_type,)
 #savefigFilename = "../../../article/img/StraightWireSegment_results.png"
 
 # machine precision (ca. 2.22e-16 for 64-bit double)
@@ -26,11 +32,11 @@ numCases = len(idxRp)
 
 # A_z
 ref1d_A_z = np.loadtxt("../../test/resources/StraightWireSegment_A_z_ref.dat")
-act1d_A_z = np.loadtxt("../../../data/StraightWireSegment_A_z_Java.dat")
+act1d_A_z = np.loadtxt("../../../data/StraightWireSegment_A_z_%s.dat"%(src_type,))
 
 # B_phi
 ref1d_B_phi = np.loadtxt("../../test/resources/StraightWireSegment_B_phi_ref.dat")
-act1d_B_phi = np.loadtxt("../../../data/StraightWireSegment_B_phi_Java.dat")
+act1d_B_phi = np.loadtxt("../../../data/StraightWireSegment_B_phi_%s.dat"%(src_type,))
 
 def reshapeData(ref1d, act1d):
     ref = np.zeros([numZ, numR])

@@ -9,7 +9,7 @@ if __name__ == "__main__":
     numArgs = len(sys.argv)
     if numArgs < 3:
         print("usage: " + sys.argv[0] + " <ref> <act> [savefig filename] [plot title]")
-        print(" where <ref> is the reference data (probably '../resources/CircularWireLoop_*_*_ref.dat')\n" +
+        print(" where <ref> is the reference data (probably '../../test/resources/CircularWireLoop_*_*_ref.dat')\n" +
               " and   <act> is the output to test (probably '../../../data/CircularWireLoop_*_*_*.dat')\n" +
               " Optionally, the generated plot is saved to the given filename (3rd parameter).\n" +
               " Optionally, the generated plot can be given a custom title (4th parameter).")
@@ -42,27 +42,27 @@ if __name__ == "__main__":
     # machine precision (ca. 2.22e-16 for 64-bit double)
     eps = np.finfo(np.float64).eps
 
-    testKnotsRp = np.loadtxt("../resources/testKnotsRpCircularWireLoop.dat")
-    testKnotsZp = np.loadtxt("../resources/testKnotsZpCircularWireLoop.dat")
+    testKnotsRp = np.loadtxt("../../test/resources/testKnotsRpCircularWireLoop.dat")
+    testKnotsZp = np.loadtxt("../../test/resources/testKnotsZpCircularWireLoop.dat")
 
     numR = len(testKnotsRp)
     numZ = len(testKnotsZp)
 
-    idxRp = np.loadtxt("../resources/idxRpCircularWireLoop.dat", dtype=int)
-    idxZp = np.loadtxt("../resources/idxZpCircularWireLoop.dat", dtype=int)
+    idxRp = np.loadtxt("../../test/resources/idxRpCircularWireLoop.dat", dtype=int)
+    idxZp = np.loadtxt("../../test/resources/idxZpCircularWireLoop.dat", dtype=int)
 
     numCases = len(idxRp)
 
     # A_phi
-    # ref1d = np.loadtxt("../resources/CircularWireLoop_A_phi_ref.dat")
+    # ref1d = np.loadtxt("../../test/resources/CircularWireLoop_A_phi_ref.dat")
     # act1d = np.loadtxt("../../../data/CircularWireLoop_A_phi_Java.dat")
 
     # B_rho
-    # ref1d = np.loadtxt("../resources/CircularWireLoop_B_rho_ref.dat")
+    # ref1d = np.loadtxt("../../test/resources/CircularWireLoop_B_rho_ref.dat")
     # act1d = np.loadtxt("../../../data/CircularWireLoop_B_rho_Java.dat")
 
     # B_z
-    # ref1d = np.loadtxt("../resources/CircularWireLoop_B_z_ref.dat")
+    # ref1d = np.loadtxt("../../test/resources/CircularWireLoop_B_z_ref.dat")
     # act1d = np.loadtxt("../../../data/CircularWireLoop_B_z_Java.dat")
 
     ref1d = np.loadtxt(refFilename)

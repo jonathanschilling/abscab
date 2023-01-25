@@ -10,7 +10,8 @@ public class DemoABSCAB {
 
 	public static void main(String[] args) {
 
-		demoStraightWireSegmentAtHalfHeight();
+		demoCircularWireLoopTEAL();
+//		demoStraightWireSegmentAtHalfHeight();
 
 //		demoDoubleParts();
 
@@ -28,6 +29,72 @@ public class DemoABSCAB {
 
 //		dumpInternalResultsStraightWireSegment();
 //		dumpInternalResultsCircularWireLoop();
+	}
+
+	public static double cwl_A_phi_TEAL(double rhoP, double zP) {
+
+		double kCSq_num = zP*zP + (1 - rhoP) * (1 - rhoP);
+		double kCSq_den = zP*zP + (1 + rhoP) * (1 + rhoP);
+
+		double prefac = 1.0 / Math.sqrt(kCSq_den);
+		double kCSq = kCSq_num / kCSq_den;
+
+		return prefac * CompleteEllipticIntegral.cel(Math.sqrt(kCSq), 1, -1, 1);
+	}
+
+	public static double cwl_B_rho_TEAL(double rhoP, double zP) {
+
+		double kCSq_num = zP*zP + (1 - rhoP) * (1 - rhoP);
+		double kCSq_den = zP*zP + (1 + rhoP) * (1 + rhoP);
+
+		double prefac = zP / (kCSq_den * Math.sqrt(kCSq_den));
+		double kCSq = kCSq_num / kCSq_den;
+
+		return prefac * CompleteEllipticIntegral.cel(Math.sqrt(kCSq),kCSq, -1, 1);
+	}
+
+	public static double cwl_B_z_TEAL(double rhoP, double zP) {
+
+		double kCSq_num = zP*zP + (1 - rhoP) * (1 - rhoP);
+		double kCSq_den = zP*zP + (1 + rhoP) * (1 + rhoP);
+
+		double prefac = 1.0 / (2 * rhoP * Math.sqrt(kCSq_den));
+		double kCSq = kCSq_num / kCSq_den;
+
+		double cel1 = CompleteEllipticIntegral.cel(Math.sqrt(kCSq), 1, -1, 1);
+
+		double fac2 = (1 + kCSq - (1 - kCSq) * rhoP) / 2;
+		double cel2 = CompleteEllipticIntegral.cel(Math.sqrt(kCSq),kCSq, -1, 1);
+
+		return prefac * (cel1 + fac2 * cel2);
+	}
+
+	public static void demoCircularWireLoopTEAL() {
+
+		// load set of test points
+		double[] testPointsRp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsRpCircularWireLoop.dat")[0];
+		double[] testPointsZp = UtilsTestABSCAB.loadColumnsFromResource(DemoABSCAB.class, "/testPointsZpCircularWireLoop.dat")[0];
+
+		int numCases = testPointsRp.length;
+
+		// compute A_phi, B_rho and B_z at test points
+		double[] A_phi_TEAL = new double[numCases];
+		double[] B_rho_TEAL = new double[numCases];
+		double[] B_z_TEAL = new double[numCases];
+
+		for (int i=0; i<numCases; ++i) {
+			double rhoP = testPointsRp[i];
+			double zP   = testPointsZp[i];
+
+			A_phi_TEAL[i] = cwl_A_phi_TEAL(rhoP, zP);
+			B_rho_TEAL[i] = cwl_B_rho_TEAL(rhoP, zP);
+			B_z_TEAL[i] = cwl_B_z_TEAL(rhoP, zP);
+		}
+
+		// write to output file
+		UtilsTestABSCAB.dumpToFile(A_phi_TEAL, "data/CircularWireLoop_A_phi_TEAL.dat");
+		UtilsTestABSCAB.dumpToFile(B_rho_TEAL, "data/CircularWireLoop_B_rho_TEAL.dat");
+		UtilsTestABSCAB.dumpToFile(B_z_TEAL, "data/CircularWireLoop_B_z_TEAL.dat");
 	}
 
 	public static void demoStraightWireSegmentAtHalfHeight() {
@@ -58,12 +125,12 @@ public class DemoABSCAB {
 		JyPlot plt = new JyPlot();
 
 		plt.subplot(2,1,1);
-		plt.semilogx(rhoValues, sws_A_z_accurate, "bo-", "label='real'");
-		plt.semilogx(rhoValues, sws_A_z,          "r.--", "label='sws_A_z'");
+		plt.semilogx(rhoValues, sws_A_z_accurate, "bo-", "label='correct'");
+		plt.semilogx(rhoValues, sws_A_z,          "r.--", "label=r'$\\tilde{A}_{z,f}$'");
 		plt.legend("loc='upper right'");
 		plt.grid(true);
 		plt.title("straight wire segment, $L=1m$, $I = 1A$, evaluated at $z=0.5m$");
-		plt.ylabel("$A_\\varphi$ / Tm");
+		plt.ylabel("r'$\\tilde{A}_z$ / a.u.'");
 		plt.xticks(new double[] {1.0e-15, 1.0e-12, 1.0e-9, 1.0e-6, 1.0e-3, 1.0, 1.0e3, 1.0e6, 1.0e9, 1.0e12, 1.0e15});
 		plt.tick_params("axis='x', labelbottom=False");
 
