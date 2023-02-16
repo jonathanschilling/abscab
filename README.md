@@ -18,19 +18,31 @@ article{schilling_2022,
 ```
 
 ## Table of Contents
-1. [API](https://github.com/jonathanschilling/abscab#api)
+1. [Implementations](https://github.com/jonathanschilling/abscab#implementations)
+2. [API](https://github.com/jonathanschilling/abscab#api)
    1. [High-Level Methods](https://github.com/jonathanschilling/abscab#high-level-methods)
       1. [Polygon Filament](https://github.com/jonathanschilling/abscab#polygon-filament)
       2. [Circular Filament](https://github.com/jonathanschilling/abscab#circular-filament)
    2. [Low-Level Methods](https://github.com/jonathanschilling/abscab#low-level-methods)
       1. [Straight Wire Segment](https://github.com/jonathanschilling/abscab#straight-wire-segment)
       2. [Circular Wire Loop](https://github.com/jonathanschilling/abscab#circular-wire-loop)
-2. [Implementations](https://github.com/jonathanschilling/abscab#implementations)
 3. [Reference Outputs](https://github.com/jonathanschilling/abscab#reference-outputs)
 4. [Verification Procedure](https://github.com/jonathanschilling/abscab#verification-procedure)
    1. [`mpmath` vs. Mathematica](https://github.com/jonathanschilling/abscab#mpmath-vs-mathematica)
    2. [Test Points](https://github.com/jonathanschilling/abscab#test-points)
    3. [Reference Data](https://github.com/jonathanschilling/abscab#reference-data)
+
+## Implementations
+
+Various implementations are provided in this repository.
+Here is an overview:
+
+|   Language   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
+| ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | ------------ |
+| Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
+| C 99         | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
+| Fortran 2008 | [`abscab.f08`](src/main/fortran/abscab.f08)                    | [`test_abscab.f08`](src/test/fortran/test_abscab.f08) | [`demo_abscab.f08`](src/test/fortran/demo_abscab.f08) | :heavy_check_mark: (OpenMP) |
+| Python 3     | [`abscab.py`](src/main/python/abscab/_abscab.py)                | [`test_abscab.py`](src/test/python/abscab/test_abscab.py) | [`demo_abscab.py`](src/test/python/abscab/demo_abscab.py)  | :heavy_multiplication_x: |
 
 ## API
 
@@ -222,18 +234,6 @@ to get the magnetic field in units of `T`, where
 `mu_0` is the vacuum magnetic permeability,
 `I` is the current along the wire loop and
 `r` is the radius of the wire loop.
-
-## Implementations
-
-Various implementations are provided in this repository.
-Here is an overview:
-
-|   Language   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
-| ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | ------------ |
-| Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
-| C 99         | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
-| Fortran 2008 | [`abscab.f08`](src/main/fortran/abscab.f08)                    | [`test_abscab.f08`](src/test/fortran/test_abscab.f08) | [`demo_abscab.f08`](src/test/fortran/demo_abscab.f08) | :heavy_check_mark: (OpenMP) |
-| Python 3     | [`abscab.py`](src/main/python/abscab/_abscab.py)                | [`test_abscab.py`](src/test/python/abscab/test_abscab.py) | [`demo_abscab.py`](src/test/python/abscab/demo_abscab.py)  | :heavy_multiplication_x: |
 
 ## Reference Outputs
 The following plots show the agreement between the Java implementation
