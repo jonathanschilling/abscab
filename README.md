@@ -9,11 +9,15 @@ Please consider leaving a GitHub star if you like this software.
 If you use this software for scientific work,
 we kindly ask you to cite the corresponding article:
 ```bibtex
-article{schilling_2022,
-  title  = {{Accurate Biot-Savart Routines with Correct Asymptiotic Behaviour}},
+@article{abscab_2023,
+  title  = {{Biot-Savart routines with minimal floating point error}},
   author = {J. Schilling, J. Svensson, U. Hoefel, J. Geiger, H. Thomsen},
-  journal = {Computer Physics Communications: Computer Programs in Physics},
-  doi = {},
+  year = {2023},
+  journal = {Computer Physics Communications},
+  volume = {},
+  number = {},
+  pages = {},
+  doi = {10.1016/j.cpc.2023.108692},
 }
 ```
 
