@@ -1,6 +1,12 @@
-# abscab
-Accurate Biot-Savart routines with Correct Asymptotic Behaviour
+# Accurate Biot-Savart routines with Correct Asymptotic Behaviour
 <img src="abscab_logo.png" alt="ABSCAB logo" width="200" align="right"/>
+
+This library can be used to compute the magnetic field and the magnetic vector potential
+of filamentary current carriers in the form of a circular loop and straight segments.
+Arbitrary geometries of conductors can be approximated by a polygon along its contour
+and the connecting segments between the polygon vertices are modeled by straight segments.
+Finite-width conductors can be approximated by arranging multiple filaments
+throughout the cross section of the current carrier.
 
 Please consider leaving a GitHub star if you like this software.
 
@@ -47,14 +53,6 @@ Here is an overview:
 
 ## API
 
-This library can be used to compute the magnetic field and the magnetic vector potential
-of filamentary current carriers in the form of a circular loop and straight segments.
-Arbitrary geometries of conductors can be approximated by a polygon along its contour
-and the connecting segments between the polygon vertices are modeled by straight segments.
-Finite-width conductors can be approximated by arranging multiple filaments
-throughout the cross section of the current carrier.
-
-The methods available to use this functionality are outlined below.
 The API consists of two levels.
 The high-level methods use the lower-level methods to evaluate
 the magnetic field and magnetic vector potential for a given current
