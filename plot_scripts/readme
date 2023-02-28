@@ -1,3 +1,4 @@
-This folder (/src/main/python) only contains the Python scripts to create the plots in the article.
-The Python implementation of ABSCAB can be found in /abscab,
-which is a stand-alone Python module that can be installed via pip.
+Demo data should end up in this folder from the various demo implementations.
+Run the following programs to get the outputs:
+Java: src/test/java/de/labathome/abscab/DemoABSCAB.java
+  
