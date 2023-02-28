@@ -44,7 +44,7 @@ we kindly ask you to cite [the corresponding article](https://doi.org/10.1016/j.
 Various implementations are provided in this repository.
 Here is an overview:
 
-|   Language   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
+|   Implementation   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
 | ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | ------------ |
 | [Java 8](https://github.com/jonathanschilling/abscab-java) | [`ABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
 | C 99         | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
