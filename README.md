@@ -51,6 +51,18 @@ Here is an overview:
 | [Fortran](https://github.com/jonathanschilling/abscab-fortran) | [`abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/abscab/abscab.f08) | [`test_abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/test/test_abscab.f08) | [`demo_abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/test/demo_abscab.f08) | :heavy_check_mark: | ![Build & Test](https://github.com/jonathanschilling/abscab-fortran/actions/workflows/build.yml/badge.svg) |
 | [Python](https://github.com/jonathanschilling/abscab-python) | [`abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/abscab/_abscab.py) | [`test_abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/test/abscab/test_abscab.py) | [`demo_abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/test/abscab/demo_abscab.py)  | :heavy_multiplication_x: | ![Build & Test](https://github.com/jonathanschilling/abscab-python/actions/workflows/build.yml/badge.svg) |
 
+The Python implementation is deployed on PyPI:
+[`abscab-1.0.0`](https://pypi.org/project/abscab/1.0.0/)
+
+The Java implementation is available on Maven Central:
+```xml
+<dependency>
+  <groupId>de.labathome</groupId>
+  <artifactId>abscab</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
 ## API
 
 The API consists of two levels.
