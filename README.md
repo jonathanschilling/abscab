@@ -46,7 +46,7 @@ Here is an overview:
 
 |   Language   |            main `abscab` file                                  |                unit tests                   | demo code | parallelized |
 | ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | ------------ |
-| Java 8       | [`ABSCAB.java`](src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
+| [Java 8](https://github.com/jonathanschilling/abscab-java) | [`ABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: (threads) |
 | C 99         | [`abscab.h`](src/main/c/abscab.h)                              | [`test_abscab.c`](src/test/c/test_abscab.c) | [`demo_abscab.c`](src/test/c/demo_abscab.c) | :heavy_check_mark: (OpenMP) |
 | Fortran 2008 | [`abscab.f08`](src/main/fortran/abscab.f08)                    | [`test_abscab.f08`](src/test/fortran/test_abscab.f08) | [`demo_abscab.f08`](src/test/fortran/demo_abscab.f08) | :heavy_check_mark: (OpenMP) |
 | Python 3     | [`abscab.py`](src/main/python/abscab/_abscab.py)                | [`test_abscab.py`](src/test/python/abscab/test_abscab.py) | [`demo_abscab.py`](src/test/python/abscab/demo_abscab.py)  | :heavy_multiplication_x: |
@@ -258,7 +258,7 @@ will be tested against the arbitrary-precision reference will be tested.
 These points are computed in Java, since it is a strictly-typed language
 and binaries are expected to produce platform-independent results.
 Nevertheless they are still of finite (64-bit) precision.
-The code to generate the test points is [`GenerateTestKnots.java`](src/test/java/de/labathome/abscab/GenerateTestKnots.java).
+The code to generate the test points is [`GenerateTestKnots.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/GenerateTestKnots.java).
 
 The test points are saved into text files in [`src/test/resources`](src/test/resources):
 * [`testPointsRpStraightWireSegment.dat`](src/test/resources/testPointsRpStraightWireSegment.dat) contains the value of `r'` at which
