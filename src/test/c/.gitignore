@@ -1,8 +1,0 @@
-test_cel
-test_abscab
-demo_abscab
-
-# outputs from demo programs
-*.dat
-
-*gprof*
