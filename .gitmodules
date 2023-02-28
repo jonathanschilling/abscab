@@ -1,0 +1,3 @@
+[submodule "abscab-java"]
+	path = abscab-java
+	url = git@github.com:jonathanschilling/abscab-java.git
