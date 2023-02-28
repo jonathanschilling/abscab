@@ -40,3 +40,5 @@ submission_source/
 ABSCAB_submission_source.zip
 submission/
 reviews/
+
+bazel-*
