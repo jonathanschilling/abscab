@@ -1,3 +1,6 @@
 [submodule "abscab-java"]
 	path = abscab-java
 	url = git@github.com:jonathanschilling/abscab-java.git
+[submodule "abscab-python"]
+	path = abscab-python
+	url = git@github.com:jonathanschilling/abscab-python.git
