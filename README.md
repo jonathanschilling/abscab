@@ -59,7 +59,7 @@ The Java implementation is available on Maven Central:
 <dependency>
   <groupId>de.labathome</groupId>
   <artifactId>abscab</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
