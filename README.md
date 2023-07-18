@@ -48,6 +48,7 @@ Here is an overview:
 | ------------ | -------------------------------------------------------------- | ------------------------------------------- | --------- | -------- | -- |
 | [Java](https://github.com/jonathanschilling/abscab-java) | [`ABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/main/java/de/labathome/abscab/ABSCAB.java) | [`TestABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/TestABSCAB.java) | [`DemoABSCAB.java`](https://github.com/jonathanschilling/abscab-java/blob/master/src/test/java/de/labathome/abscab/DemoABSCAB.java) | :heavy_check_mark: | ![Build & Test](https://github.com/jonathanschilling/abscab-java/actions/workflows/build.yml/badge.svg) |
 | [C](https://github.com/jonathanschilling/abscab-c) | [`abscab.h`](https://github.com/jonathanschilling/abscab-c/blob/master/abscab/abscab.h) | [`test_abscab.c`](https://github.com/jonathanschilling/abscab-c/blob/master/test/test_abscab.c) | [`demo_abscab.c`](https://github.com/jonathanschilling/abscab-c/blob/master/test/demo_abscab.c) | :heavy_check_mark: | ![Build & Test](https://github.com/jonathanschilling/abscab-c/actions/workflows/build.yml/badge.svg) |
+| [C++](https://github.com/jonathanschilling/abscab-cpp) | [`abscab.hh`](https://github.com/jonathanschilling/abscab-cpp/blob/master/abscab/abscab.hh) | [`test_abscab.cc`](https://github.com/jonathanschilling/abscab-cpp/blob/master/test/test_abscab.cc) | [`demo_abscab.cc`](https://github.com/jonathanschilling/abscab-cpp/blob/master/test/demo_abscab.cc) | :heavy_check_mark: | ![Build & Test](https://github.com/jonathanschilling/abscab-cpp/actions/workflows/build.yml/badge.svg) |
 | [Fortran](https://github.com/jonathanschilling/abscab-fortran) | [`abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/abscab/abscab.f08) | [`test_abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/test/test_abscab.f08) | [`demo_abscab.f08`](https://github.com/jonathanschilling/abscab-fortran/blob/master/test/demo_abscab.f08) | :heavy_check_mark: | ![Build & Test](https://github.com/jonathanschilling/abscab-fortran/actions/workflows/build.yml/badge.svg) |
 | [Python](https://github.com/jonathanschilling/abscab-python) | [`abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/src/abscab/_abscab.py) | [`test_abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/test/abscab/test_abscab.py) | [`demo_abscab.py`](https://github.com/jonathanschilling/abscab-python/blob/master/test/abscab/demo_abscab.py)  | :heavy_multiplication_x: | ![Build & Test](https://github.com/jonathanschilling/abscab-python/actions/workflows/build.yml/badge.svg) |
 
@@ -98,7 +99,7 @@ The **geometry of the polygon** can be provided to the routines as an array.
  * **Java**: `double[][] vertices = new double[3][numVertices];`  
    The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the points.  
    The second dimension (`numVertices`) is for the individual points along the polygon.
- * **C**: `double vertices[3 * numVertices];`  
+ * **C**, **C++**: `double vertices[3 * numVertices];`
    The geometry of the polygon is specified as a one-dimensional array.  
    The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
    where `n = numVertices - 1`.
@@ -169,7 +170,7 @@ The **evaluation locations** must be provided to the routines as an array.
  * **Java**: `double[][] evalPos = new double[3][numEvalPos];`  
    The first dimension (3) is for the three components (x, y, z) of the Cartesian coordinates of the locations.  
    The second dimension (`numEvalPos`) is for the individual evaluation locations.
- * **C**: `double evalPos[3 * numEvalPos];`  
+ * **C**, **C++**: `double evalPos[3 * numEvalPos];`
    The evaluation locations are specified as a one-dimensional array.  
    The order is (`x_0`, `y_0`, `z_0`, `x_1`, `y_1`, `z_1`, ..., `x_n`, `y_n`, `z_n`)
    where `n = numEvalPos - 1`.

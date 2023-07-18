@@ -10,3 +10,6 @@
 [submodule "abscab-fortran"]
 	path = abscab-fortran
 	url = git@github.com:jonathanschilling/abscab-fortran.git
+[submodule "abscab-cpp"]
+	path = abscab-cpp
+	url = git@github.com:jonathanschilling/abscab-cpp.git
