@@ -64,6 +64,18 @@ The Java implementation is available on Maven Central:
 </dependency>
 ```
 
+The C++ implementation is available as an external package for use in Bazel:
+```bazel
+# Accurate Biot-Savart routines with Correct Asymptotic Behaviour (C++)
+# https://github.com/jonathanschilling/abscab
+http_archive(
+  name = "abscab_cpp",
+  urls = [ "https://github.com/jonathanschilling/abscab-cpp/archive/refs/tags/v1.0.2.tar.gz" ],
+  strip_prefix = "abscab-cpp-1.0.2",
+  sha256 = "a9a0c15309eafc5b483d0fa32c60fb0e076222300a974ec46f96273a6c5976df",
+)
+```
+
 ## API
 
 The API consists of two levels.
