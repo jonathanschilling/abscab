@@ -70,9 +70,8 @@ The C++ implementation is available as an external package for use in Bazel:
 # https://github.com/jonathanschilling/abscab
 http_archive(
   name = "abscab_cpp",
-  urls = [ "https://github.com/jonathanschilling/abscab-cpp/archive/refs/tags/v1.0.2.tar.gz" ],
-  strip_prefix = "abscab-cpp-1.0.2",
-  sha256 = "a9a0c15309eafc5b483d0fa32c60fb0e076222300a974ec46f96273a6c5976df",
+  urls = [ "https://github.com/jonathanschilling/abscab-cpp/archive/refs/tags/v1.0.3.tar.gz" ],
+  strip_prefix = "abscab-cpp-1.0.3",
 )
 ```
 
