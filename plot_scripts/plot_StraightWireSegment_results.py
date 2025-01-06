@@ -13,30 +13,31 @@ if len(sys.argv) > 1:
 import numpy as np
 import matplotlib.pyplot as plt
 
-savefigFilename = "../../../article/img/StraightWireSegment_results_%s.pdf"%(src_type,)
+#savefigFilename = "../../../article/img/StraightWireSegment_results_%s.pdf"%(src_type,)
+savefigFilename = "more_plots/StraightWireSegment_results_%s.pdf"%(src_type,)
 #savefigFilename = "../../../article/img/StraightWireSegment_results.png"
 
 # machine precision (ca. 2.22e-16 for 64-bit double)
 eps = np.finfo(np.float64).eps
 
-testKnotsRp = np.loadtxt("../../test/resources/testKnotsRpStraightWireSegment.dat")
-testKnotsZp = np.loadtxt("../../test/resources/testKnotsZpStraightWireSegment.dat")
+testKnotsRp = np.loadtxt("../abscab-java/src/test/resources/testKnotsRpStraightWireSegment.dat")
+testKnotsZp = np.loadtxt("../abscab-java/src/test/resources/testKnotsZpStraightWireSegment.dat")
 
 numR = len(testKnotsRp)
 numZ = len(testKnotsZp)
 
-idxRp = np.loadtxt("../../test/resources/idxRpStraightWireSegment.dat", dtype=int)
-idxZp = np.loadtxt("../../test/resources/idxZpStraightWireSegment.dat", dtype=int)
+idxRp = np.loadtxt("../abscab-java/src/test/resources/idxRpStraightWireSegment.dat", dtype=int)
+idxZp = np.loadtxt("../abscab-java/src/test/resources/idxZpStraightWireSegment.dat", dtype=int)
 
 numCases = len(idxRp)
 
 # A_z
-ref1d_A_z = np.loadtxt("../../test/resources/StraightWireSegment_A_z_ref.dat")
-act1d_A_z = np.loadtxt("../../../data/StraightWireSegment_A_z_%s.dat"%(src_type,))
+ref1d_A_z = np.loadtxt("../abscab-java/src/test/resources/StraightWireSegment_A_z_ref.dat")
+act1d_A_z = np.loadtxt("../data/StraightWireSegment_A_z_%s.dat"%(src_type,))
 
 # B_phi
-ref1d_B_phi = np.loadtxt("../../test/resources/StraightWireSegment_B_phi_ref.dat")
-act1d_B_phi = np.loadtxt("../../../data/StraightWireSegment_B_phi_%s.dat"%(src_type,))
+ref1d_B_phi = np.loadtxt("../abscab-java/src/test/resources/StraightWireSegment_B_phi_ref.dat")
+act1d_B_phi = np.loadtxt("../data/StraightWireSegment_B_phi_%s.dat"%(src_type,))
 
 def reshapeData(ref1d, act1d):
     ref = np.zeros([numZ, numR])
